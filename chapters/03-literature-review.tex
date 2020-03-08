@@ -1,5 +1,95 @@
-\section{Literature Review}
+\section{Related works}
+In this chapter we discuss previous research in supervised and semi-supervised source separation.
 
-\subsection{ICA}
+\subsection{Deep Latent-Variable Models}
+
+amortized inference~\cite{gershmanAmortized2014}
+
+variational principle~\cite{jordanIntroduction1999}
+
+\cite{kingmaIntroduction2019}
+
+Latent variables are random variables that are part of our graphical model but are not observed.
+
+We assume some stuff
+
+\begin{align}
+    \B{x}&\∈\mathcal{D}\\
+    \B{x}&\sim p^*(\B{x})\\
+    &p_{\B{\θ}}(\B{x})
+\end{align}
+
+\begin{align}
+    \log p_{\B{\θ}}(\B{x})
+    &= \log \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
+    &= \log \∫ \÷{q_{\B{\φ}}(\B{z}|\B{x})}{q_{\B{\φ}}(\B{z}|\B{x})} p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
+    &\geq -KL[q_{\B{\φ}}(\B{z}|\B{x})\| p(\B{z})]
+\end{align}
+
+\subsubsection{The VAE framework}
+
+VAE~\cite{kingmaAutoEncoding2014}\cite{rezendeStochastic2014}
+
+\β-VAE~\cite{higginsBetaVAE2016}
+- intoduces \β as controlling hyperparameter in the VAE objective
+- constraint that controls the capacityof the latent space
+- gives trade off between reconstruction quality and representation simplicity
+- similar to information bottleneck~\cite{burgessUnderstanding2018}
+
+VQ-VAE~\cite{vandenoordNeural2017}
+
+
+\subsubsection{Flow based models}
+
+\begin{align}
+    \B{z}\sim p_{\B{Z}}(\B{z})\\
+    \B{x} = f^{-1}(\B{z})
+\end{align}
+
+change of variable
+
+
+NICE~\cite{dinhNICE2015}
+- coupling layer
+- triangular shape
+
+Normalizing Flow~\cite{rezendeVariational2016}
+
+
+RealNVP~\cite{dinhDensity2017}
+
+Glow~\cite{kingmaGlow2018}
+- invertible 1x1 convs
+- ActNorm
+- zero init
+
+
+\cite{vandenoordWaveNet2016} introduced WaveNet an autoregressive generative model for raw (\textit{time-domain}) audio. WaveNet closely similar to the earlier PixelCNN~\cite{vandenoordConditional2016} but adapted for the audio domain. Unomoidified Cnns are unsuitable to the application to raw audio because of the form of data. as digital audio is ampled at a extremely high sample rate commonly 16kHz up to 44kHz the features of interest lie at scale of stringly different magnitudes. On the one hand recognizing phase, frequency of a wave might require features at those ms scales on the other hand the modelling of speech or music audio happens at the scale of seconds or minutes. As such a generative model for this domain has to cpature those different time sclaes. The wvaenet accomplishes this by using dilated convolutions a common tool in signal processing~\cite{dutilleuxImplementation1990}. A dilated convolutions uses a kernel with an inner stride. Using a stack of dialted convolutions increases the recpetive field of the features without increasing the comutional complexity.
+
+- gated convs -pixelcnn -lstm\cite{hochreiterLong1997a}
+- dilated convs
+- global conditioning
+- μ-law encoding~\cite{Recommendation1988}
+- slow cause autoreg (better with \cite{paineFast2016})
+-
+
+PixelCNN++~\cite{salimansPixelCNN2017}
+
+
+\subsection{Sound}
+NSynth~\cite{kalchbrennerEfficient2018}
+
+In~\cite{prengerWaveGlow2018}
+
+FloWaveNet~\cite{kimFloWaveNet2019a}
 
 \subsection{Source separation}
+WaveNet for Speech denoising\cite{rethageWavenet2018}
+
+WaveNet-VAE unsupervised speech rep learning\cite{chorowskiUnsupervised2019}
+
+Wave-U-Net\cite{danielstollerWaveUNet2018}
+
+DeMucs\cite{defossezDemucs2019}
+
+Source Sep in Time Domain\cite{lluisEndtoend2019}

@@ -162,7 +162,7 @@
 }
 
 @article{burgessUnderstanding2018,
-  title = {Understanding Disentangling in \$\textbackslash{}beta\$-{{VAE}}},
+  title = {Understanding Disentangling in {{Beta}}-{{VAE}}},
   author = {Burgess, Christopher P. and Higgins, Irina and Pal, Arka and Matthey, Loic and Watters, Nick and Desjardins, Guillaume and Lerchner, Alexander},
   date = {2018-04-10},
   url = {http://arxiv.org/abs/1804.03599},
@@ -225,20 +225,8 @@
   eprinttype = {arxiv},
   file = {/home/morris/docs/eLibrary/Zotero/storage/89YT3HGD/Chorowski et al. - 2019 - Unsupervised speech representation learning using .pdf;/home/morris/docs/eLibrary/Zotero/storage/L6RRF3S5/1901.html},
   keywords = {Computer Science - Machine Learning,Electrical Engineering and Systems Science - Audio and Speech Processing,look,Statistics - Machine Learning},
-  number = {12}
-}
-
-@unpublished{danielstollerWaveUNet2018,
-  title = {Wave-{{U}}-{{Net}}: {{A Multi}}-{{Scale Neural Network}} for {{End}}-to-{{End Audio Source Separation}}},
-  shorttitle = {Wave-{{U}}-{{Net}}},
-  author = {{Daniel Stoller} and {Sebastian Ewert} and {Simon Dixon}},
-  date = {2018-09-23},
-  url = {https://zenodo.org/record/1492417},
-  urldate = {2019-10-09},
-  abstract = {Models for audio source separation usually operate on the magnitude spectrum, which ignores phase information and makes separation performance dependant on hyperparameters for the spectral front-end. Therefore, we investigate end-to-end source separation in the time-domain, which allows modelling phase information and avoids fixed spectral transformations. Due to high sampling rates for audio, employing a long temporal input context on the sample level is difficult, but required for high quality separation results because of long-range temporal correlations. In this context, we propose the Wave-U-Net, an adaptation of the U-Net to the one-dimensional time domain, which repeatedly resamples feature maps to compute and combine features at different time scales. We introduce further architectural improvements, including an output layer that enforces source additivity, an upsampling technique and a context-aware prediction framework to reduce output artifacts. Experiments for singing voice separation indicate that our architecture yields a performance comparable to a stateof-the-art spectrogram-based U-Net architecture, given the same data. Finally, we reveal a problem with outliers in the currently used SDR evaluation metrics and suggest reporting rank-based statistics to alleviate this problem.},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/Z7DJ9M7C/Daniel Stoller et al. - 2018 - Wave-U-Net A Multi-Scale Neural Network for End-t.pdf},
-  keywords = {read},
-  venue = {{Paris, France}}
+  number = {12},
+  options = {useprefix=true}
 }
 
 @article{defossezDemucs2019,
@@ -261,7 +249,7 @@
   title = {The Challenge of Realistic Music Generation: Modelling Raw Audio at Scale},
   shorttitle = {The Challenge of Realistic Music Generation},
   booktitle = {Advances in {{Neural Information Processing Systems}} 31},
-  author = {Dieleman, Sander and van den Oord, Aaron and Simonyan, Karen},
+  author = {Dieleman, Sander and van den Oord, Aäron and Simonyan, Karen},
   editor = {Bengio, S. and Wallach, H. and Larochelle, H. and Grauman, K. and Cesa-Bianchi, N. and Garnett, R.},
   date = {2018},
   pages = {7989--7999},
@@ -270,6 +258,54 @@
   urldate = {2019-10-17},
   file = {/home/morris/docs/eLibrary/Zotero/storage/LGCIBU6Q/Dieleman et al. - 2018 - The challenge of realistic music generation model.pdf;/home/morris/docs/eLibrary/Zotero/storage/TPQCGRPA/8023-the-challenge-of-realistic-music-generation-modelling-raw-audio-at-scale.html},
   options = {useprefix=true}
+}
+
+@article{dinhDensity2017,
+  title = {Density Estimation Using {{Real NVP}}},
+  author = {Dinh, Laurent and Sohl-Dickstein, Jascha and Bengio, Samy},
+  date = {2017-02-27},
+  url = {http://arxiv.org/abs/1605.08803},
+  urldate = {2019-12-03},
+  abstract = {Unsupervised learning of probabilistic models is a central yet challenging problem in machine learning. Specifically, designing models with tractable learning, sampling, inference and evaluation is crucial in solving this task. We extend the space of such models using real-valued non-volume preserving (real NVP) transformations, a set of powerful invertible and learnable transformations, resulting in an unsupervised learning algorithm with exact log-likelihood computation, exact sampling, exact inference of latent variables, and an interpretable latent space. We demonstrate its ability to model natural images on four datasets through sampling, log-likelihood evaluation and latent variable manipulations.},
+  archivePrefix = {arXiv},
+  eprint = {1605.08803},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/ENC2LDYB/Dinh et al. - 2017 - Density estimation using Real NVP.pdf;/home/morris/docs/eLibrary/Zotero/storage/WPBQR5CJ/1605.html},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Computer Science - Neural and Evolutionary Computing,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@article{dinhNICE2015,
+  title = {{{NICE}}: {{Non}}-Linear {{Independent Components Estimation}}},
+  shorttitle = {{{NICE}}},
+  author = {Dinh, Laurent and Krueger, David and Bengio, Yoshua},
+  date = {2015-04-10},
+  url = {http://arxiv.org/abs/1410.8516},
+  urldate = {2020-03-08},
+  abstract = {We propose a deep learning framework for modeling complex high-dimensional densities called Non-linear Independent Component Estimation (NICE). It is based on the idea that a good representation is one in which the data has a distribution that is easy to model. For this purpose, a non-linear deterministic transformation of the data is learned that maps it to a latent space so as to make the transformed data conform to a factorized distribution, i.e., resulting in independent latent variables. We parametrize this transformation so that computing the Jacobian determinant and inverse transform is trivial, yet we maintain the ability to learn complex non-linear transformations, via a composition of simple building blocks, each based on a deep neural network. The training criterion is simply the exact log-likelihood, which is tractable. Unbiased ancestral sampling is also easy. We show that this approach yields good generative models on four image datasets and can be used for inpainting.},
+  archivePrefix = {arXiv},
+  eprint = {1410.8516},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/UWULPUW6/Dinh et al. - 2015 - NICE Non-linear Independent Components Estimation.pdf;/home/morris/docs/eLibrary/Zotero/storage/QN35BUCA/1410.html},
+  keywords = {Computer Science - Machine Learning},
+  primaryClass = {cs}
+}
+
+@inproceedings{dutilleuxImplementation1990,
+  title = {An {{Implementation}} of the “Algorithme à Trous” to {{Compute}} the {{Wavelet Transform}}},
+  booktitle = {Wavelets},
+  author = {Dutilleux, P.},
+  editor = {Combes, Jean-Michel and Grossmann, Alexander and Tchamitchian, Philippe},
+  date = {1990},
+  pages = {298--304},
+  publisher = {{Springer}},
+  location = {{Berlin, Heidelberg}},
+  doi = {10.1007/978-3-642-75988-8_29},
+  abstract = {The computation of the wavelet transform involves the computation of the convolution product of the signal to be analysed by the analysing wavelet. It will be shown that the computation load grows with the scale factor of the analysis. We are interested in musical sounds lasting a few seconds. Using a straightforward algorithm leads to a prohibitive computation time, so we need a more effective computation procedure.},
+  isbn = {978-3-642-75988-8},
+  keywords = {Analyse Wavelet,Digital Signal Processor,Finite Impulse Response,Finite Impulse Response Filter,Side Lobe},
+  langid = {english},
+  series = {Inverse Problems and Theoretical Imaging}
 }
 
 @article{engelNeural2017,
@@ -327,7 +363,18 @@
   eprint = {1910.06464},
   eprinttype = {arxiv},
   file = {/home/morris/docs/eLibrary/Zotero/storage/6NC69KKU/Gârbacea et al. - 2019 - Low Bit-Rate Speech Coding with VQ-VAE and a WaveN.pdf;/home/morris/docs/eLibrary/Zotero/storage/TFF6G887/garbacea2019.html;/home/morris/docs/eLibrary/Zotero/storage/ULYT8MQN/1910.html},
-  keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing,Statistics - Machine Learning}
+  keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing,Statistics - Machine Learning},
+  options = {useprefix=true}
+}
+
+@inproceedings{gershmanAmortized2014,
+  title = {Amortized Inference in Probabilistic Reasoning},
+  booktitle = {Proceedings of the Annual Meeting of the Cognitive Science Society},
+  author = {Gershman, Samuel and Goodman, Noah},
+  date = {2014},
+  volume = {36},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/K8PP36PX/Gershman and Goodman - 2014 - Amortized inference in probabilistic reasoning.pdf},
+  number = {36}
 }
 
 @article{greffMultiObject2019,
@@ -358,6 +405,35 @@
   eventtitle = {Proceedings of the {{Thirteenth International Conference}} on {{Artificial Intelligence}} and {{Statistics}}},
   file = {/home/morris/docs/eLibrary/Zotero/storage/7LCH46YZ/gutmann10a.html},
   langid = {english}
+}
+
+@article{higginsBetaVAE2016,
+  title = {Beta-{{VAE}}: {{Learning Basic Visual Concepts}} with a {{Constrained Variational Framework}}},
+  shorttitle = {Beta-{{VAE}}},
+  author = {Higgins, Irina and Matthey, Loic and Pal, Arka and Burgess, Christopher and Glorot, Xavier and Botvinick, Matthew and Mohamed, Shakir and Lerchner, Alexander},
+  date = {2016-11-04},
+  url = {https://openreview.net/forum?id=Sy2fzU9gl},
+  urldate = {2020-03-08},
+  abstract = {Learning an interpretable factorised representation of the independent data generative factors of the world without supervision is an important precursor for the development of artificial...},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/R9EBSMT9/Higgins et al. - 2016 - beta-VAE Learning Basic Visual Concepts with a Co.pdf;/home/morris/docs/eLibrary/Zotero/storage/KLB9QBRT/forum.html}
+}
+
+@article{hochreiterLong1997a,
+  title = {Long {{Short}}-{{Term Memory}}},
+  author = {Hochreiter, Sepp and Schmidhuber, Jürgen},
+  date = {1997-11-01},
+  journaltitle = {Neural Computation},
+  shortjournal = {Neural Computation},
+  volume = {9},
+  pages = {1735--1780},
+  publisher = {{MIT Press}},
+  issn = {0899-7667},
+  doi = {10.1162/neco.1997.9.8.1735},
+  url = {https://www.mitpressjournals.org/doi/10.1162/neco.1997.9.8.1735},
+  urldate = {2020-03-08},
+  abstract = {Learning to store information over extended time intervals by recurrent backpropagation takes a very long time, mostly because of insufficient, decaying error backflow. We briefly review Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, gradient based method called long short-term memory (LSTM). Truncating the gradient where this does not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by enforcing constant error flow through constant error carousels within special units. Multiplicative gate units learn to open and close access to the constant error flow. LSTM is local in space and time; its computational complexity per time step and weight is O. 1. Our experiments with artificial data involve local, distributed, real-valued, and noisy pattern representations. In comparisons with real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous recurrent network algorithms.},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/BSUZIN7R/neco.1997.9.8.html},
+  number = {8}
 }
 
 @article{hochsteinView2002,
@@ -408,6 +484,21 @@
   pagetotal = {366}
 }
 
+@article{jayaramSource2020,
+  title = {Source {{Separation}} with {{Deep Generative Priors}}},
+  author = {Jayaram, Vivek and Thickstun, John},
+  date = {2020-02-18},
+  url = {http://arxiv.org/abs/2002.07942},
+  urldate = {2020-02-28},
+  abstract = {Despite substantial progress in signal source separation, results for richly structured data continue to contain perceptible artifacts. In contrast, recent deep generative models can produce authentic samples in a variety of domains that are indistinguishable from samples of the data distribution. This paper introduces a Bayesian approach to source separation that uses generative models as priors over the components of a mixture of sources, and Langevin dynamics to sample from the posterior distribution of sources given a mixture. This decouples the source separation problem from generative modeling, enabling us to directly use cutting-edge generative models as priors. The method achieves state-of-the-art performance for MNIST digit separation. We introduce new methodology for evaluating separation quality on richer datasets, providing quantitative evaluation of separation results on CIFAR-10. We also provide qualitative results on LSUN.},
+  archivePrefix = {arXiv},
+  eprint = {2002.07942},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/IHJPBCKB/Jayaram and Thickstun - 2020 - Source Separation with Deep Generative Priors.pdf;/home/morris/docs/eLibrary/Zotero/storage/L977BPFJ/2002.html},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @unpublished{jordanb.l.smithMultiPart2017,
   title = {Multi-{{Part Pattern Analysis}}: {{Combining Structure Analysis}} and {{Source Separation}} to {{Discover Intra}}-{{Part Repeated Sequences}}.},
   shorttitle = {Multi-{{Part Pattern Analysis}}},
@@ -418,6 +509,24 @@
   abstract = {[TODO] Add abstract here.},
   file = {/home/morris/docs/eLibrary/Zotero/storage/2VLK28ZF/Jordan B. L. Smith and Masataka Goto - 2017 - Multi-Part Pattern Analysis Combining Structure A.pdf},
   venue = {{Suzhou, China}}
+}
+
+@article{jordanIntroduction1999,
+  title = {An {{Introduction}} to {{Variational Methods}} for {{Graphical Models}}},
+  author = {Jordan, Michael I. and Ghahramani, Zoubin and Jaakkola, Tommi S. and Saul, Lawrence K.},
+  date = {1999-11-01},
+  journaltitle = {Machine Learning},
+  shortjournal = {Machine Learning},
+  volume = {37},
+  pages = {183--233},
+  issn = {1573-0565},
+  doi = {10.1023/A:1007665907178},
+  url = {https://doi.org/10.1023/A:1007665907178},
+  urldate = {2020-03-08},
+  abstract = {This paper presents a tutorial introduction to the use of variational methods for inference and learning in graphical models (Bayesian networks and Markov random fields). We present a number of examples of graphical models, including the QMR-DT database, the sigmoid belief network, the Boltzmann machine, and several variants of hidden Markov models, in which it is infeasible to run exact inference algorithms. We then introduce variational methods, which exploit laws of large numbers to transform the original graphical model into a simplified graphical model in which inference is efficient. Inference in the simpified model provides bounds on probabilities of interest in the original model. We describe a general framework for generating variational transformations based on convex duality. Finally we return to the examples and demonstrate how variational algorithms can be formulated in each case.},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/DGE97QD9/Jordan et al. - 1999 - An Introduction to Variational Methods for Graphic.pdf},
+  langid = {english},
+  number = {2}
 }
 
 @unpublished{juans.gomezJazz2018,
@@ -432,7 +541,7 @@
 
 @article{kalchbrennerEfficient2018,
   title = {Efficient {{Neural Audio Synthesis}}},
-  author = {Kalchbrenner, Nal and Elsen, Erich and Simonyan, Karen and Noury, Seb and Casagrande, Norman and Lockhart, Edward and Stimberg, Florian and van den Oord, Aaron and Dieleman, Sander and Kavukcuoglu, Koray},
+  author = {Kalchbrenner, Nal and Elsen, Erich and Simonyan, Karen and Noury, Seb and Casagrande, Norman and Lockhart, Edward and Stimberg, Florian and van den Oord, Aäron and Dieleman, Sander and Kavukcuoglu, Koray},
   date = {2018-02-23},
   url = {http://arxiv.org/abs/1802.08435},
   urldate = {2019-10-17},
@@ -442,7 +551,39 @@
   eprinttype = {arxiv},
   file = {/home/morris/docs/eLibrary/Zotero/storage/EC5BAE9L/Kalchbrenner et al. - 2018 - Efficient Neural Audio Synthesis.pdf;/home/morris/docs/eLibrary/Zotero/storage/XP4XQTG3/1802.html},
   keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing},
+  options = {useprefix=true},
   primaryClass = {cs, eess}
+}
+
+@article{kimFloWaveNet2019a,
+  title = {{{FloWaveNet}} : {{A Generative Flow}} for {{Raw Audio}}},
+  shorttitle = {{{FloWaveNet}}},
+  author = {Kim, Sungwon and Lee, Sang-gil and Song, Jongyoon and Kim, Jaehyeon and Yoon, Sungroh},
+  date = {2019-05-20},
+  url = {http://arxiv.org/abs/1811.02155},
+  urldate = {2020-03-07},
+  abstract = {Most modern text-to-speech architectures use a WaveNet vocoder for synthesizing high-fidelity waveform audio, but there have been limitations, such as high inference time, in its practical application due to its ancestral sampling scheme. The recently suggested Parallel WaveNet and ClariNet have achieved real-time audio synthesis capability by incorporating inverse autoregressive flow for parallel sampling. However, these approaches require a two-stage training pipeline with a well-trained teacher network and can only produce natural sound by using probability distillation along with auxiliary loss terms. We propose FloWaveNet, a flow-based generative model for raw audio synthesis. FloWaveNet requires only a single-stage training procedure and a single maximum likelihood loss, without any additional auxiliary terms, and it is inherently parallel due to the characteristics of generative flow. The model can efficiently sample raw audio in real-time, with clarity comparable to previous two-stage parallel models. The code and samples for all models, including our FloWaveNet, are publicly available.},
+  archivePrefix = {arXiv},
+  eprint = {1811.02155},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/2V8KAPQI/Kim et al. - 2019 - FloWaveNet  A Generative Flow for Raw Audio.pdf;/home/morris/docs/eLibrary/Zotero/storage/SMUJRUCV/1811.html},
+  keywords = {Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing},
+  primaryClass = {cs, eess}
+}
+
+@article{kingmaAutoEncoding2014,
+  title = {Auto-{{Encoding Variational Bayes}}},
+  author = {Kingma, Diederik P. and Welling, Max},
+  date = {2014-05-01},
+  url = {http://arxiv.org/abs/1312.6114},
+  urldate = {2020-03-08},
+  abstract = {How can we perform efficient inference and learning in directed probabilistic models, in the presence of continuous latent variables with intractable posterior distributions, and large datasets? We introduce a stochastic variational inference and learning algorithm that scales to large datasets and, under some mild differentiability conditions, even works in the intractable case. Our contributions is two-fold. First, we show that a reparameterization of the variational lower bound yields a lower bound estimator that can be straightforwardly optimized using standard stochastic gradient methods. Second, we show that for i.i.d. datasets with continuous latent variables per datapoint, posterior inference can be made especially efficient by fitting an approximate inference model (also called a recognition model) to the intractable posterior using the proposed lower bound estimator. Theoretical advantages are reflected in experimental results.},
+  archivePrefix = {arXiv},
+  eprint = {1312.6114},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/LEIDTBDL/Kingma and Welling - 2014 - Auto-Encoding Variational Bayes.pdf;/home/morris/docs/eLibrary/Zotero/storage/SBUBUIWB/1312.html},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
 }
 
 @article{kingmaGlow2018,
@@ -549,6 +690,32 @@
   primaryClass = {cs, stat}
 }
 
+@article{locatelloWeaklySupervised2020,
+  title = {Weakly-{{Supervised Disentanglement Without Compromises}}},
+  author = {Locatello, Francesco and Poole, Ben and Rätsch, Gunnar and Schölkopf, Bernhard and Bachem, Olivier and Tschannen, Michael},
+  date = {2020-02-07},
+  url = {http://arxiv.org/abs/2002.02886},
+  urldate = {2020-02-10},
+  abstract = {Intelligent agents should be able to learn useful representations by observing changes in their environment. We model such observations as pairs of non-i.i.d. images sharing at least one of the underlying factors of variation. First, we theoretically show that only knowing how many factors have changed, but not which ones, is sufficient to learn disentangled representations. Second, we provide practical algorithms that learn disentangled representations from pairs of images without requiring annotation of groups, individual factors, or the number of factors that have changed. Third, we perform a large-scale empirical study and show that such pairs of observations are sufficient to reliably learn disentangled representations on several benchmark data sets. Finally, we evaluate our learned representations and find that they are simultaneously useful on a diverse suite of tasks, including generalization under covariate shifts, fairness, and abstract reasoning. Overall, our results demonstrate that weak supervision enables learning of useful disentangled representations in realistic scenarios.},
+  archivePrefix = {arXiv},
+  eprint = {2002.02886},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/TL4DXRV3/Locatello et al. - 2020 - Weakly-Supervised Disentanglement Without Compromi.pdf;/home/morris/docs/eLibrary/Zotero/storage/4UCN8RHF/2002.html},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@unpublished{manzelliConditioning2018,
+  title = {Conditioning {{Deep Generative Raw Audio Models}} for {{Structured Automatic Music}}},
+  author = {Manzelli, Rachel and Thakkar, Vijay and Siahkamari, Ali and Kulis, Brian},
+  date = {2018-09-23},
+  url = {https://zenodo.org/record/1492375},
+  urldate = {2019-10-10},
+  abstract = {Existing automatic music generation approaches that feature deep learning can be broadly classified into two types: raw audio models and symbolic models. Symbolic models, which train and generate at the note level, are currently the more prevalent approach; these models can capture long-range dependencies of melodic structure, but fail to grasp the nuances and richness of raw audio generations. Raw audio models, such as DeepMind's WaveNet, train directly on sampled audio waveforms, allowing them to produce realistic-sounding, albeit unstructured music. In this paper, we propose an automatic music generation methodology combining both of these approaches to create structured, realistic-sounding compositions. We consider a Long Short Term Memory network to learn the melodic structure of different styles of music, and then use the unique symbolic generations from this model as a conditioning input to a WaveNet-based raw audio generator, creating a model for automatic, novel music. We then evaluate this approach by showcasing results of this work.},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/6VKRRSP6/Rachel Manzelli et al. - 2018 - Conditioning Deep Generative Raw Audio Models for .pdf},
+  venue = {{Paris, France}}
+}
+
 @unpublished{mariusmironMonaural2017,
   title = {Monaural {{Score}}-{{Informed Source Separation}} for {{Classical Music Using Convolutional Neural Networks}}.},
   author = {{Marius Miron} and {Jordi Janer} and {Emilia Gómez}},
@@ -627,68 +794,6 @@
   number = {5}
 }
 
-@article{oordConditional2016,
-  title = {Conditional {{Image Generation}} with {{PixelCNN Decoders}}},
-  author = {van den Oord, Aaron and Kalchbrenner, Nal and Vinyals, Oriol and Espeholt, Lasse and Graves, Alex and Kavukcuoglu, Koray},
-  date = {2016-06-16},
-  url = {http://arxiv.org/abs/1606.05328},
-  urldate = {2019-10-17},
-  abstract = {This work explores conditional image generation with a new image density model based on the PixelCNN architecture. The model can be conditioned on any vector, including descriptive labels or tags, or latent embeddings created by other networks. When conditioned on class labels from the ImageNet database, the model is able to generate diverse, realistic scenes representing distinct animals, objects, landscapes and structures. When conditioned on an embedding produced by a convolutional network given a single image of an unseen face, it generates a variety of new portraits of the same person with different facial expressions, poses and lighting conditions. We also show that conditional PixelCNN can serve as a powerful decoder in an image autoencoder. Additionally, the gated convolutional layers in the proposed model improve the log-likelihood of PixelCNN to match the state-of-the-art performance of PixelRNN on ImageNet, with greatly reduced computational cost.},
-  archivePrefix = {arXiv},
-  eprint = {1606.05328},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/T3VY4I7B/Oord et al. - 2016 - Conditional Image Generation with PixelCNN Decoder.pdf;/home/morris/docs/eLibrary/Zotero/storage/YNL76EFZ/1606.html},
-  keywords = {Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,look},
-  primaryClass = {cs}
-}
-
-@article{oordParallel2017,
-  title = {Parallel {{WaveNet}}: {{Fast High}}-{{Fidelity Speech Synthesis}}},
-  shorttitle = {Parallel {{WaveNet}}},
-  author = {van den Oord, Aaron and Li, Yazhe and Babuschkin, Igor and Simonyan, Karen and Vinyals, Oriol and Kavukcuoglu, Koray and van den Driessche, George and Lockhart, Edward and Cobo, Luis C. and Stimberg, Florian and Casagrande, Norman and Grewe, Dominik and Noury, Seb and Dieleman, Sander and Elsen, Erich and Kalchbrenner, Nal and Zen, Heiga and Graves, Alex and King, Helen and Walters, Tom and Belov, Dan and Hassabis, Demis},
-  date = {2017-11-28},
-  url = {http://arxiv.org/abs/1711.10433},
-  urldate = {2019-10-17},
-  abstract = {The recently-developed WaveNet architecture is the current state of the art in realistic speech synthesis, consistently rated as more natural sounding for many different languages than any previous system. However, because WaveNet relies on sequential generation of one audio sample at a time, it is poorly suited to today's massively parallel computers, and therefore hard to deploy in a real-time production setting. This paper introduces Probability Density Distillation, a new method for training a parallel feed-forward network from a trained WaveNet with no significant difference in quality. The resulting system is capable of generating high-fidelity speech samples at more than 20 times faster than real-time, and is deployed online by Google Assistant, including serving multiple English and Japanese voices.},
-  archivePrefix = {arXiv},
-  eprint = {1711.10433},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/G2VX6YTC/Oord et al. - 2017 - Parallel WaveNet Fast High-Fidelity Speech Synthe.pdf;/home/morris/docs/eLibrary/Zotero/storage/DY62RZY8/1711.html},
-  keywords = {Computer Science - Machine Learning,read},
-  primaryClass = {cs}
-}
-
-@article{oordRepresentation2018,
-  title = {Representation {{Learning}} with {{Contrastive Predictive Coding}}},
-  author = {van den Oord, Aaron and Li, Yazhe and Vinyals, Oriol},
-  date = {2018-07-10},
-  url = {http://arxiv.org/abs/1807.03748},
-  urldate = {2019-10-07},
-  abstract = {While supervised learning has enabled great progress in many applications, unsupervised learning has not seen such widespread adoption, and remains an important and challenging endeavor for artificial intelligence. In this work, we propose a universal unsupervised learning approach to extract useful representations from high-dimensional data, which we call Contrastive Predictive Coding. The key insight of our model is to learn such representations by predicting the future in latent space by using powerful autoregressive models. We use a probabilistic contrastive loss which induces the latent space to capture information that is maximally useful to predict future samples. It also makes the model tractable by using negative sampling. While most prior work has focused on evaluating representations for a particular modality, we demonstrate that our approach is able to learn useful representations achieving strong performance on four distinct domains: speech, images, text and reinforcement learning in 3D environments.},
-  archivePrefix = {arXiv},
-  eprint = {1807.03748},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/VB7KWS96/Oord et al. - 2018 - Representation Learning with Contrastive Predictiv.pdf;/home/morris/docs/eLibrary/Zotero/storage/T72Y3899/1807.html},
-  keywords = {Computer Science - Machine Learning,read,Statistics - Machine Learning},
-  primaryClass = {cs, stat}
-}
-
-@article{oordWaveNet2016,
-  title = {{{WaveNet}}: {{A Generative Model}} for {{Raw Audio}}},
-  shorttitle = {{{WaveNet}}},
-  author = {van den Oord, Aaron and Dieleman, Sander and Zen, Heiga and Simonyan, Karen and Vinyals, Oriol and Graves, Alex and Kalchbrenner, Nal and Senior, Andrew and Kavukcuoglu, Koray},
-  date = {2016-09-12},
-  url = {http://arxiv.org/abs/1609.03499},
-  urldate = {2019-10-17},
-  abstract = {This paper introduces WaveNet, a deep neural network for generating raw audio waveforms. The model is fully probabilistic and autoregressive, with the predictive distribution for each audio sample conditioned on all previous ones; nonetheless we show that it can be efficiently trained on data with tens of thousands of samples per second of audio. When applied to text-to-speech, it yields state-of-the-art performance, with human listeners rating it as significantly more natural sounding than the best parametric and concatenative systems for both English and Mandarin. A single WaveNet can capture the characteristics of many different speakers with equal fidelity, and can switch between them by conditioning on the speaker identity. When trained to model music, we find that it generates novel and often highly realistic musical fragments. We also show that it can be employed as a discriminative model, returning promising results for phoneme recognition.},
-  archivePrefix = {arXiv},
-  eprint = {1609.03499},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/V2D6WCDY/Oord et al. - 2016 - WaveNet A Generative Model for Raw Audio.pdf;/home/morris/docs/eLibrary/Zotero/storage/6DDA9CU4/1609.html},
-  keywords = {Computer Science - Machine Learning,Computer Science - Sound,read},
-  primaryClass = {cs}
-}
-
 @article{paineFast2016,
   title = {Fast {{Wavenet Generation Algorithm}}},
   author = {Paine, Tom Le and Khorrami, Pooya and Chang, Shiyu and Zhang, Yang and Ramachandran, Prajit and Hasegawa-Johnson, Mark A. and Huang, Thomas S.},
@@ -765,17 +870,6 @@
   primaryClass = {cs, eess, stat}
 }
 
-@unpublished{rachelmanzelliConditioning2018,
-  title = {Conditioning {{Deep Generative Raw Audio Models}} for {{Structured Automatic Music}}},
-  author = {{Rachel Manzelli} and {Vijay Thakkar} and {Ali Siahkamari} and {Brian Kulis}},
-  date = {2018-09-23},
-  url = {https://zenodo.org/record/1492375},
-  urldate = {2019-10-10},
-  abstract = {Existing automatic music generation approaches that feature deep learning can be broadly classified into two types: raw audio models and symbolic models. Symbolic models, which train and generate at the note level, are currently the more prevalent approach; these models can capture long-range dependencies of melodic structure, but fail to grasp the nuances and richness of raw audio generations. Raw audio models, such as DeepMind's WaveNet, train directly on sampled audio waveforms, allowing them to produce realistic-sounding, albeit unstructured music. In this paper, we propose an automatic music generation methodology combining both of these approaches to create structured, realistic-sounding compositions. We consider a Long Short Term Memory network to learn the melodic structure of different styles of music, and then use the unique symbolic generations from this model as a conditioning input to a WaveNet-based raw audio generator, creating a model for automatic, novel music. We then evaluate this approach by showcasing results of this work.},
-  file = {/home/morris/docs/eLibrary/Zotero/storage/6VKRRSP6/Rachel Manzelli et al. - 2018 - Conditioning Deep Generative Raw Audio Models for .pdf},
-  venue = {{Paris, France}}
-}
-
 @article{razaviGenerating2019,
   title = {Generating {{Diverse High}}-{{Fidelity Images}} with {{VQ}}-{{VAE}}-2},
   author = {Razavi, Ali and van den Oord, Aaron and Vinyals, Oriol},
@@ -791,6 +885,27 @@
   primaryClass = {cs, stat}
 }
 
+@misc{Recommendation1988,
+  title = {Recommendation \{\vphantom\}{{G}}\vphantom\{\}. 711. {{Pulse Code Modulation}} ({{PCM}}) of Voice Frequencies},
+  date = {1988},
+  publisher = {{ITU-T.}}
+}
+
+@article{rethageWavenet2018,
+  title = {A {{Wavenet}} for {{Speech Denoising}}},
+  author = {Rethage, Dario and Pons, Jordi and Serra, Xavier},
+  date = {2018-01-31},
+  url = {http://arxiv.org/abs/1706.07162},
+  urldate = {2020-03-08},
+  abstract = {Currently, most speech processing techniques use magnitude spectrograms as front-end and are therefore by default discarding part of the signal: the phase. In order to overcome this limitation, we propose an end-to-end learning method for speech denoising based on Wavenet. The proposed model adaptation retains Wavenet's powerful acoustic modeling capabilities, while significantly reducing its time-complexity by eliminating its autoregressive nature. Specifically, the model makes use of non-causal, dilated convolutions and predicts target fields instead of a single target sample. The discriminative adaptation of the model we propose, learns in a supervised fashion via minimizing a regression loss. These modifications make the model highly parallelizable during both training and inference. Both computational and perceptual evaluations indicate that the proposed method is preferred to Wiener filtering, a common method based on processing the magnitude spectrogram.},
+  archivePrefix = {arXiv},
+  eprint = {1706.07162},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/QT3YR5CT/Rethage et al. - 2018 - A Wavenet for Speech Denoising.pdf;/home/morris/docs/eLibrary/Zotero/storage/XG2BIQPA/1706.html},
+  keywords = {Computer Science - Sound},
+  primaryClass = {cs}
+}
+
 @article{rezaabadLearning2020,
   title = {Learning {{Representations}} by {{Maximizing Mutual Information}} in {{Variational Autoencoders}}},
   author = {Rezaabad, Ali Lotfi and Vishwanath, Sriram},
@@ -803,6 +918,36 @@
   eprinttype = {arxiv},
   file = {/home/morris/docs/eLibrary/Zotero/storage/NQ87RFYE/Rezaabad and Vishwanath - 2020 - Learning Representations by Maximizing Mutual Info.pdf;/home/morris/docs/eLibrary/Zotero/storage/ZIF6LLGZ/1912.html},
   keywords = {Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@article{rezendeStochastic2014,
+  title = {Stochastic {{Backpropagation}} and {{Approximate Inference}} in {{Deep Generative Models}}},
+  author = {Rezende, Danilo Jimenez and Mohamed, Shakir and Wierstra, Daan},
+  date = {2014-05-30},
+  url = {http://arxiv.org/abs/1401.4082},
+  urldate = {2020-03-08},
+  abstract = {We marry ideas from deep neural networks and approximate Bayesian inference to derive a generalised class of deep, directed generative models, endowed with a new algorithm for scalable inference and learning. Our algorithm introduces a recognition model to represent approximate posterior distributions, and that acts as a stochastic encoder of the data. We develop stochastic back-propagation -- rules for back-propagation through stochastic variables -- and use this to develop an algorithm that allows for joint optimisation of the parameters of both the generative and recognition model. We demonstrate on several real-world data sets that the model generates realistic samples, provides accurate imputations of missing data and is a useful tool for high-dimensional data visualisation.},
+  archivePrefix = {arXiv},
+  eprint = {1401.4082},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/Z9EAZQ78/Rezende et al. - 2014 - Stochastic Backpropagation and Approximate Inferen.pdf;/home/morris/docs/eLibrary/Zotero/storage/BYI64P4I/1401.html},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Statistics - Computation,Statistics - Machine Learning,Statistics - Methodology},
+  primaryClass = {cs, stat}
+}
+
+@article{rezendeVariational2016,
+  title = {Variational {{Inference}} with {{Normalizing Flows}}},
+  author = {Rezende, Danilo Jimenez and Mohamed, Shakir},
+  date = {2016-06-14},
+  url = {http://arxiv.org/abs/1505.05770},
+  urldate = {2020-03-08},
+  abstract = {The choice of approximate posterior distribution is one of the core problems in variational inference. Most applications of variational inference employ simple families of posterior approximations in order to allow for efficient inference, focusing on mean-field or other simple structured approximations. This restriction has a significant impact on the quality of inferences made using variational methods. We introduce a new approach for specifying flexible, arbitrarily complex and scalable approximate posterior distributions. Our approximations are distributions constructed through a normalizing flow, whereby a simple initial density is transformed into a more complex one by applying a sequence of invertible transformations until a desired level of complexity is attained. We use this view of normalizing flows to develop categories of finite and infinitesimal flows and provide a unified view of approaches for constructing rich posterior approximations. We demonstrate that the theoretical advantages of having posteriors that better match the true posterior, combined with the scalability of amortized variational approaches, provides a clear improvement in performance and applicability of variational inference.},
+  archivePrefix = {arXiv},
+  eprint = {1505.05770},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/BHLK5PE2/Rezende and Mohamed - 2016 - Variational Inference with Normalizing Flows.pdf;/home/morris/docs/eLibrary/Zotero/storage/HBEEWEC3/1505.html},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Statistics - Computation,Statistics - Machine Learning,Statistics - Methodology},
   primaryClass = {cs, stat}
 }
 
@@ -855,6 +1000,19 @@
   file = {/home/morris/docs/eLibrary/Zotero/storage/YRGPXPQ4/Shu et al. - 2019 - Weakly Supervised Disentanglement with Guarantees.pdf;/home/morris/docs/eLibrary/Zotero/storage/HW8Z99C8/1910.html},
   keywords = {Computer Science - Machine Learning,look,Statistics - Machine Learning},
   primaryClass = {cs, stat}
+}
+
+@unpublished{stollerWaveUNet2018,
+  title = {Wave-{{U}}-{{Net}}: {{A Multi}}-{{Scale Neural Network}} for {{End}}-to-{{End Audio Source Separation}}},
+  shorttitle = {Wave-{{U}}-{{Net}}},
+  author = {Stoller, Daniel and Ewert, Sebastian and Dixon, Simon},
+  date = {2018-09-23},
+  url = {https://zenodo.org/record/1492417},
+  urldate = {2019-10-09},
+  abstract = {Models for audio source separation usually operate on the magnitude spectrum, which ignores phase information and makes separation performance dependant on hyperparameters for the spectral front-end. Therefore, we investigate end-to-end source separation in the time-domain, which allows modelling phase information and avoids fixed spectral transformations. Due to high sampling rates for audio, employing a long temporal input context on the sample level is difficult, but required for high quality separation results because of long-range temporal correlations. In this context, we propose the Wave-U-Net, an adaptation of the U-Net to the one-dimensional time domain, which repeatedly resamples feature maps to compute and combine features at different time scales. We introduce further architectural improvements, including an output layer that enforces source additivity, an upsampling technique and a context-aware prediction framework to reduce output artifacts. Experiments for singing voice separation indicate that our architecture yields a performance comparable to a stateof-the-art spectrogram-based U-Net architecture, given the same data. Finally, we reveal a problem with outliers in the currently used SDR evaluation metrics and suggest reporting rank-based statistics to alleviate this problem.},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/Z7DJ9M7C/Daniel Stoller et al. - 2018 - Wave-U-Net A Multi-Scale Neural Network for End-t.pdf},
+  keywords = {read},
+  venue = {{Paris, France}}
 }
 
 @article{stoter20182018,
@@ -914,10 +1072,26 @@
   keywords = {Blending,blending scheme yields,Context,data augmentation,Deep neural network (DNN),deep neural network architectures,Indexes,Instruments,Long-short term memory (LSTM),mixture models,multichannel Wiener filter post-processing,music,Music source separation (MSS),music source separation improvement,recurrent network,recurrent neural nets,Recurrent neural networks,SiSEC DSD100 dataset,Source separation,speech processing,Training,Wiener filters}
 }
 
+@article{vandenoordConditional2016,
+  title = {Conditional {{Image Generation}} with {{PixelCNN Decoders}}},
+  author = {van den Oord, Aäron and Kalchbrenner, Nal and Vinyals, Oriol and Espeholt, Lasse and Graves, Alex and Kavukcuoglu, Koray},
+  date = {2016-06-16},
+  url = {http://arxiv.org/abs/1606.05328},
+  urldate = {2019-10-17},
+  abstract = {This work explores conditional image generation with a new image density model based on the PixelCNN architecture. The model can be conditioned on any vector, including descriptive labels or tags, or latent embeddings created by other networks. When conditioned on class labels from the ImageNet database, the model is able to generate diverse, realistic scenes representing distinct animals, objects, landscapes and structures. When conditioned on an embedding produced by a convolutional network given a single image of an unseen face, it generates a variety of new portraits of the same person with different facial expressions, poses and lighting conditions. We also show that conditional PixelCNN can serve as a powerful decoder in an image autoencoder. Additionally, the gated convolutional layers in the proposed model improve the log-likelihood of PixelCNN to match the state-of-the-art performance of PixelRNN on ImageNet, with greatly reduced computational cost.},
+  archivePrefix = {arXiv},
+  eprint = {1606.05328},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/T3VY4I7B/Oord et al. - 2016 - Conditional Image Generation with PixelCNN Decoder.pdf;/home/morris/docs/eLibrary/Zotero/storage/YNL76EFZ/1606.html},
+  keywords = {Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,look},
+  options = {useprefix=true},
+  primaryClass = {cs}
+}
+
 @incollection{vandenoordNeural2017,
   title = {Neural {{Discrete Representation Learning}}},
   booktitle = {Advances in {{Neural Information Processing Systems}} 30},
-  author = {van den Oord, Aaron and Vinyals, Oriol and {kavukcuoglu}, koray},
+  author = {van den Oord, Aäron and Vinyals, Oriol and Kavukcuoglu, Koray},
   editor = {Guyon, I. and Luxburg, U. V. and Bengio, S. and Wallach, H. and Fergus, R. and Vishwanathan, S. and Garnett, R.},
   date = {2017},
   pages = {6306--6315},
@@ -926,6 +1100,86 @@
   urldate = {2019-11-14},
   file = {/home/morris/docs/eLibrary/Zotero/storage/CUL4X586/van den Oord et al. - 2017 - Neural Discrete Representation Learning.pdf;/home/morris/docs/eLibrary/Zotero/storage/WDLM7ATT/7210-neural-discrete-representation-learning.html},
   options = {useprefix=true}
+}
+
+@article{vandenoordParallel2017,
+  title = {Parallel {{WaveNet}}: {{Fast High}}-{{Fidelity Speech Synthesis}}},
+  shorttitle = {Parallel {{WaveNet}}},
+  author = {van den Oord, Aäron and Li, Yazhe and Babuschkin, Igor and Simonyan, Karen and Vinyals, Oriol and Kavukcuoglu, Koray and van den Driessche, George and Lockhart, Edward and Cobo, Luis C. and Stimberg, Florian and Casagrande, Norman and Grewe, Dominik and Noury, Seb and Dieleman, Sander and Elsen, Erich and Kalchbrenner, Nal and Zen, Heiga and Graves, Alex and King, Helen and Walters, Tom and Belov, Dan and Hassabis, Demis},
+  date = {2017-11-28},
+  url = {http://arxiv.org/abs/1711.10433},
+  urldate = {2019-10-17},
+  abstract = {The recently-developed WaveNet architecture is the current state of the art in realistic speech synthesis, consistently rated as more natural sounding for many different languages than any previous system. However, because WaveNet relies on sequential generation of one audio sample at a time, it is poorly suited to today's massively parallel computers, and therefore hard to deploy in a real-time production setting. This paper introduces Probability Density Distillation, a new method for training a parallel feed-forward network from a trained WaveNet with no significant difference in quality. The resulting system is capable of generating high-fidelity speech samples at more than 20 times faster than real-time, and is deployed online by Google Assistant, including serving multiple English and Japanese voices.},
+  archivePrefix = {arXiv},
+  eprint = {1711.10433},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/G2VX6YTC/Oord et al. - 2017 - Parallel WaveNet Fast High-Fidelity Speech Synthe.pdf;/home/morris/docs/eLibrary/Zotero/storage/DY62RZY8/1711.html},
+  keywords = {Computer Science - Machine Learning,read},
+  options = {useprefix=true},
+  primaryClass = {cs}
+}
+
+@article{vandenoordRepresentation2018,
+  title = {Representation {{Learning}} with {{Contrastive Predictive Coding}}},
+  author = {van den Oord, Aäron and Li, Yazhe and Vinyals, Oriol},
+  date = {2018-07-10},
+  url = {http://arxiv.org/abs/1807.03748},
+  urldate = {2019-10-07},
+  abstract = {While supervised learning has enabled great progress in many applications, unsupervised learning has not seen such widespread adoption, and remains an important and challenging endeavor for artificial intelligence. In this work, we propose a universal unsupervised learning approach to extract useful representations from high-dimensional data, which we call Contrastive Predictive Coding. The key insight of our model is to learn such representations by predicting the future in latent space by using powerful autoregressive models. We use a probabilistic contrastive loss which induces the latent space to capture information that is maximally useful to predict future samples. It also makes the model tractable by using negative sampling. While most prior work has focused on evaluating representations for a particular modality, we demonstrate that our approach is able to learn useful representations achieving strong performance on four distinct domains: speech, images, text and reinforcement learning in 3D environments.},
+  archivePrefix = {arXiv},
+  eprint = {1807.03748},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/VB7KWS96/Oord et al. - 2018 - Representation Learning with Contrastive Predictiv.pdf;/home/morris/docs/eLibrary/Zotero/storage/T72Y3899/1807.html},
+  keywords = {Computer Science - Machine Learning,read,Statistics - Machine Learning},
+  options = {useprefix=true},
+  primaryClass = {cs, stat}
+}
+
+@article{vandenoordWaveNet2016,
+  title = {{{WaveNet}}: {{A Generative Model}} for {{Raw Audio}}},
+  shorttitle = {{{WaveNet}}},
+  author = {van den Oord, Aäron and Dieleman, Sander and Zen, Heiga and Simonyan, Karen and Vinyals, Oriol and Graves, Alex and Kalchbrenner, Nal and Senior, Andrew and Kavukcuoglu, Koray},
+  date = {2016-09-12},
+  url = {http://arxiv.org/abs/1609.03499},
+  urldate = {2019-10-17},
+  abstract = {This paper introduces WaveNet, a deep neural network for generating raw audio waveforms. The model is fully probabilistic and autoregressive, with the predictive distribution for each audio sample conditioned on all previous ones; nonetheless we show that it can be efficiently trained on data with tens of thousands of samples per second of audio. When applied to text-to-speech, it yields state-of-the-art performance, with human listeners rating it as significantly more natural sounding than the best parametric and concatenative systems for both English and Mandarin. A single WaveNet can capture the characteristics of many different speakers with equal fidelity, and can switch between them by conditioning on the speaker identity. When trained to model music, we find that it generates novel and often highly realistic musical fragments. We also show that it can be employed as a discriminative model, returning promising results for phoneme recognition.},
+  archivePrefix = {arXiv},
+  eprint = {1609.03499},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/V2D6WCDY/Oord et al. - 2016 - WaveNet A Generative Model for Raw Audio.pdf;/home/morris/docs/eLibrary/Zotero/storage/6DDA9CU4/1609.html},
+  keywords = {Computer Science - Machine Learning,Computer Science - Sound,read},
+  options = {useprefix=true},
+  primaryClass = {cs}
+}
+
+@inproceedings{wellingBayesian2011,
+  title = {Bayesian Learning via Stochastic Gradient Langevin Dynamics},
+  booktitle = {Proceedings of the 28th {{International Conference}} on {{International Conference}} on {{Machine Learning}}},
+  author = {Welling, Max and Teh, Yee Whye},
+  date = {2011-06-28},
+  pages = {681--688},
+  publisher = {{Omnipress}},
+  location = {{Bellevue, Washington, USA}},
+  abstract = {In this paper we propose a new framework for learning from large scale datasets based on iterative learning from small mini-batches. By adding the right amount of noise to a standard stochastic gradient optimization algorithm we show that the iterates will converge to samples from the true posterior distribution as we anneal the stepsize. This seamless transition between optimization and Bayesian posterior sampling provides an inbuilt protection against overfitting. We also propose a practical method for Monte Carlo estimates of posterior statistics which monitors a "sampling threshold" and collects samples after it has been surpassed. We apply the method to three models: a mixture of Gaussians, logistic regression and ICA with natural gradients.},
+  isbn = {978-1-4503-0619-5},
+  series = {{{ICML}}'11}
+}
+
+@article{zeghidourWavesplit2020,
+  title = {Wavesplit: {{End}}-to-{{End Speech Separation}} by {{Speaker Clustering}}},
+  shorttitle = {Wavesplit},
+  author = {Zeghidour, Neil and Grangier, David},
+  date = {2020-02-20},
+  url = {http://arxiv.org/abs/2002.08933},
+  urldate = {2020-02-27},
+  abstract = {We introduce Wavesplit, an end-to-end speech separation system. From a single recording of mixed speech, the model infers and clusters representations of each speaker and then estimates each source signal conditioned on the inferred representations. The model is trained on the raw waveform to jointly perform the two tasks. Our model infers a set of speaker representations through clustering, which addresses the fundamental permutation problem of speech separation. Moreover, the sequence-wide speaker representations provide a more robust separation of long, challenging sequences, compared to previous approaches. We show that Wavesplit outperforms the previous state-of-the-art on clean mixtures of 2 or 3 speakers (WSJ0-2mix, WSJ0-3mix), as well as in noisy (WHAM!) and reverberated (WHAMR!) conditions. As an additional contribution, we further improve our model by introducing online data augmentation for separation.},
+  archivePrefix = {arXiv},
+  eprint = {2002.08933},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/eLibrary/Zotero/storage/GEDWV3FQ/Zeghidour and Grangier - 2020 - Wavesplit End-to-End Speech Separation by Speaker.pdf;/home/morris/docs/eLibrary/Zotero/storage/RPIBXRN2/2002.html},
+  keywords = {Computer Science - Computation and Language,Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing,Statistics - Machine Learning},
+  primaryClass = {cs, eess, stat},
+  version = {1}
 }
 
 
