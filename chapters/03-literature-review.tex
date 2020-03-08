@@ -5,19 +5,31 @@ In this chapter we discuss previous research in supervised and semi-supervised s
 
 amortized inference~\cite{gershmanAmortized2014}
 
-variational principle~\cite{jordanIntroduction1999}
-
 \cite{kingmaIntroduction2019}
 
-Latent variables are random variables that are part of our graphical model but are not observed.
+We have an observed set of data \(\B{x}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\B{x})\). In our directed graphical model we introduce an approximate model \(p_{\B{\θ}}(\B{x})\) with model parameters \(\B{\θ}\). Learning now means finding the values for \(\B{\θ}\) that give the closest approximations of the true underlying process:
 
-We assume some stuff
+\begin{equation}
+    p_{\B{\θ}}(\B{x}) \approx p^*(\B{x})
+\end{equation}
 
-\begin{align}
-    \B{x}&\∈\mathcal{D}\\
-    \B{x}&\sim p^*(\B{x})\\
-    &p_{\B{\θ}}(\B{x})
-\end{align}
+The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data distribution while being simple enough to be learnable. Every model comes with \I{inductive biases} making a replication of the data distribution impossible.
+
+In the following described models we assume the sampled data points to be \I{independent and identically distributed} samples drawn from \(\mathcal{D}\). Therefore we can write the data log-likelihood as:
+
+\begin{equation}
+    \log p_{\B{\θ}}(\mathcal{D}) = \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
+\end{equation}
+
+The maximum likelihood estimation of our model parameters maximizes this criterion.
+
+Latent-variable models we introduce \I{latent variables}. Latent variables are part of the directed graphical model but not observed.
+
+\begin{equation}
+    p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
+\end{equation}
+
+Following the \I{variation principle}~\cite{jordanIntroduction1999} we introduce the \I{inference model} \(q_{\B{\φ}}(\B{z}|\B{x})\).
 
 \begin{align}
     \log p_{\B{\θ}}(\B{x})
@@ -88,7 +100,7 @@ WaveNet for Speech denoising\cite{rethageWavenet2018}
 
 WaveNet-VAE unsupervised speech rep learning\cite{chorowskiUnsupervised2019}
 
-Wave-U-Net\cite{danielstollerWaveUNet2018}
+Wave-U-Net\cite{stollerWaveUNet2018}
 
 DeMucs\cite{defossezDemucs2019}
 

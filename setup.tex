@@ -1,6 +1,34 @@
 \usepackage{morris}
 \usepackage{tcolorbox}
 
+% Geometry
+\usepackage{typearea} % wider textarea
+%\usepackage{savetrees} % really wide textarea! save them trees
 
-\usepackage[style=ieee, sorting=nyt, maxbibnames=5, backref=true, arxiv=abs, url=false, doi=false, date=year, isbn=false, dashed=false]{biblatex}
+% Typography
+\frenchspacing % space between sentences as between words
+\usepackage[final,factor=1100,stretch=10,shrink=10]{microtype}
+
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+% Referencing
+\usepackage[
+    style=ieee,
+    hyperref, backref,
+    sortcites,
+    date=short, sorting=nyt,
+    isbn=false, doi=false, url=false,
+    maxcitenames=2, mincitenames=1,
+    maxbibnames=10, minbibnames=10,
+    dashed=false,
+  ]{biblatex}
+\def\bibfont{\small}
 \addbibresource{References.bib}
+
+\usepackage{cleveref}
