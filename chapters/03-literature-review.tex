@@ -3,52 +3,129 @@ In this chapter we discuss previous research in supervised and semi-supervised s
 
 \subsection{Deep Latent-Variable Models}
 
-We have an observed set of data \(\B{x}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modelling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
+For our process we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modelling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
     p_{\B{\θ}}(\mathcal{D}) \approx p^*(\mathcal{D})
 \end{equation}
 
-The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learnable. Every choice for the form of the model comes will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model.
+The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learnable. Every choice for the form of the model will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model, even before we maximize a learning objective using the parameters \(\B{\θ}\).
 
 In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points}. Therefore we can write the data log-likelihood as:
 
-\begin{equation}
-    \log p_{\B{\θ}}(\mathcal{D}) = \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
-\end{equation}
+\begin{align}
+    p_{\B{\θ}}(\mathcal{D})
+    &= \Π_{\B{x}\∈\mathcal{D}} p_{\B{\θ}}(\B{x})\\
+    \log p_{\B{\θ}}(\mathcal{D})
+    &= \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
+\end{align}
 
 The maximum likelihood estimation of our model parameters maximizes this objective.
 
-To form a latent-variable model we introduce \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. The data likelihood now is the marginal density of the joint latent density:
+To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. The data likelihood now is the marginal density of the joint latent density:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
 \end{equation}
 
-Typically we introduce a factorization of the joint. Most commonly:
+Typically we introduce a factorization of the joint. Most commonly and simplest:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z}) d\B{z}
+    \label{eq:factorized_data_likelihood}
 \end{equation}
 
 \begin{marginfigure}%
     \input{figures/factorization_pgm}
-    \caption{The graphical model with the simple introduced latent variable \(\B{z}\). Observed variables are shaded.}
+    \caption{The graphical model with a introduced latent variable \(\B{z}\). Observed variables are shaded.}
     \label{fig:factorization_pgm}
 \end{marginfigure}
 
-This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see \cref{fig:factorization_pgm}.
+This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see \cref{fig:factorization_pgm}. The density \(p(\B{z})\) is called the \I{prior distribution}.
 
-If the latent is small, discrete, it might be possible to directly marginalize over it. In this case
+If the latent is small, discrete, it might be possible to directly marginalize over it. If for example \(\B{z}\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\B{x}|\B{z})\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\B{x})\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
 
-Following the \I{variation principle}~\autocite{jordanIntroduction1999} we introduce the \I{inference model} \(q_{\B{\φ}}(\B{z}|\B{x})\).
+For more complicated models the data likelihood \(p_{\B{\θ}}(\B{x})\) as well as the model posterior \(p_{\B{\θ}}(\B{z}|\B{x})\) are intractable because of the integration over the latent \(\B{z}\) in \cref{eq:factorized_data_likelihood}.
+
+To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\autocite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
+
+Following the derivation in~\autocite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood:
 
 \begin{align}
     \log p_{\B{\θ}}(\B{x})
-    &= \log \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
-    &= \log \∫ \÷{q_{\B{\φ}}(\B{z}|\B{x})}{q_{\B{\φ}}(\B{z}|\B{x})} p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
-    &\geq -\KL[q_{\B{\φ}}(\B{z}|\B{x})\| p(\B{z})]
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})} \left[ \log p_{\B{\θ}}(\B{x}) \right]\\
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
+          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \right]\\
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
+          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{q_{\B{\φ}}(\B{z}|\B{x})}
+          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \right]\\
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
+          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \right]
+    +  \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{q_{\B{\φ}}(\B{z}|\B{x})}
+          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \right]\\
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
+            {q_{\B{\φ}}(\B{z}|\B{x})}
+        \right]
+    +  \KL[q_{\B{\φ}}(\B{z}|\B{x}) \|
+           p_{\B{\θ}}(\B{z}|\B{x})  ]
 \end{align}
+
+Note that we separated the likelihood into two parts. The second part is the (positive) Kullback-Leibler divergence of the approximate posterior from the true intractable posterior. This unknown divergence states the `correctness' of our approximation~\footnote{More specifically the divergence marries two errors of our approximate model. First it gives the error of our posterior estimation from the true posterior, by defintion of divergence. Second it specifies the error of our complete model likelihood from the marginal likelihood. This is called the \I{tightness} of the bound.}.
+
+The first term is the \I{variational free energy}~\footnote{TODO} or \I{evidence lower bound} (ELBO):
+
+\begin{align}
+    \elbo_{\B{\θ}, \B{\φ}}(\B{x},\B{z})
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
+          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \right]
+    \label{eq:elbo}
+\end{align}
+
+We can introduce the same factorization as in~\cref{eq:factorized_data_likelihood}:
+
+\begin{align}
+    \elbo_{\B{\θ}, \B{\φ}}(\B{x},\B{z})
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p_{\B{\θ}}(\B{x}|\B{z}) p(\B{z})}
+          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \right]\\
+    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log
+        \÷{p(\B{z})}
+          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \right]
+    + \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log p_{\B{\θ}}(\B{x}|\B{z})\right]\\
+    &= -\KL[q_{\B{\φ}}(\B{z}|\B{x})\|p(\B{z})]
+    + \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+        \left[\log p_{\B{\θ}}(\B{x}|\B{z})\right]\\
+    \label{eq:elbo}
+\end{align}
+
+Under this factorization we separated the lower bound into two parts. First the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{this will later be the reconstruction error. How well can we return to the data density from latent space}.
+
+The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameters \(\B{\θ}\) and \(\B{\φ}\). Using data samples we can compute the gradient of the ELBO with respect to \(\B{\θ}\)~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)} allowing for an unbiased Monte Carlo estimate of the gradient. We can \I{not} though do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\).
+
+Through a change of variable of the latent random variable we can make the gradient with respect to the variational parameters tractable. With this reparameterization trick~\autocite{kingmaAutoEncoding2014}.
 
 \subsection{The VAE framework}
 
@@ -65,15 +142,12 @@ VQ-VAE~\autocite{vandenoordNeural2017}
 
 \subsection{Flow based models}
 
-\begin{align}
-    \B{z}\sim p_{\B{Z}}(\B{z})\\
-    \B{x} = f^{-1}(\B{z})
-\end{align}
+Another class of common deep latent models are based on \I{normalizing} flows~\autocite{tabakFamily2013}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\). A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuos-time flow with a velocity field.}. Again this is commonly set to be a factorized Gaussian distribution.
 
-change of variable
-
+For a finite normalizing flow we consider a chain of invertible, smooth mappings.
 
 NICE~\autocite{dinhNICE2015}
+- volume preserving transformations
 - coupling layer
 - triangular shape
 
@@ -81,6 +155,7 @@ Normalizing Flow~\autocite{rezendeVariational2016}
 
 
 RealNVP~\autocite{dinhDensity2017}
+- non-volume preserving
 
 Glow~\autocite{kingmaGlow2018}
 - invertible 1x1 convs
@@ -93,7 +168,7 @@ Glow~\autocite{kingmaGlow2018}
 - gated convs -pixelcnn -lstm\autocite{hochreiterLong1997a}
 - dilated convs
 - global conditioning
-- μ-law encoding~\autocite{Recommendation1988}
+- \μ-law encoding~\autocite{Recommendation1988}
 - slow cause autoreg (better with \autocite{paineFast2016})
 -
 
