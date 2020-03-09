@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+    \node[obs]                (x) {\(\B{x}\)};
+    \node[latent, left=of x]  (z) {\(\B{z}\)};
+
+    \edge {z} {x} ; %
+
+    \plate {xz} {(x)(z)} {} ;
+\end{tikzpicture}

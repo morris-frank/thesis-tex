@@ -3,55 +3,67 @@ In this chapter we discuss previous research in supervised and semi-supervised s
 
 \subsection{Deep Latent-Variable Models}
 
-amortized inference~\cite{gershmanAmortized2014}
-
-\cite{kingmaIntroduction2019}
-
-We have an observed set of data \(\B{x}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\B{x})\). In our directed graphical model we introduce an approximate model \(p_{\B{\θ}}(\B{x})\) with model parameters \(\B{\θ}\). Learning now means finding the values for \(\B{\θ}\) that give the closest approximations of the true underlying process:
+We have an observed set of data \(\B{x}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modelling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
-    p_{\B{\θ}}(\B{x}) \approx p^*(\B{x})
+    p_{\B{\θ}}(\mathcal{D}) \approx p^*(\mathcal{D})
 \end{equation}
 
-The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data distribution while being simple enough to be learnable. Every model comes with \I{inductive biases} making a replication of the data distribution impossible.
+The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learnable. Every choice for the form of the model comes will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model.
 
-In the following described models we assume the sampled data points to be \I{independent and identically distributed} samples drawn from \(\mathcal{D}\). Therefore we can write the data log-likelihood as:
+In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points}. Therefore we can write the data log-likelihood as:
 
 \begin{equation}
     \log p_{\B{\θ}}(\mathcal{D}) = \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
 \end{equation}
 
-The maximum likelihood estimation of our model parameters maximizes this criterion.
+The maximum likelihood estimation of our model parameters maximizes this objective.
 
-Latent-variable models we introduce \I{latent variables}. Latent variables are part of the directed graphical model but not observed.
+To form a latent-variable model we introduce \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. The data likelihood now is the marginal density of the joint latent density:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
 \end{equation}
 
-Following the \I{variation principle}~\cite{jordanIntroduction1999} we introduce the \I{inference model} \(q_{\B{\φ}}(\B{z}|\B{x})\).
+Typically we introduce a factorization of the joint. Most commonly:
+
+\begin{equation}
+    p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z}) d\B{z}
+\end{equation}
+
+\begin{marginfigure}%
+    \input{figures/factorization_pgm}
+    \caption{The graphical model with the simple introduced latent variable \(\B{z}\). Observed variables are shaded.}
+    \label{fig:factorization_pgm}
+\end{marginfigure}
+
+This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see \cref{fig:factorization_pgm}.
+
+If the latent is small, discrete, it might be possible to directly marginalize over it. In this case
+
+Following the \I{variation principle}~\autocite{jordanIntroduction1999} we introduce the \I{inference model} \(q_{\B{\φ}}(\B{z}|\B{x})\).
 
 \begin{align}
     \log p_{\B{\θ}}(\B{x})
     &= \log \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
     &= \log \∫ \÷{q_{\B{\φ}}(\B{z}|\B{x})}{q_{\B{\φ}}(\B{z}|\B{x})} p_{\B{\θ}}(\B{x}|\B{z})p(\B{z})d\B{z}\\
-    &\geq -KL[q_{\B{\φ}}(\B{z}|\B{x})\| p(\B{z})]
+    &\geq -\KL[q_{\B{\φ}}(\B{z}|\B{x})\| p(\B{z})]
 \end{align}
 
-\subsubsection{The VAE framework}
+\subsection{The VAE framework}
 
-VAE~\cite{kingmaAutoEncoding2014}\cite{rezendeStochastic2014}
+VAE~\autocite{kingmaAutoEncoding2014}\autocite{rezendeStochastic2014}
 
-\β-VAE~\cite{higginsBetaVAE2016}
+\β-VAE~\autocite{higginsBetaVAE2016}
 - intoduces \β as controlling hyperparameter in the VAE objective
 - constraint that controls the capacityof the latent space
 - gives trade off between reconstruction quality and representation simplicity
-- similar to information bottleneck~\cite{burgessUnderstanding2018}
+- similar to information bottleneck~\autocite{burgessUnderstanding2018}
 
-VQ-VAE~\cite{vandenoordNeural2017}
+VQ-VAE~\autocite{vandenoordNeural2017}
 
 
-\subsubsection{Flow based models}
+\subsection{Flow based models}
 
 \begin{align}
     \B{z}\sim p_{\B{Z}}(\B{z})\\
@@ -61,47 +73,47 @@ VQ-VAE~\cite{vandenoordNeural2017}
 change of variable
 
 
-NICE~\cite{dinhNICE2015}
+NICE~\autocite{dinhNICE2015}
 - coupling layer
 - triangular shape
 
-Normalizing Flow~\cite{rezendeVariational2016}
+Normalizing Flow~\autocite{rezendeVariational2016}
 
 
-RealNVP~\cite{dinhDensity2017}
+RealNVP~\autocite{dinhDensity2017}
 
-Glow~\cite{kingmaGlow2018}
+Glow~\autocite{kingmaGlow2018}
 - invertible 1x1 convs
 - ActNorm
 - zero init
 
 
-\cite{vandenoordWaveNet2016} introduced WaveNet an autoregressive generative model for raw (\textit{time-domain}) audio. WaveNet closely similar to the earlier PixelCNN~\cite{vandenoordConditional2016} but adapted for the audio domain. Unomoidified Cnns are unsuitable to the application to raw audio because of the form of data. as digital audio is ampled at a extremely high sample rate commonly 16kHz up to 44kHz the features of interest lie at scale of stringly different magnitudes. On the one hand recognizing phase, frequency of a wave might require features at those ms scales on the other hand the modelling of speech or music audio happens at the scale of seconds or minutes. As such a generative model for this domain has to cpature those different time sclaes. The wvaenet accomplishes this by using dilated convolutions a common tool in signal processing~\cite{dutilleuxImplementation1990}. A dilated convolutions uses a kernel with an inner stride. Using a stack of dialted convolutions increases the recpetive field of the features without increasing the comutional complexity.
+\autocite{vandenoordWaveNet2016} introduced WaveNet an autoregressive generative model for raw (\textit{time-domain}) audio. WaveNet closely similar to the earlier PixelCNN~\autocite{vandenoordConditional2016} but adapted for the audio domain. Unomoidified Cnns are unsuitable to the application to raw audio because of the form of data. as digital audio is ampled at a extremely high sample rate commonly 16kHz up to 44kHz the features of interest lie at scale of stringly different magnitudes. On the one hand recognizing phase, frequency of a wave might require features at those ms scales on the other hand the modelling of speech or music audio happens at the scale of seconds or minutes. As such a generative model for this domain has to cpature those different time sclaes. The wvaenet accomplishes this by using dilated convolutions a common tool in signal processing~\autocite{dutilleuxImplementation1990}. A dilated convolutions uses a kernel with an inner stride. Using a stack of dialted convolutions increases the recpetive field of the features without increasing the comutional complexity.
 
-- gated convs -pixelcnn -lstm\cite{hochreiterLong1997a}
+- gated convs -pixelcnn -lstm\autocite{hochreiterLong1997a}
 - dilated convs
 - global conditioning
-- μ-law encoding~\cite{Recommendation1988}
-- slow cause autoreg (better with \cite{paineFast2016})
+- μ-law encoding~\autocite{Recommendation1988}
+- slow cause autoreg (better with \autocite{paineFast2016})
 -
 
-PixelCNN++~\cite{salimansPixelCNN2017}
+PixelCNN++~\autocite{salimansPixelCNN2017}
 
 
 \subsection{Sound}
-NSynth~\cite{kalchbrennerEfficient2018}
+NSynth~\autocite{kalchbrennerEfficient2018}
 
-In~\cite{prengerWaveGlow2018}
+In~\autocite{prengerWaveGlow2018}
 
-FloWaveNet~\cite{kimFloWaveNet2019a}
+FloWaveNet~\autocite{kimFloWaveNet2019a}
 
 \subsection{Source separation}
-WaveNet for Speech denoising\cite{rethageWavenet2018}
+WaveNet for Speech denoising\autocite{rethageWavenet2018}
 
-WaveNet-VAE unsupervised speech rep learning\cite{chorowskiUnsupervised2019}
+WaveNet-VAE unsupervised speech rep learning\autocite{chorowskiUnsupervised2019}
 
-Wave-U-Net\cite{stollerWaveUNet2018}
+Wave-U-Net\autocite{stollerWaveUNet2018}
 
-DeMucs\cite{defossezDemucs2019}
+DeMucs\autocite{defossezDemucs2019}
 
-Source Sep in Time Domain\cite{lluisEndtoend2019}
+Source Sep in Time Domain\autocite{lluisEndtoend2019}
