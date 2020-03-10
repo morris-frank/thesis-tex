@@ -90,7 +90,7 @@ Note that we separated the likelihood into two parts. The second part is the (po
 The first term is the \I{variational free energy}~\footnote{TODO} or \I{evidence lower bound} (ELBO):
 
 \begin{align}
-    \elbo_{\B{\θ}, \B{\φ}}(\B{x},\B{z})
+    \elbo_{\B{\θ}, \B{\φ}}(\B{x})
     &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
         \left[\log
         \÷{p_{\B{\θ}}(\B{x}, \B{z})}
@@ -102,7 +102,7 @@ The first term is the \I{variational free energy}~\footnote{TODO} or \I{evidence
 We can introduce the same factorization as in~\cref{eq:factorized_data_likelihood}:
 
 \begin{align}
-    \elbo_{\B{\θ}, \B{\φ}}(\B{x},\B{z})
+    \elbo_{\B{\θ}, \B{\φ}}(\B{x})
     &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
         \left[\log
         \÷{p_{\B{\θ}}(\B{x}|\B{z}) p(\B{z})}
@@ -171,6 +171,12 @@ Glow~\autocite{kingmaGlow2018}
 - \μ-law encoding~\autocite{Recommendation1988}
 - slow cause autoreg (better with \autocite{paineFast2016})
 -
+
+\begin{figure}[]
+    \input{figures/wavenet.tex}
+    \caption{Dilated convolutions}
+    \label{fig:wavenet}
+\end{figure}
 
 PixelCNN++~\autocite{salimansPixelCNN2017}
 
