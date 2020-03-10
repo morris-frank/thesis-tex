@@ -1,20 +1,28 @@
-\begin{tikzpicture}[thick,scale=0.6, every node/.style={scale=0.6}]
+\begin{tikzpicture}[scale=0.6, every node/.style={scale=0.6}]
     \begin{scope}
+        \draw[xstep=18cm] (1,1) grid (18,5);
+
         \foreach \x in {1,...,18} {
             \foreach \y in {1,5} {
-                \node[draw,orange,fill] () at (\x,\y) {};
+                \node[draw,fill=gray!25] () at (\x,\y) {};
             }
         }
 
         \foreach \x in {1,...,18} {
             \foreach \y in {2,...,4} {
-                \node[draw,fill,gray] (thisNode) at (\x,\y) {};
+                \node[draw=black,fill=white] (thisNode) at (\x,\y) {};
             }
         }
+
+        \draw[decorate,decoration={brace,amplitude=4pt}]
+        (0.75,1.8) -- (0.75,4.2) node [black,midway,xshift=-.4cm, rotate=90] {\small
+        hidden layers};
+
+        \draw[->] (1,0.4) -- (18.5,0.4) node[right] {time \(t\)};
     \end{scope}
 
     \begin{scope}[shift={(18,5)}]
-        \graph [grow down, branch left=1cm, empty nodes, nodes={rectangle,draw,fill,green!75!black}, edges={draw,green!75!black}] {
+        \graph [grow down, branch left=1cm, empty nodes, nodes={rectangle,draw,fill,black}, edges={draw,black,thick}] {
             "" -- {
                 "" -- {
                     "" -- { "" -- {"",""}, "" -- {"",""}},
