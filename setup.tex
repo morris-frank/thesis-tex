@@ -45,7 +45,6 @@
 
 \usepackage{hyphenat} % only with tufte
 \usepackage[
-    %style=ieee,
     hyperref, backref,
     sortcites,
     date=year, sorting=nyt,
@@ -55,7 +54,6 @@
     dashed=false,
     style=verbose,
     autocite=footnote,
-    backend=biber
   ]{biblatex}
 \def\bibfont{\small}
 \addbibresource{References.bib}
@@ -69,6 +67,12 @@
 \usepackage{tikz}
 \usepackage{tikz-bayesnet}
 \usetikzlibrary{graphs, 3d, decorations.pathreplacing, arrows, shapes.geometric}
+\usetikzlibrary{calc,positioning,decorations.pathmorphing}
+
+
+% Defines the global colors being used in all figures
+\definecolor{primary}{rgb} {0.28,0.42,0.28}
+\definecolor{secondary}{rgb} {0.28,0.28,0.42}
 
 
 \usepackage{todonotes}

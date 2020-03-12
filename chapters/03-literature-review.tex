@@ -1,18 +1,18 @@
 \section{Related works}
-In this chapter we discuss previous research in supervised and semi-supervised source separation.
+In this chapter, we discuss previous research in supervised and semi-supervised source separation.
 
 \subsection{ICA}
 
 
 \subsection{Deep Latent-Variable Models}
 
-For our process we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modelling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
+For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
     p_{\B{\θ}}(\mathcal{D}) \approx p^*(\mathcal{D})
 \end{equation}
 
-The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learnable. Every choice for the form of the model will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model, even before we maximize a learning objective using the parameters \(\B{\θ}\).
+The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learned. Every choice for the form of the model will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model, even before we maximize a learning objective using the parameters \(\B{\θ}\).
 
 In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points}. Therefore we can write the data log-likelihood as:
 
@@ -44,13 +44,13 @@ Typically we introduce a factorization of the joint. Most commonly and simplest:
     \label{fig:factorization_pgm}
 \end{marginfigure}
 
-This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see \cref{fig:factorization_pgm}. The density \(p(\B{z})\) is called the \I{prior distribution}.
+This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see~\cref{fig:factorization_pgm}. The density \(p(\B{z})\) is called the \I{prior distribution}.
 
-If the latent is small, discrete, it might be possible to directly marginalize over it. If for example \(\B{z}\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\B{x}|\B{z})\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\B{x})\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
+If the latent is small, discrete, it might be possible to directly marginalize over it. If for example, \(\B{z}\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\B{x}|\B{z})\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\B{x})\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
 
 For more complicated models the data likelihood \(p_{\B{\θ}}(\B{x})\) as well as the model posterior \(p_{\B{\θ}}(\B{z}|\B{x})\) are intractable because of the integration over the latent \(\B{z}\) in \cref{eq:factorized_data_likelihood}.
 
-To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\autocite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
+To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\autocite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
 
 Following the derivation in~\autocite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
 
@@ -88,7 +88,7 @@ Following the derivation in~\autocite[p.~20]{kingmaIntroduction2019} we introduc
            p_{\B{\θ}}(\B{z}|\B{x})  ]
 \end{align}
 
-Note that we separated the likelihood into two parts. The second part is the (positive) Kullback-Leibler divergence of the approximate posterior from the true intractable posterior. This unknown divergence states the `correctness' of our approximation~\footnote{More specifically the divergence marries two errors of our approximate model. First it gives the error of our posterior estimation from the true posterior, by defintion of divergence. Second it specifies the error of our complete model likelihood from the marginal likelihood. This is called the \I{tightness} of the bound.}.
+Note that we separated the likelihood into two parts. The second part is the (positive) Kullback-Leibler divergence of the approximate posterior from the true intractable posterior. This unknown divergence states the `correctness' of our approximation~\footnote{More specifically the divergence marries two errors of our approximate model. First, it gives the error of our posterior estimation from the true posterior, by definition of divergence. Second, it specifies the error of our complete model likelihood from the marginal likelihood. This is called the \I{tightness} of the bound.}.
 
 The first term is the \I{variational free energy}~\todo{explain free energy} or \I{evidence lower bound} (ELBO):
 
@@ -124,7 +124,7 @@ We can introduce the same factorization as in~\cref{eq:factorized_data_likelihoo
     \label{eq:elbo}
 \end{align}
 
-Under this factorization we separated the lower bound into two parts. First the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{this will later be the reconstruction error. How well can we return to the data density from latent space}.
+Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{this will later be the reconstruction error. How well can we return to the data density from latent space}.
 
 The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. We can \I{not} though do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\autocite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
 
@@ -138,13 +138,13 @@ For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as 
 
 VAE~\footnotemark[\value{footnote}]\autocite{rezendeStochastic2014}
 
-The \β-VAE~\autocite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the laten space controlling hte capacity of it. Adapting \(\β\) gives an trade-off between reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of in the information bottleneck~\autocite{burgessUnderstanding2018}.
+The \β-VAE~\autocite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of in the information bottleneck~\autocite{burgessUnderstanding2018}.
 
 \subsection{Flow based models}
 
-Another class of common deep latent models are based on \I{normalizing} flows~\autocite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuos-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
+Another class of common deep latent models is based on \I{normalizing} flows~\autocite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
 
-For a finite normalizing flow we consider a chain of invertible, smooth mappings.
+For a finite normalizing flow, we consider a chain of invertible, smooth mappings.
 
 NICE~\autocite{dinhNICE2015}
 - volume preserving transformations
@@ -154,34 +154,37 @@ NICE~\autocite{dinhNICE2015}
 Normalizing Flow~\autocite{rezendeVariational2016}
 
 
-RealNVP~\autocite{dinhDensity2017}
-- non-volume preserving
+RealNVP~\autocite{dinhDensity2017} builds on top of NICE creating a more general, non-volume preserving, normalizing flow.
 
-Glow~\autocite{kingmaGlow2018}
-- invertible 1x1 convs
-- ActNorm
-- zero init
+\begin{align}
+    y_{1:d} &= x_{1:d}\\
+    y_{d+1:D} &= x_{d+1:D} \odot \exp{(s(x_{1:d}))} + t(x_{1:d})
+\end{align}
 
+\begin{equation}
+    \pf{y}{x^T} = \bM{\1_d & 0 \\ \pf{y_{d+1}:D}{x^T_{1:d}} & \diag{\left(\exp{(s(x_{1:d}))}\right)}}
+\end{equation}
 
-\autocite{vandenoordWaveNet2016} introduced WaveNet an autoregressive generative model for raw (\textit{time-domain}) audio. WaveNet closely similar to the earlier PixelCNN~\autocite{vandenoordConditional2016} but adapted for the audio domain. Unomoidified Cnns are unsuitable to the application to raw audio because of the form of data. as digital audio is ampled at a extremely high sample rate commonly 16kHz up to 44kHz the features of interest lie at scale of stringly different magnitudes. On the one hand recognizing phase, frequency of a wave might require features at those ms scales on the other hand the modelling of speech or music audio happens at the scale of seconds or minutes. As such a generative model for this domain has to cpature those different time scales. The wvaenet accomplishes this by using dilated convolutions a common tool in signal processing~\autocite{dutilleuxImplementation1990}. A dilated convolutions uses a kernel with an inner stride. Using a stack of dialted convolutions increases the recpetive field of the features without increasing the comutional complexity.
+Glow~\autocite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
-- gated convs -pixelcnn -lstm\autocite{hochreiterLong1997a}
-- dilated convs
-- global conditioning
-- \μ-law encoding~\autocite{Recommendation1988}
-- slow cause autoreg (better with \autocite{paineFast2016})
--
+\subsection{Modelling raw audio}
+Deep learning models as used for image applications are unsuitable for raw audio signals (\textit{time-domain}). Digital audio is sampled at high sample rates commonly 16kHz up to 44kHz. The features of interest lie at scales of strongly different magnitudes. Recognizing phase, frequency of a wave might require features at low ms intervals but modelling of speech or music features happens at the scale of seconds to minutes. As such a generative model for this domain has to model at these different scales.
+
+The WaveNet~\autocite{vandenoordWaveNet2016} introduced an autoregressive generative model for raw audio. It is build upon the similar PixelCNN~\autocite[\protect\label{pixelcnn}]{vandenoordConditional2016} but adapted for the audio domain.  The WaveNet accomplishes this by using dilated causal convolutions a common tool in signal processing~\autocite{dutilleuxImplementation1990}. A dilated convolution uses a kernel with an inner stride. Using a stack of dilated convolutions increases the receptive field of the deep features without increasing the computational complexity, see~\cref{fig:wavenet}. Further, the convolutions are gated and the output is constructed from skip connections, refer to \cref{fig:wavenet_layer}. A gated feature, as known from the LSTM~\autocite{hochreiterLong1997a}, computes two outputs: one put through an sigmoid \(\σ(\·)\) activation and one through an \(\tanh(\·)\) activation. The idea being that the sigmoid (with an output range of \([0, 1]\)) regulates the amount of information, thereby gating it, while the \(\tanh\) (with a range of \([-1,1]\)) gives the magnitude of the feature. The output of the WaveNet is the sum of outflowing skip connections added after each (gated) hidden convolution. This helps fusing information from multiple time-scales (\I{low-level} to \I{high-level}). The original authors tested the model on multiple audio generation tasks. For this, they formulated the reconstruction objective as a multi-class recognition problem. Encoding the sound files with \μ-law encoding~\autocite{Recommendation1988}, discretizes the range \([-1, 1]\) to allow a set of \μ targets. Sound generation with a WaveNet is slow as the autoregressiveness requires the generation value by value. This can be alleviated by keeping intermediate hidden activations cached~\autocite{paineFast2016}.
+
+\begin{marginfigure}
+    \missingfigure[figwidth=2cm]{Show WaveNet hidden layer}%
+    \label{fig:wavenet_layer}
+\end{marginfigure}
 
 \begin{figure}[]
     \input{figures/wavenet.tex}
-    \caption{Dilated convolutions}
+    \caption{An example of how dilated convolutions are used in the WaveNet. We see three hidden layers with each a kernel size of two. By using the dilations the prediction of the new output element has a receptive field of 18. This convolution is \I{causal} as the prediction depends only on previous input values.}
     \label{fig:wavenet}
 \end{figure}
 
-PixelCNN++~\autocite{salimansPixelCNN2017}
+\todo{explain PixelCNN++ even if I don't use it know?}
 
-
-\subsection{Sound}
 NSynth~\autocite{kalchbrennerEfficient2018}
 
 In~\autocite{prengerWaveGlow2018}
@@ -193,7 +196,9 @@ WaveNet for Speech denoising\autocite{rethageWavenet2018}
 
 WaveNet-VAE unsupervised speech rep learning\autocite{chorowskiUnsupervised2019}
 
-\autocite{janssonSinging2017} were the first to use an U-Net architecture for source separation.
+\autocite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for source separation. They used a standard U-Net on spectrograms of musical data to extract the singing voice.
+
+The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into
 
 \begin{marginfigure}
     \input{figures/unet}
@@ -201,7 +206,6 @@ WaveNet-VAE unsupervised speech rep learning\autocite{chorowskiUnsupervised2019}
     \label{fig:unet}
 \end{marginfigure}
 
-Wave-U-Net\autocite{stollerWaveUNet2018}
 
 DeMucs\autocite{defossezDemucs2019}
 
