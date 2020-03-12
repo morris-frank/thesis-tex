@@ -1,11 +1,16 @@
 \section{Research Question}
 
-Source separation is the task of finding a set of latent sources \(\B{s} = [\B{s}_1,\…,\B{s}_n]\) to an observed mix of those sources \(\B{m}\). The induced model proposes a mixing function \(\B{m} = f(\B{s})\) which might just be a liner mixing \(\B{m} = \B{A}\·\B{s}\). The task is to find the inverse model \(f^{-1}(\·)\) which retrieves \(\B{s}\).
+Source separation is the task of finding a set of latent sources \(\B{s} = [\B{s}_1,\…\B{s}_k,\…,\B{s}_n]\) to an observed mix of those sources \(\B{m}\). The induced model proposes a mixing function \(\B{m} = f(\B{s})\). The task is to find an approximate inverse model \(g(\·)\) which retrieves \(\B{s}\):
+
+\begin{align}
+    \B{m} = f(\B{s})\\
+    g(\B{m}) \approxeq \B{s}
+\end{align}
+In this learning setting \I{supervision} can happen in two ways: First the source signals are identified as being from class \(k\)~\footnote{For the setting of music think of the classes being \{\I{guitar},\I{piano},\I{voice},\…\}}. Second the tuples \((\B{m}, \B{s})\) are supervised giving us examples of mixes and their corresponding sources.\todo{add other supverision: knowing \(k\)}
 
 \begin{tcolorbox}
-    Can we learn an sound source separation model in an unsupervised manner. Unsupervised relating to missing pairing of sources to mixes.
+    \begin{enumerate}
+        \item Can we learn an source separation model \(g(\·)\) by learning deep priors for the different source classes.
+        \item Can we reduce this to an unsupervised setting. Unsupervised relating to the missing pairings of sources and mixes.
+    \end{enumerate}
 \end{tcolorbox}
-
-\begin{equation}
-    p(s'|m)\·p(s)
-\end{equation}

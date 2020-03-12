@@ -1,32 +1,26 @@
-\usepackage{ifxetex}
-
 \usepackage{morris}
 
 %Frontmatter
 \renewcommand{\maketitlepage}[0]{%
-  \cleardoublepage%
-  {%
-  \begin{fullwidth}%
+\cleardoublepage%
+{%
+\begin{fullwidth}%
   \fontsize{18}{20}\selectfont\par\noindent\thanklessauthor%
   \vspace{11.5pc}%
   \fontsize{18}{40}\selectfont\par\noindent\thanklesstitle%
   \vfill%
   \fontsize{14}{16}\selectfont\par\noindent\allcaps{\thanklesspublisher}%
-  \end{fullwidth}%
-  }
-  \clearpage%
+\end{fullwidth}%
 }
-
-% Geometry
-%\usepackage{typearea} % wider textarea
-%\usepackage{savetrees} % really wide textarea! save them trees
-\usepackage{tcolorbox}
+\clearpage%
+}
 
 % Typography
 \frenchspacing % space between sentences as between words
 %\usepackage[final,factor=1100,stretch=10,shrink=10]{microtype}
 
-\ifxetex
+\usepackage{ifxetex}
+\ifxetex%
   \newcommand{\textls}[2][5]{%
     \begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
   }
@@ -44,6 +38,7 @@
     citecolor={green!50!black},
     urlcolor={blue!50!black}
 }
+\usepackage{tcolorbox}
 
 % Referencing
 \setcounter{tocdepth}{1} % Level in TOC
@@ -55,8 +50,8 @@
     sortcites,
     date=year, sorting=nyt,
     isbn=false, doi=false, url=false,
-    %maxcitenames=2, mincitenames=1,
-    %maxbibnames=10, minbibnames=10,
+    maxcitenames=2, mincitenames=1,
+    maxbibnames=10, minbibnames=10,
     dashed=false,
     style=verbose,
     autocite=footnote,
@@ -73,9 +68,9 @@
 
 \usepackage{tikz}
 \usepackage{tikz-bayesnet}
-\usetikzlibrary{calc}
-\usetikzlibrary{graphs}
-\usetikzlibrary{decorations.pathreplacing}
-\usepackage{forest}
+\usetikzlibrary{graphs, 3d, decorations.pathreplacing, arrows, shapes.geometric}
+
+
+\usepackage{todonotes}
 
 \input{macros.tex}

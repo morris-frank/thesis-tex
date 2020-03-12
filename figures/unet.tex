@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+    \matrix [column sep=0mm, row sep=4mm, every node/.style={rectangle, draw, align=center, text width=4em, fill=white}]
+    {
+        \node (input)   {input}; & &
+        \begin{scope}
+            \node (output1)  {output};
+            \foreach \X [count=\Y] in {2,3,4}
+            {\node[anchor=north west,below right=0.5mm and 0.5mm of output\Y.north west] (output\X){output};}
+        \end{scope}\\
+
+        \node (ds1)     {conv}; & &
+        \node (us1)     {conv};\\
+
+        \node[draw=none] (ds)      {\(\…\)}; & &
+        \node[draw=none] (us)      {\(\…\)};\\
+
+        \node (ds2)     {conv}; & &
+        \node (us2)     {cond};\\
+
+        & \node (fuse)  {fuse}; &\\
+    };
+    \begin{scope}[every path/.style={draw, -latex'}]
+        \path         (input) -- (ds1);
+        \path         (ds1)   -- (ds);
+        \path         (ds)    -- (ds2);
+        \path         (ds2)   -- (fuse);
+        \path         (fuse)  -- (us2);
+        \path         (us2)   -- (us);
+        \path         (us)    -- (us1);
+        \path         (us1)   -- (output4);
+        \path[dashed] (ds1) -- node[label=cond] {} (us1);
+        \path[dashed] (ds2) -- node[label=cond] {} (us2);
+    \end{scope}
+\end{tikzpicture}
