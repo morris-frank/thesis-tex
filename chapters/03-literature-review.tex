@@ -50,9 +50,11 @@ If the latent is small, discrete, it might be possible to directly marginalize o
 
 For more complicated models the data likelihood \(p_{\B{\θ}}(\B{x})\) as well as the model posterior \(p_{\B{\θ}}(\B{z}|\B{x})\) are intractable because of the integration over the latent \(\B{z}\) in \cref{eq:factorized_data_likelihood}.
 
-To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\autocite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
+To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
 
-Following the derivation in~\autocite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
+Following the derivation in~\textcite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
+
+test~\cite{jordanIntroduction1999}
 
 \begin{align}
     \log p_{\B{\θ}}(\B{x})
@@ -126,7 +128,7 @@ We can introduce the same factorization as in~\cref{eq:factorized_data_likelihoo
 
 Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{this will later be the reconstruction error. How well can we return to the data density from latent space}.
 
-The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. We can \I{not} though do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\autocite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
+The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. We can \I{not} though do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\cite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
 
 \begin{equation}
     \B{z} = f_{\B{\η}}(\B{\ε})
@@ -136,25 +138,25 @@ For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as 
 
 \subsection{The VAE framework}
 
-VAE~\footnotemark[\value{footnote}]\autocite{rezendeStochastic2014}
+VAE~\footnotemark[\value{footnote}]\cite{rezendeStochastic2014}
 
-The \β-VAE~\autocite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of in the information bottleneck~\autocite{burgessUnderstanding2018}.
+The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of in the information bottleneck~\cite{burgessUnderstanding2018}.
 
 \subsection{Flow based models}
 
-Another class of common deep latent models is based on \I{normalizing} flows~\autocite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
+Another class of common deep latent models is based on \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
 
 For a finite normalizing flow, we consider a chain of invertible, smooth mappings.
 
-NICE~\autocite{dinhNICE2015}
+NICE~\cite{dinhNICE2015}
 - volume preserving transformations
 - coupling layer
 - triangular shape
 
-Normalizing Flow~\autocite{rezendeVariational2016}
+Normalizing Flow~\cite{rezendeVariational2016}
 
 
-RealNVP~\autocite{dinhDensity2017} builds on top of NICE creating a more general, non-volume preserving, normalizing flow.
+RealNVP~\cite{dinhDensity2017} builds on top of NICE creating a more general, non-volume preserving, normalizing flow.
 
 \begin{align}
     y_{1:d} &= x_{1:d}\\
@@ -165,12 +167,12 @@ RealNVP~\autocite{dinhDensity2017} builds on top of NICE creating a more general
     \pf{y}{x^T} = \bM{\1_d & 0 \\ \pf{y_{d+1}:D}{x^T_{1:d}} & \diag{\left(\exp{(s(x_{1:d}))}\right)}}
 \end{equation}
 
-Glow~\autocite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
+Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
 \subsection{Modelling raw audio}
 Deep learning models as used for image applications are unsuitable for raw audio signals (\textit{time-domain}). Digital audio is sampled at high sample rates commonly 16kHz up to 44kHz. The features of interest lie at scales of strongly different magnitudes. Recognizing phase, frequency of a wave might require features at low ms intervals but modelling of speech or music features happens at the scale of seconds to minutes. As such a generative model for this domain has to model at these different scales.
 
-The WaveNet~\autocite{vandenoordWaveNet2016} introduced an autoregressive generative model for raw audio. It is build upon the similar PixelCNN~\autocite[\protect\label{pixelcnn}]{vandenoordConditional2016} but adapted for the audio domain.  The WaveNet accomplishes this by using dilated causal convolutions a common tool in signal processing~\autocite{dutilleuxImplementation1990}. A dilated convolution uses a kernel with an inner stride. Using a stack of dilated convolutions increases the receptive field of the deep features without increasing the computational complexity, see~\cref{fig:wavenet}. Further, the convolutions are gated and the output is constructed from skip connections, refer to \cref{fig:wavenet_layer}. A gated feature, as known from the LSTM~\autocite{hochreiterLong1997a}, computes two outputs: one put through an sigmoid \(\σ(\·)\) activation and one through an \(\tanh(\·)\) activation. The idea being that the sigmoid (with an output range of \([0, 1]\)) regulates the amount of information, thereby gating it, while the \(\tanh\) (with a range of \([-1,1]\)) gives the magnitude of the feature. The output of the WaveNet is the sum of outflowing skip connections added after each (gated) hidden convolution. This helps fusing information from multiple time-scales (\I{low-level} to \I{high-level}). The original authors tested the model on multiple audio generation tasks. For this, they formulated the reconstruction objective as a multi-class recognition problem. Encoding the sound files with \μ-law encoding~\autocite{Recommendation1988}, discretizes the range \([-1, 1]\) to allow a set of \μ targets. Sound generation with a WaveNet is slow as the autoregressiveness requires the generation value by value\footnote{Why are they doing that then? The WaveNet setting is generating waveforms, by giving the previously generated values as the input and conditioning the process on target classes. Therefore the generation has to happen value-by-value.}. This can be alleviated by keeping intermediate hidden activations cached~\autocite{paineFast2016}. The WaveNet can be conditioned by adding the weighted conditionals in the gate and feature activations of the gated convolutions~\autocite{vandenoordConditional2016}.
+The WaveNet~\cite{vandenoordWaveNet2016} introduced an autoregressive generative model for raw audio. It is build upon the similar PixelCNN~\cite[\protect\label{pixelcnn}]{vandenoordConditional2016} but adapted for the audio domain.  The WaveNet accomplishes this by using dilated causal convolutions a common tool in signal processing~\cite{dutilleuxImplementation1990}. A dilated convolution uses a kernel with an inner stride. Using a stack of dilated convolutions increases the receptive field of the deep features without increasing the computational complexity, see~\cref{fig:wavenet}. Further, the convolutions are gated and the output is constructed from skip connections, refer to \cref{fig:wavenet_layer}. A gated feature, as known from the LSTM~\cite{hochreiterLong1997a}, computes two outputs: one put through an sigmoid \(\σ(\·)\) activation and one through an \(\tanh(\·)\) activation. The idea being that the sigmoid (with an output range of \([0, 1]\)) regulates the amount of information, thereby gating it, while the \(\tanh\) (with a range of \([-1,1]\)) gives the magnitude of the feature. The output of the WaveNet is the sum of outflowing skip connections added after each (gated) hidden convolution. This helps fusing information from multiple time-scales (\I{low-level} to \I{high-level}). The original authors tested the model on multiple audio generation tasks. For this, they formulated the reconstruction objective as a multi-class recognition problem. Encoding the sound files with \μ-law encoding~\cite{Recommendation1988}, discretizes the range \([-1, 1]\) to allow a set of \μ targets. Sound generation with a WaveNet is slow as the autoregressiveness requires the generation value by value\footnote{Why are they doing that then? The WaveNet setting is generating waveforms, by giving the previously generated values as the input and conditioning the process on target classes. Therefore the generation has to happen value-by-value.}. This can be alleviated by keeping intermediate hidden activations cached~\cite{paineFast2016}. The WaveNet can be conditioned by adding the weighted conditionals in the gate and feature activations of the gated convolutions~\cite{vandenoordConditional2016}.
 
 \begin{marginfigure}
     \missingfigure[figwidth=2cm]{Show WaveNet hidden layer}%
@@ -185,20 +187,20 @@ The WaveNet~\autocite{vandenoordWaveNet2016} introduced an autoregressive genera
 
 \todo{explain PixelCNN++ even if I don't use it know?}
 
-NSynth~\autocite{kalchbrennerEfficient2018}
+NSynth~\cite{kalchbrennerEfficient2018}
 
-In~\autocite{prengerWaveGlow2018}
+In~\cite{prengerWaveGlow2018}
 
-FloWaveNet~\autocite{kimFloWaveNet2019a}
+FloWaveNet~\cite{kimFloWaveNet2019a}
 
 \subsection{Source separation}
-WaveNet for Speech denoising\autocite{rethageWavenet2018}
+WaveNet for Speech denoising\cite{rethageWavenet2018}
 
-WaveNet-VAE unsupervised speech rep learning\autocite{chorowskiUnsupervised2019}
+WaveNet-VAE unsupervised speech rep learning\cite{chorowskiUnsupervised2019}
 
-\autocite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
+\cite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
 
-The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
+The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
 
 \begin{marginfigure}
     \input{figures/unet}%
@@ -206,6 +208,6 @@ The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into the time-doma
     \label{fig:unet}
 \end{marginfigure}
 
-In~\autocite{lluisEndtoend2019} the authors adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
+In~\cite{lluisEndtoend2019} the authors adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
 
-Demucs~\autocite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck~\autocite{defossezSING2018}. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension. They can outperform spectrogram based approaches.
+Demucs~\cite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck~\cite{defossezSING2018}. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension. They can outperform spectrogram based approaches.

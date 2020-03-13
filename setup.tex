@@ -17,8 +17,6 @@
 
 % Typography
 \usepackage{bigints}
-\frenchspacing % space between sentences as between words
-%\usepackage[final,factor=1100,stretch=10,shrink=10]{microtype}
 
 \usepackage{ifxetex}
 \ifxetex%
@@ -36,7 +34,7 @@
 \hypersetup{
     colorlinks,
     linkcolor={red!40!black},
-    citecolor={green!50!black},
+    citecolor={green!20!black},
     urlcolor={blue!50!black}
 }
 \usepackage{tcolorbox}
@@ -52,10 +50,29 @@
     isbn=false, doi=false, url=false,
     maxcitenames=2, mincitenames=1,
     maxbibnames=10, minbibnames=10,
-    dashed=false,
-    style=verbose,
-    autocite=footnote,
+    style=authoryear,
+    dashed=false
   ]{biblatex}
+
+\newbibmacro*{cite:longtitle}{%
+  \printtext[bibhyperref]{%
+    \printfield[title]{title}}}
+
+\newbibmacro*{longcite}{%
+  \printnames{labelname}%
+  \setunit*{\printdelim{nametitledelim}}%
+  \usebibmacro{cite:longtitle}%
+  \setunit{\printdelim{nametitledelim}}%
+  \printlabeldateextra%
+}
+
+\DeclareCiteCommand{\cite}[\mkbibfootnote]
+  {\usebibmacro{prenote}}
+  {\usebibmacro{citeindex}%
+    \usebibmacro{longcite}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
 \def\bibfont{\small}
 \addbibresource{References.bib}
 
@@ -77,4 +94,4 @@
 
 \usepackage{todonotes}
 
-\input{macros.tex}
+\input{macros.def}
