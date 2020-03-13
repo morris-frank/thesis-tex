@@ -1,6 +1,6 @@
 \section{Research Question}
 
-Source separation is the task of finding a set of latent sources \(\B{s} = [\B{s}_1,\…\B{s}_k,\…,\B{s}_n]\) to an observed mix of those sources \(\B{m}\). The induced model proposes a mixing function \(\B{m} = f(\B{s})\). The task is to find an approximate inverse model \(g(\·)\) which retrieves \(\B{s}\):
+Source separation is the task of finding a set of latent sources \(\B{s} = [\B{s}_1,\…\B{s}_k,\…,\B{s}_N] \∈ \ℝ^{N\× T}\) to an observed mix of those sources \(\B{m}\∈\ℝ^{1\× T}\). The induced model proposes a mixing function \(\B{m} = f(\B{s})\). The task is to find an approximate inverse model \(g(\·)\) which retrieves \(\B{s}\):
 
 \begin{align}
     \B{m} = f(\B{s})\\
@@ -10,7 +10,7 @@ In this learning setting \I{supervision} can happen in two ways: First the sourc
 
 \begin{tcolorbox}
     \begin{enumerate}
-        \item Can we learn an source separation model \(g(\·)\) by learning deep priors for the different source classes.
+        \item Can we learn a source separation model \(g(\·)\) by learning deep priors for the different source classes.
         \item Can we reduce this to an unsupervised setting. Unsupervised relating to the missing pairings of sources and mixes.
     \end{enumerate}
 \end{tcolorbox}

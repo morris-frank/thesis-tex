@@ -206,6 +206,6 @@ The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into the time-doma
     \label{fig:unet}
 \end{marginfigure}
 
-In~\autocite{lluisEndtoend2019} the authors were first to apply a time-domain WaveNet for musical source separation. They adapted the WaveNet to be non-causal, meaning a predicted value is in the middle of its receptive field. The model was directly end-to-end trained, outputting the \(k\) sources given an input mix.
+In~\autocite{lluisEndtoend2019} the authors adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the seaparated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
 
 Demucs\autocite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension.
