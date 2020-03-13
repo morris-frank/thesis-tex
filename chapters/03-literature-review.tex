@@ -196,16 +196,16 @@ WaveNet for Speech denoising\autocite{rethageWavenet2018}
 
 WaveNet-VAE unsupervised speech rep learning\autocite{chorowskiUnsupervised2019}
 
-\autocite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for source separation. They used a standard U-Net on spectrograms of musical data to extract the singing voice.
+\autocite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
 
-The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style layers.
+The Wave-U-Net\autocite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
 
 \begin{marginfigure}
-    \input{figures/unet}
-    \caption{The U-Net}
+    \input{figures/unet}%
+    \caption{The U-Net}%
     \label{fig:unet}
 \end{marginfigure}
 
-In~\autocite{lluisEndtoend2019} the authors adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the seaparated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
+In~\autocite{lluisEndtoend2019} the authors adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
 
-Demucs\autocite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension.
+Demucs~\autocite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck~\autocite{defossezSING2018}. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension. They can outperform spectrogram based approaches.
