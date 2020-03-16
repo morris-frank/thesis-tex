@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+    \matrix[]
+    {
+        & & \node (g)  {g}; &
+        \node (gs) {\(\σ\)}; & & & & &\\
+
+        \node (featold) {}; &
+        \node (dilate) {dilate}; & & &
+        \node (times)  {\(\odot\)}; & &
+        \node (chfeat) {\(1\× 1\)}; &
+        \node (plfeat) {+}; &
+        \node (featnew) {};\\
+
+        & & \node (f) {f}; &
+        \node (ft)  {\(\tanh\)}; & &
+        \node (chskip) {\(1\× 1\)}; & & &\\
+
+        \node (skipold) {}; & & & & &
+        \node (plskip) {+}; & & &
+        \node (skipnew) {};\\
+    };
+    \begin{scope}[every path/.style={draw, ->}]
+        \path (featold) -- (dilate);
+        \path (dilate) |- (g);
+        \path (dilate) |- (f);
+        \path (g) -- (gs);
+        \path (f) -- (ft);
+        \path (gs) -| (times);
+        \path (ft) -| (times);
+        \path (times) -- (chfeat);
+        \path (chfeat) -- (plfeat) -- (featnew);
+        \path (times) -| (chskip);
+        \path (chskip) -- (plskip);
+
+        \path (dilate) |- (1,1) -| (plfeat);
+
+        \path (skipold) -- node [near start] {skip} (plskip) -- (skipnew);
+    \end{scope}
+\end{tikzpicture}
