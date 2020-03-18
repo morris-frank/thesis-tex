@@ -1,9 +1,6 @@
 \section{Related works}
 In this chapter, we discuss previous research in supervised and semi-supervised source separation.
 
-\subsection{ICA}
-
-
 \subsection{Deep Latent-Variable Models}
 
 For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
@@ -188,16 +185,16 @@ The \B{WaveNet}~\cite{vandenoordWaveNet2016} introduced an autoregressive genera
 
 % INTERANL TODO: explain PixelCNN++ even if I don't use it know? %
 
-The first generative model for sound using WaveNet is \B{NSynth}~\cite{kalchbrennerEfficient2018}. They construct a VAE where encoder and decoder are both WaveNet-like. The, so-called, \I{non-causal temporal encoder} uses a stack of dilated residual non-causal convolutions. The convolutions are not gated and no skip-connections are used. The decoder is a WaveNet taking the original input chunk as an input and predicitng the next value, while being conditioned on the latent variable. The authors use this model to learn latent temporal codes from a new large set of notes played by natural and synthesized instruments. The latent of the VAE is conditioned on the pitch of these notes. While the model is difficult to train the show great improvement of the WaveNet base VAE compared to a spectral-based VAE.
+The first generative sounds model to emply a WaveNet is \B{NSynth}~\cite{kalchbrennerEfficient2018}. They construct a VAE where encoder and decoder are both WaveNet-like. The, so-called, \I{non-causal temporal encoder} uses a stack of dilated residual non-causal convolutions. The convolutions are not gated and no skip-connections are used. The decoder is a WaveNet taking the original input chunk as an input and predicits the next value of the sound sample, while being conditioned on the latent variable. The authors use this model to learn latent temporal codes from a new large set of notes played by natural and synthesized instruments. The latent of the VAE is conditioned on the pitch of these notes. While the model is difficult to train, they show great improvement of the WaveNet-based VAE compared to a spectral-based VAE.
 
-\textcite{chorowskiUnsupervised2019} presents another WaveNet-based VAE. They are learning speech representations, unsupervised. The encoder is a residual convnet and takes the MFCC of the signal as its input. As the bottleneck they found a VQ codebook~\cite{vandenoordNeural2017} to be most successfull. The decoder is an autoregressive WaveNet conditioned on the latent features. With this model they find it to perform best when basing the latent features on the mel-cepstra but reconstructing the signal with the WaveNet in time-domain.
+\textcite{chorowskiUnsupervised2019} presents another WaveNet-based VAE. They are learning speech representations, unsupervised. The encoder is a residual convnet and takes the MFCC of the signal as its input. As the bottleneck they found a VQ codebook~\cite{vandenoordNeural2017} to be most successfull. The decoder is an autoregressive WaveNet conditioned on the latent features. Note again that this model infers the latent features from mel-cepstra but reconstructs the signal with the WaveNet in time-domain.
 
 In~\cite{prengerWaveGlow2018}
 
 FloWaveNet~\cite{kimFloWaveNet2019a}
 
 \subsection{Source separation}
-All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B(s)_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorized, meaning we build a shared model for all sources.
+All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorized, meaning we build a shared model for all sources.
 
 \textcite{rethageWavenet2018} use a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors made the WaveNet non-causal by making the padding symmetrical. Further they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for this case the real valued predicitons bevae better.
 

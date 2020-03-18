@@ -3,15 +3,20 @@
 \subsection{Theory}
 
 \begin{fullwidth}
-    \newcommand{\proxpost}{\Π_k^N q_{\B{\φ}_k}(\B{s}_k|\B{m})}
+    \newcommand{\ppost}{{q_{\B{\φ}_k}(\B{s}_k|\B{m})}}
     \newcommand{\post}{p(\B{s}_1,\…,\B{s}_N|\B{m})}
     \begin{align}
         \log p_{\B{\θ}}(\B{m})
-        &= \bigintss \left[ \proxpost \right] \· \log p(\B{m})\,d^N \B{s}\\
-        &= \bigintss \left[ \proxpost \right] \· \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post}\,d^N \B{s}\\
-        &= \bigintss \left[ \proxpost \right] \· \left[\log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\proxpost} + \log \÷{\proxpost}{\post} \right]\,d^N \B{s}
+        &= \bigintsss \log p(\B{m}) \· \Π_k^N \ppost \,d^N \B{s}\\
+        &= \E_\ppost \left[ \log p(\B{m}) \right]\\
+        &= \E_\ppost \left[ \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post} \right]\\
+        &= \E_\ppost \left[ \log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} + \log \÷{\Π_k^N \ppost}{\post} \right]\\
+        &\geq \E_\ppost \left[ \log \÷{\Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} \right]
+             +\E_\ppost \left[ p(\B{m}|\B{s}_1,\…,\B{s}_N) \right]
     \end{align}
 \end{fullwidth}
+
+Big assumption here \(p(\B{m},\B{s}_1,\…,\B{s}_N) \equiv p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)\)
 
 \subsection{Datasets}
 \subsection{ToyData}
