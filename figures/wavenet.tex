@@ -3,7 +3,7 @@
         \draw[xstep=18cm, dashed] (1,1) grid (18,5);
 
         \begin{scope}[xshift=0.5cm,yshift=0cm,canvas is xz plane at y=1]
-            \draw[fill=primary,draw=none,fill opacity=.2]
+            \draw[fill=blue,draw=none,fill opacity=.2]
                 (0,0) sin (1,1)  cos (2,0)  sin (3,-1)  cos (4,0)
                       sin (5,1)  cos (6,0)  sin (7,-1)  cos (8,0)
                       sin (9,1)  cos (10,0) sin (11,-1) cos (12,0)
@@ -12,8 +12,8 @@
         \end{scope}
 
         \foreach \x in {1,...,18} {
-            \node[inner sep=.15cm, fill=primary] () at (\x,1) {};
-            \node[inner sep=.15cm, fill=secondary] () at (\x,5) {};
+            \node[inner sep=.15cm, fill=blue] () at (\x,1) {};
+            \node[inner sep=.15cm, fill=orange] () at (\x,5) {};
         }
 
         \foreach \x in {1,...,18} {

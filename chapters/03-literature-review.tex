@@ -3,6 +3,8 @@ In this chapter, we discuss previous research in supervised and semi-supervised 
 
 \subsection{Deep Latent-Variable Models}
 
+In this section we
+
 For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
@@ -13,12 +15,10 @@ The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data de
 
 In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points}. Therefore we can write the data log-likelihood as:
 
-\begin{align}
-    p_{\B{\θ}}(\mathcal{D})
-    &= \Π_{\B{x}\∈\mathcal{D}} p_{\B{\θ}}(\B{x})\\
+\begin{equation}
     \log p_{\B{\θ}}(\mathcal{D})
-    &= \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
-\end{align}
+    = \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
+\end{equation}
 
 The maximum likelihood estimation of our model parameters maximizes this objective.
 
@@ -208,6 +208,6 @@ All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extrac
 
 The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
 
-\textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The network is non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} The WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}
+\textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
 
 Demucs~\cite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck~\cite{defossezSING2018}. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension. They can outperform spectrogram based approaches.

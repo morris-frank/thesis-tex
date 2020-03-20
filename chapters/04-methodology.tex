@@ -7,12 +7,12 @@
     \newcommand{\post}{p(\B{s}_1,\…,\B{s}_N|\B{m})}
     \begin{align}
         \log p_{\B{\θ}}(\B{m})
-        &= \bigintsss \log p(\B{m}) \· \Π_k^N \ppost \,d^N \B{s}\\
-        &= \E_\ppost \left[ \log p(\B{m}) \right]\\
-        &= \E_\ppost \left[ \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post} \right]\\
-        &= \E_\ppost \left[ \log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} + \log \÷{\Π_k^N \ppost}{\post} \right]\\
-        &\geq \E_\ppost \left[ \log \÷{\Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} \right]
-             +\E_\ppost \left[ p(\B{m}|\B{s}_1,\…,\B{s}_N) \right]
+        &= \idotsint \log p(\B{m}) \· \Π_k^N \ppost \,d^N \B{s}\\
+        &= \E_\ppost^N \left[ \log p(\B{m}) \right]\\
+        &= \E_\ppost^N \left[ \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post} \right]\\
+        &= \E_\ppost^N \left[ \log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} + \log \÷{\Π_k^N \ppost}{\post} \right]\\
+        &\geq \Σ_k^N \E_\ppost \left[ \log \÷{p(\B{s}_k)}{\ppost} \right]
+             +\E_\ppost \left[ p(\B{m}|\B{s}_1,\…,\B{s}_N) \right]\\
     \end{align}
 \end{fullwidth}
 
