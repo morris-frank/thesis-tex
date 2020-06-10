@@ -164,7 +164,7 @@
   date = {2018-04-10},
   url = {http://arxiv.org/abs/1804.03599},
   urldate = {2019-10-17},
-  abstract = {We present new intuitions and theoretical assessments of the emergence of disentangled representation in variational autoencoders. Taking a rate-distortion theory perspective, we show the circumstances under which representations aligned with the underlying generative factors of variation of data emerge when optimising the modified ELBO bound in \$\textbackslash{}beta\$-VAE, as training progresses. From these insights, we propose a modification to the training regime of \$\textbackslash{}beta\$-VAE, that progressively increases the information capacity of the latent code during training. This modification facilitates the robust learning of disentangled representations in \$\textbackslash{}beta\$-VAE, without the previous trade-off in reconstruction accuracy.},
+  abstract = {We present new intuitions and theoretical assessments of the emergence of disentangled representation in variational autoencoders. Taking a rate-distortion theory perspective, we show the circumstances under which representations aligned with the underlying generative factors of variation of data emerge when optimising the modified ELBO bound in \$\textbackslash beta\$-VAE, as training progresses. From these insights, we propose a modification to the training regime of \$\textbackslash beta\$-VAE, that progressively increases the information capacity of the latent code during training. This modification facilitates the robust learning of disentangled representations in \$\textbackslash beta\$-VAE, without the previous trade-off in reconstruction accuracy.},
   archivePrefix = {arXiv},
   eprint = {1804.03599},
   eprinttype = {arxiv},
@@ -429,6 +429,21 @@
   file = {/home/morris/docs/lib/Zotero/storage/3TXQBSD2/Grais et al. - 2018 - Raw Multi-Channel Audio Source Separation using Mu.pdf;/home/morris/docs/lib/Zotero/storage/SX4NLYC8/1803.html},
   keywords = {68T01; 68T10; 68T45; 62H25,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Computer Science - Multimedia,Computer Science - Sound,H.5.5,I.2,I.2.6,I.4,I.4.3,I.5},
   primaryClass = {cs}
+}
+
+@article{grathwohlYour2019a,
+  title = {Your {{Classifier}} Is {{Secretly}} an {{Energy Based Model}} and {{You Should Treat}} It {{Like One}}},
+  author = {Grathwohl, Will and Wang, Kuan-Chieh and Jacobsen, Jörn-Henrik and Duvenaud, David and Norouzi, Mohammad and Swersky, Kevin},
+  date = {2019-12-11},
+  url = {http://arxiv.org/abs/1912.03263},
+  urldate = {2020-05-25},
+  abstract = {We propose to reinterpret a standard discriminative classifier of p(y|x) as an energy based model for the joint distribution p(x,y). In this setting, the standard class probabilities can be easily computed as well as unnormalized values of p(x) and p(x|y). Within this framework, standard discriminative architectures may beused and the model can also be trained on unlabeled data. We demonstrate that energy based training of the joint distribution improves calibration, robustness, andout-of-distribution detection while also enabling our models to generate samplesrivaling the quality of recent GAN approaches. We improve upon recently proposed techniques for scaling up the training of energy based models and presentan approach which adds little overhead compared to standard classification training. Our approach is the first to achieve performance rivaling the state-of-the-artin both generative and discriminative learning within one hybrid model.},
+  archivePrefix = {arXiv},
+  eprint = {1912.03263},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/JAGJV2VP/Grathwohl et al. - 2019 - Your Classifier is Secretly an Energy Based Model .pdf},
+  keywords = {Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
 }
 
 @article{greffMultiObject2019,
@@ -893,7 +908,7 @@
   date = {2020-02-13},
   url = {http://arxiv.org/abs/1912.01219},
   urldate = {2020-03-09},
-  abstract = {In this work, we propose WaveFlow, a small-footprint generative flow for raw audio, which is directly trained with maximum likelihood. It handles the long-range structure of waveform with a dilated 2-D convolutional architecture, while modeling the local variations using expressive autoregressive functions. WaveFlow provides a unified view of likelihood-based models for raw audio, including WaveNet and WaveGlow as special cases. It generates high-fidelity speech as WaveNet, while synthesizing several orders of magnitude faster as it only requires a few sequential steps to generate very long waveforms. Furthermore, it can significantly reduce the likelihood gap that has existed between autoregressive models and flow-based models for efficient synthesis. Finally, our small-footprint WaveFlow has only 5.91M parameters, which is 15\$\textbackslash{}times\$ smaller than WaveGlow. It can generate 22.05 kHz high-fidelity audio 42.6\$\textbackslash{}times\$ faster than real-time on a V100 GPU without engineered inference kernels.},
+  abstract = {In this work, we propose WaveFlow, a small-footprint generative flow for raw audio, which is directly trained with maximum likelihood. It handles the long-range structure of waveform with a dilated 2-D convolutional architecture, while modeling the local variations using expressive autoregressive functions. WaveFlow provides a unified view of likelihood-based models for raw audio, including WaveNet and WaveGlow as special cases. It generates high-fidelity speech as WaveNet, while synthesizing several orders of magnitude faster as it only requires a few sequential steps to generate very long waveforms. Furthermore, it can significantly reduce the likelihood gap that has existed between autoregressive models and flow-based models for efficient synthesis. Finally, our small-footprint WaveFlow has only 5.91M parameters, which is 15\$\textbackslash times\$ smaller than WaveGlow. It can generate 22.05 kHz high-fidelity audio 42.6\$\textbackslash times\$ faster than real-time on a V100 GPU without engineered inference kernels.},
   archivePrefix = {arXiv},
   eprint = {1912.01219},
   eprinttype = {arxiv},
@@ -1020,7 +1035,7 @@
   date = {2020-01-07},
   url = {http://arxiv.org/abs/1912.13361},
   urldate = {2020-01-22},
-  abstract = {Variational autoencoders (VAEs) have ushered in a new era of unsupervised learning methods for complex distributions. Although these techniques are elegant in their approach, they are typically not useful for representation learning. In this work, we propose a simple yet powerful class of VAEs that simultaneously result in meaningful learned representations. Our solution is to combine traditional VAEs with mutual information maximization, with the goal to enhance amortized inference in VAEs using Information Theoretic techniques. We call this approach InfoMax-VAE, and such an approach can significantly boost the quality of learned high-level representations. We realize this through the explicit maximization of information measures associated with the representation. Using extensive experiments on varied datasets and setups, we show that InfoMax-VAE outperforms contemporary popular approaches, including Info-VAE and \$\textbackslash{}beta\$-VAE.},
+  abstract = {Variational autoencoders (VAEs) have ushered in a new era of unsupervised learning methods for complex distributions. Although these techniques are elegant in their approach, they are typically not useful for representation learning. In this work, we propose a simple yet powerful class of VAEs that simultaneously result in meaningful learned representations. Our solution is to combine traditional VAEs with mutual information maximization, with the goal to enhance amortized inference in VAEs using Information Theoretic techniques. We call this approach InfoMax-VAE, and such an approach can significantly boost the quality of learned high-level representations. We realize this through the explicit maximization of information measures associated with the representation. Using extensive experiments on varied datasets and setups, we show that InfoMax-VAE outperforms contemporary popular approaches, including Info-VAE and \$\textbackslash beta\$-VAE.},
   archivePrefix = {arXiv},
   eprint = {1912.13361},
   eprinttype = {arxiv},

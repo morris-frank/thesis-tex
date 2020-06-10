@@ -1,0 +1,66 @@
+\documentclass[15pt]{extarticle}
+\pagestyle{empty}
+\usepackage{geometry}
+\geometry{
+	paper=a4paper,
+	top=0.1cm,
+	bottom=0.1cm,
+	left=1cm,
+	right=1cm,
+}
+\usepackage{pagecolor}
+\definecolor{white}{rgb}{0.97, 0.97, 0.97}
+\pagecolor{white}
+\usepackage{tikz}
+\usepackage{tikz-bayesnet}
+\usetikzlibrary{graphs, 3d, decorations.pathreplacing, arrows, shapes.geometric}
+\usetikzlibrary{calc,positioning,decorations.pathmorphing,shapes.misc,arrows.meta}
+
+
+\newcommand{\ppost}{{q_{\B{\φ}_k}(\B{s}_k|\B{m})}}
+\newcommand{\post}{p(\B{s}_1,\…,\B{s}_N|\B{m})}
+
+\usepackage{morris}
+
+\begin{document}
+    \begin{align*}
+        \B{s} &= [\B{s}_1,\…,\B{s}_N]^T \∈ \ℝ^{N\× T}\\
+        \B{m} &= f(\B{s}) \∈ \ℝ^{1\× T}
+    \end{align*}
+    \begin{align*}
+        &g: \ℝ^{1\× T} \mapsto \ℝ^{N\× T}\\
+        &g(\B{m}) \approxeq \B{s}
+    \end{align*}
+    \begin{align*}
+        \argmax_{\B{\θ}} p_{\B{\θ}}(\B{s}_1,\…,\B{s}_N | \B{m})
+    \end{align*}
+    \begin{align}
+        \log p(\B{m})
+        &= \E_\ppost^N \left[ \log p(\B{m}) \right]\\
+        &= \E_\ppost^N \left[ \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post} \right]\\
+        &= \E_\ppost^N \left[ \log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} + \log \÷{\Π_k^N \ppost}{\post} \right]\\
+        &\geq \Σ_k^N \E_\ppost \left[ \log \÷{p(\B{s}_k)}{\ppost} \right]
+             +\E_\ppost \left[ p(\B{m}|\B{s}_1,\…,\B{s}_N) \right]
+    \end{align}
+    \begin{align*}
+        p(\B{m},\B{s}_1,\…,\B{s}_N) \equiv p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)
+    \end{align*}
+    \begin{figure}
+        \input{figures/graphical_model}
+        \label{fig:graphical_model}
+    \end{figure}
+    \begin{align*}
+        \B{s}^{(t+1)}
+        &= \B{s}^{(t)} + \η \· \∇_{\B{s}} \left( \log{p(\B{s}^{(t)})} + \÷{1}{2\γ^2}{\|\B{m} - g(\B{s}^{(t)})\|}^2 \right) + 2\sqrt{\η}\ε_t
+    \end{align*}
+    \begin{figure}
+        \input{figures/flow}
+    \end{figure}
+    \begin{align*}
+        \hat{\B{s}}_k \sim \ppost
+    \end{align*}
+    \begin{align*}
+        \L(\B{\φ}, \B{m}) = \Σ_k^N \KL{[\ppost \|p(\B{s}_k)]}
+        +{\left(\÷{1}{N} \Σ_{k}^N \hat{\B{s}}_k - \B{m}\right)}^2
+    \end{align*}
+\end{document}
