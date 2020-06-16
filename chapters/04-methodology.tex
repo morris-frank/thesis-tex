@@ -25,4 +25,24 @@ Big assumption here \(p(\B{m},\B{s}_1,\…,\B{s}_N) \equiv p(\B{m}|\B{s}_1,\…,
 
 \subsection{Datasets}
 \subsection{ToyData}
-\subsection{MusDB}
+\begin{marginfigure}
+    \resizebox{\textwidth}{!}{%
+        \input{figures/toy_data}%
+    }%
+    \caption{One period of each of the four toy sources: sinus, sawtooth, square and triangle wave.}%
+    \label{fig:toy_data}
+\end{marginfigure}
+
+We simplify the problem domain to create a toy-like dataset. We randomly generate waves from four simple oscillations, see~\cref{fig:toy_data}. Given a wave from each source, the mix is computed by simply taking the mean. When sampling from each source we randomly select a period and phase. The frequencies are restricted to the frequency bounds of the 88 keys of a equal-temprament tuned piano. In our experiments we are gonna model these sources with probability density, looking especially at the square that will pose a problem, as those only consist of two unique values (\(-1\) and \(1\)). This collapsing posterior would simplify the problem too much, therefore we also vary the amplitude of the sampled signals.
+
+In ++later++ section we show that estimating densities over these waves is not giving a smooth manifold. Or differently: in the latent space we can not interpolate between two signals, because the model models, simply put, the sample waves as spiked Dirac deltas.
+
+
+\subsection{musdb18}
+Further we use the \emph{musdb18}~\cite{rafiiMUSDB182017} dataset published for the 2018 Signal Separation Evaluation Campaign~\cite{stoter20182018}. The datasets contains 150 full songs covering various artists and genres, splitted into train and test set sized 100 and 50, respectively. Each track is separated into the four sources \emph{drums}, \emph{bass}, \emph{vocals} and \emph{others}. The \emph{others} source channel contains any set of instrument not categorized under the three first ones. The song files are provided in the Stem audio file format~\cite{nativeinstrumentsStem} and encoded at 44.1kHz. The stem in the file are the source channels, we use the terms interchangeably.
+
+Next to the separate stems, the dataset provides the original (studio) mix for each song. This mix is not equivalent to the simple linear mixing which we get by taking the mean. Nevertheless the provided mix diverges only insignificantly from a auto-generated mix, as the original sources are provided in their post-compression, post-mixed form. This means that we can use the original mix and assume it to be reasonably close to the kanonical linear mix.
+
+As the songs are real natural songs, they are of different lengths. Our models will, in difference to many other recent methods, not be auto-regressive. Thus we sample fixed-length cuts from the songs as training and test samples. For the musdb data no pre-processing is applied, as the data already contains the wanted level variability, it spanning different genres and artists.
+
+It is noted that the musdb18 dataset, while proving a remarkable diverse 10hr of real-world music, is a rather small numbered set of samples. Any data modeling from this set of data will consequently be biased. The dataset specifically is created for the accompying separation challenge and will not translate to general music modeling.
