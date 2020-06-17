@@ -1,1 +1,120 @@
-/home/morris/src/morris-frank/latex-templates/morris.sty
+% Morris very own assginment package
+%
+% (c) Maurice Frank
+%
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN archives
+%% in directory macros/latex/base/lppl.txt.
+%
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{morris}
+  [2019/04/23 v0.01 LaTeX Style file for assignments]
+
+% Code Stuff
+\RequirePackage{comment} % enables the use of multi-line comments (\ifx \fi)
+
+% Typesetting
+\RequirePackage{hyperref}
+\RequirePackage{url}
+\RequirePackage{newpxtext}
+
+% Math typesetting
+\RequirePackage[sc]{mathpazo}
+\RequirePackage{dsfont}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{nicefrac}
+\RequirePackage{bm}
+\RequirePackage{siunitx}
+\RequirePackage{mathtools}
+
+% Figures / Tables / Algorithms / Graphics
+\RequirePackage{graphicx}
+\RequirePackage{tabularx} % yeah better tables
+\RequirePackage{booktabs} % Stuff for better tables (better rules e.g.)
+\RequirePackage{multirow} % For multi-rows in tables
+\RequirePackage{listings} % For writing code samples
+\RequirePackage{algorithm} % Also for pseudo-code
+\RequirePackage{algpseudocode}
+\RequirePackage{subfig} % For subfigures
+
+%%% MACROS %%%
+% Typesetting
+\newcommand*{\B}[1]{\ifmmode\bm{#1}\else\textbf{#1}\fi}
+\newcommand*{\I}[1]{\ifmmode\mathit{#1}\else\textit{#1}\fi}
+\renewcommand*{\t}[1]{\ifmmode\text{#1}\else #1 \fi}
+
+
+\newcommand*\·{\cdot}
+\newcommand*\…{\dots}
+\newcommand*{\⇔}{\ensuremath{\iff}}
+\newcommand*{\⇐}{\ensuremath{\impliedby}}
+\newcommand*{\⇒}{\ensuremath{\implies}}
+
+% Math
+% Matrices
+\newcommand*\bM[1]{\ensuremath{\begin{bmatrix}#1\end{bmatrix}}}
+\newcommand*\vM[1]{\ensuremath{\begin{vmatrix}#1\end{vmatrix}}}
+\newcommand*\BM[1]{\ensuremath{\begin{Bmatrix}#1\end{Bmatrix}}}
+
+% Operators
+\newcommand*\∀{\ensuremath{\forall}}
+\newcommand*\∃{\ensuremath{\exists}}
+\newcommand*\Σ{\ensuremath{\sum}}
+\newcommand*\∇{\ensuremath{\nabla}}
+\newcommand*\Π{\ensuremath{\prod}}
+\newcommand*\∈{\ensuremath{\in}}
+\newcommand*\∂{\ensuremath{\partial}}
+\newcommand*\×{\ensuremath{\times}}
+\newcommand*\∫{\ensuremath{\int}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\adj}{Adj}
+\DeclareMathOperator*{\Tr}{Tr}
+\DeclareMathOperator*{\Dir}{Dir}
+\DeclareMathOperator*{\sgn}{sgn}
+\DeclareMathOperator*{\soft}{softmax}
+\DeclareMathOperator*{\diag}{diag}
+\DeclareMathOperator*{\var}{\mathbb{V}ar}
+\DeclareMathOperator*{\Beta}{Beta}
+\DeclareMathOperator*{\cov}{cov}
+\DeclareMathOperator*{\KL}{\mathds{D}_{KL}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\newcommand\hastoequal{\stackrel{\mathclap{\footnotesize\mbox{def}}}{=}}
+
+% Fractions
+\newcommand*\f[2]{\ensuremath{\frac{#1}{#2}}}
+\newcommand*\÷[2]{\ensuremath{\frac{#1}{#2}}}
+\newcommand*\nf[2]{\ensuremath{\nicefrac{#1}{#2}}}
+\newcommand*\pf[2]{\ensuremath{\frac{\partial {#1}}{\partial {#2}}}}
+
+% Single math symbols
+\newcommand*\1{\ensuremath{\mathbb{1}}}
+\newcommand*\ℝ{\ensuremath{\mathds{R}}}
+\newcommand*\N{\ensuremath{\mathcal{N}}}
+\renewcommand*\L{\ensuremath{\mathcal{L}}}
+\renewcommand\O{\ensuremath{\mathcal{O}}}
+
+\newcommand*\α{\ensuremath{\alpha}}
+\newcommand*\β{\ensuremath{\beta}}
+\newcommand*\γ{\ensuremath{\gamma}}
+\newcommand*\δ{\ensuremath{\delta}}
+\newcommand*\φ{\ensuremath{\phi}}
+\newcommand*\Φ{\ensuremath{\Phi}}
+\newcommand*\ψ{\ensuremath{\psi}}
+\newcommand*\θ{\ensuremath{\theta}}
+\newcommand*\Θ{\ensuremath{\Theta}}
+\newcommand*\κ{\ensuremath{\kappa}}
+\newcommand*\λ{\ensuremath{\lambda}}
+\newcommand*\ε{\ensuremath{\epsilon}}
+\newcommand*\σ{\ensuremath{\sigma}}
+\newcommand*\μ{\ensuremath{\mu}}
+\newcommand*\π{\ensuremath{\pi}}
+\newcommand*\ν{\ensuremath{\nu}}
+\newcommand*\τ{\ensuremath{\tau}}
+\newcommand*\Γ{\ensuremath{\Gamma}}
+\newcommand*\η{\ensuremath{\eta}}
+\newcommand*\Δ{\ensuremath{\Delta}}
+\newcommand*\υ{\ensuremath{\upsilon}}
+
+\endinput
