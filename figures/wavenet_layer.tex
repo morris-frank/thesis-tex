@@ -1,25 +1,25 @@
 \begin{tikzpicture}
-    \matrix[]
+    \matrix[column sep=1.25mm, row sep=2mm]
     {
-        & & \node (g)  {g}; &
-        \node (gs) {\(\σ\)}; & & & & &\\
+        & & \node[draw] (g)  {g}; &
+        \node[draw] (gs) {\(\σ\)}; & & & & &\\
 
         \node (featold) {}; &
         \node (dilate) {dilate}; & & &
         \node (times)  {\(\odot\)}; & &
-        \node (chfeat) {\(1\× 1\)}; &
+        \node[draw] (chfeat) {\(1\× 1\)}; &
         \node (plfeat) {+}; &
         \node (featnew) {};\\
 
-        & & \node (f) {f}; &
-        \node (ft)  {\(\tanh\)}; & &
-        \node (chskip) {\(1\× 1\)}; & & &\\
+        & & \node[draw] (f) {f}; &
+        \node[draw] (ft)  {\(\tanh\)}; & &
+        \node[draw] (chskip) {\(1\× 1\)}; & & &\\
 
-        \node (skipold) {}; & & & & &
+        \node (skipold) {}; & \node (skip) {skip}; & & & &
         \node (plskip) {+}; & & &
         \node (skipnew) {};\\
     };
-    \begin{scope}[every path/.style={draw, ->}]
+    \begin{scope}[every path/.style={draw, ->, semithick}]
         \path (featold) -- (dilate);
         \path (dilate) |- (g);
         \path (dilate) |- (f);
@@ -32,8 +32,8 @@
         \path (times) -| (chskip);
         \path (chskip) -- (plskip);
 
-        \path (dilate) |- (1,1) -| (plfeat);
+        \path (dilate) |- (1,1.4) -| (plfeat);
 
-        \path (skipold) -- node [near start] {skip} (plskip) -- (skipnew);
+        \path (skipold) -- (skip) -- (plskip) -- (skipnew);
     \end{scope}
 \end{tikzpicture}
