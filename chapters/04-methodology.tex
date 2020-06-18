@@ -3,27 +3,41 @@
 \subsection{Theory}
 \begin{marginfigure}
     \input{figures/graphical_model}%
-    \caption{The used graphical model for the source separation task. We have the latent source channel variables. Exemplary here, as in our data, we have four sources. The mix \(\B{m}\) is observed.}%
+    \caption{The used graphical model for the source separation task. We have the latent source channel variables \(\s_k\). Exemplary here, as in our data, we have four sources. The mix \(\m\) is observed.}%
     \label{fig:graphical_model}
 \end{marginfigure}
 
-We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of the source separated music tracks. For each source is sampled from the latent source distribution. The observed mix is generated deterministically from the full set of sources, which is a known function of the sources samples. Without loss of generality we fix this function to be the mean.
+We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of the source separated music tracks. For each source a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality we fix this function to be the mean.
+
+Our stated task in \sref{sec:question} is to model the density \(p(\s_k|\m)\) without using sample tuples \((\m, \{\s_1,\…,\s_N\})\). We follow the same steps as previously shown for the latent variable models. First we introduce a approximate posterior \(\aprxpost\) for each source channel. Next we express the mix density as the expectation over those posteriors:
+
+\begin{align}
+    \log p(\m)
+    &= \E_\aprxpost^N \left[ \log p(\m) \right]\label{eq:expectation_over_approx_post}
+\end{align}
+
+From here derive the ELBO in the same way as before, just now with \(N\) priors instead of one:
 
 \begin{fullwidth}
-    \newcommand{\ppost}{{q_{\B{\φ}_k}(\B{s}_k|\B{m})}}
-    \newcommand{\post}{p(\B{s}_1,\…,\B{s}_N|\B{m})}
+    \newcommand{\post}{p(\s_1,\…,\s_N|\m)}
     \begin{align}
-        \log p_{\B{\θ}}(\B{m})
-        &= \idotsint \log p(\B{m}) \· \Π_k^N \ppost \,d^N \B{s}\\
-        &= \E_\ppost^N \left[ \log p(\B{m}) \right]\\
-        &= \E_\ppost^N \left[ \log \÷{p(\B{m},\B{s}_1,\…,\B{s}_N)}{\post} \right]\\
-        &= \E_\ppost^N \left[ \log \÷{p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)}{\Π_k^N \ppost} + \log \÷{\Π_k^N \ppost}{\post} \right]\\
-        &\geq \Σ_k^N \E_\ppost \left[ \log \÷{p(\B{s}_k)}{\ppost} \right]
-             +\E_\ppost \left[ p(\B{m}|\B{s}_1,\…,\B{s}_N) \right]\\
+        \E_\aprxpost^N \left[ \log p(\m) \right]
+        &= \E_\aprxpost^N \left[ \log \÷{p(\m,\s_1,\…,\s_N)}{\post} \right]\\
+        &= \E_\aprxpost^N \left[ \log \÷{p(\m|\s_1,\…,\s_N) \· \Π_k^N p(\s_k)}{\Π_k^N \aprxpost} + \log \÷{\Π_k^N \aprxpost}{\post} \right]\\
+        &\geq \Σ_k^N \E_\aprxpost \left[ \log \÷{p(\s_k)}{\aprxpost} \right]
+             +\E_\aprxpost \left[ p(\m|\s_1,\…,\s_N) \right]\\
     \end{align}
 \end{fullwidth}
 
-Big assumption here \(p(\B{m},\B{s}_1,\…,\B{s}_N) \equiv p(\B{m}|\B{s}_1,\…,\B{s}_N) \· \Π_k^N p(\B{s}_k)\)
+Like in the VAE we now formulate the lower bound for approximting the graphical model with the approximate posterios \(\aprxpost\) which we will parametrize with deep neural networks. The source priors are estimated \I{a-priori} and  independtly and are also parametrized by neural networks. Here we introduce a fairly big assumption, namely that we can model the source distributions independtly from each other when modelling the joint:
+
+\begin{align}
+    p(\m,\s_1,\…,\s_N) &\equiv p(\m|\s_1,\…,\s_N) \· \Π_k^N p(\s_k)
+\end{align}
+
+It is intuitive that this assumption does not, in general, hold for the musical domain. We can expect a different behaviour for a guitar in a song involving a second source like a percussion set. The joint of those two models is different than their independent densities. Nevertheless this assumption is crucial to be able to model the prior instrumental models without needing the tuples \((\s_1,\…,\s_N)\) of co-occurring stems.
+
+Finally we note that this assumption is not being used for the independent approximate posteriors. While the true posterior certainly is the posterior of the joint source model, we choose our approximate posteriors to be independent. The expectation in \eqref{eq:expectation_over_approx_post} over those is still correct. The error arising from the independence assumption is captured in the thightness of the ELBO.
 
 \subsection{Datasets}
 \subsection{ToyData}

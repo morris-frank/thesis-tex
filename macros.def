@@ -1,1 +1,5 @@
 \DeclareMathOperator{\elbo}{ELBO}
+
+\newcommand{\aprxpost}{{q_{\B{\φ}_k}(\s_k|\m)}}
+\newcommand\m{\ensuremath{\B{m}}}
+\newcommand\s{\ensuremath{\B{s}}}
