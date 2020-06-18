@@ -1,9 +1,9 @@
 \section{Related works}
-In this chapter, we discuss previous research in supervised and semi-supervised source separation.
+In general this research work is build on prior work first on deep generative models, or laten models, which try to estimate the distribution / density of a data space to find smooth manifolds. Second we will give an overview of contemporary works on using deep models for music and speech analysis and generation.
 
 \subsection{Deep Latent-Variable Models}
 
-In this section we
+In this section we introduce the idea of latent variable and the idea of finding models of data using those laten variables. Further we discuss what practical ways are currently successfull ain estimating the model parameters and how they are trained.
 
 For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
