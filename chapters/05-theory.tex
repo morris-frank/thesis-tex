@@ -1,7 +1,6 @@
-\section{Theory}%
-\label{sec:theory}
+\chapter{Theory}%
+\label{ch:theory}
 
-\subsection{Theory}
 \begin{marginfigure}
     \input{figures/graphical_model}%
     \caption{The used graphical model for the source separation task. We have the latent source channel variables \(\s_k\). Exemplary here, as in our data, we have four sources. The mix \(\m\) is observed.}%
@@ -40,7 +39,7 @@ It is intuitive that this assumption does not, in general, hold for the musical 
 
 Finally we note that this assumption is not being used for the independent approximate posteriors. While the true posterior certainly is the posterior of the joint source model, we choose our approximate posteriors to be independent. The expectation in \eqref{eq:expectation_over_approx_post} over those is still correct. The error arising from the independence assumption is captured in the thightness of the ELBO.
 
-\subsection{Datasets}
+\section{Datasets}
 In this section we introduce the two datasets we will be working on. First a simplified Toy dataset which reudces the problem to a minimla kanonical one and second the musdb18 dataset which is a widely-used testset for musical source separation.
 
 \subsection{ToyData}
@@ -66,7 +65,7 @@ As the songs are real natural songs, they are of different lengths. Our models w
 
 It is noted that the musdb18 dataset, while providing a remarkable diverse 10hr of real-world music, is a rather small numbered set of samples. Any data modeling from this set of data will consequently be biased. The dataset specifically is created for the accompying separation challenge and will not translate to general music modeling.
 
-\subsection{Modeling the priors}
+\section{Modeling the priors}
 The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors with flow models for which we gave an overview in \cref{methods}. For different representation of the input different network architectures are mode suited. We experiment both with inputing directly the time-domain wave but also modeling on top of a spectral transformation of the time-domain data.
 
 The two main variants of normalizing flows we build our priors from are the RealNVP and Glow. Their most important difference is the different formulation of the coupling layers. For the coupling layers we have to split the layer input into two equally sized subsets, one of whom will be transformed using an invertable transformation parametrized by the other. The RealNVP masks the data spatially or over the channels in two different groups. Glow learns a \(1\× 1\)-convolution which permutes the data channel-wise and than just splits the data along the channel dimension into two. For both RealNVP and Glow prior works exists adapting the architecture specifically to the time-series domain by integrating WaveNet modules, FloWaveNet~\cite{kimFloWaveNet2019a} and WaveGlow~\cite{prengerWaveGlow2018}, respectively. \todo{wat about waveflow}
@@ -77,7 +76,7 @@ blablabla
 
 \subsection{Fixing the priors}
 
-\subsection{Modeling the posteriors}
+\section{Modeling the posteriors}
 
 \subsection{Variational-autoencoder}
 
