@@ -1,5 +1,7 @@
-\section{Related works}
-In general this research work is build on prior work first on deep generative models, or laten models, which try to estimate the distribution / density of a data space to find smooth manifolds. Second we will give an overview of contemporary works on using deep models for music and speech analysis and generation.
+\section{Background}%
+\label{sec:background}
+
+In general this research work is build on prior work first on deep generative models, or latetn models, which try to estimate the distribution / density of a data space to find smooth manifolds. Second we will give an overview of contemporary works on using deep models for music and speech analysis and generation.
 
 \subsection{Deep Latent-Variable Models}
 
@@ -192,22 +194,3 @@ The first generative sounds model to emply a WaveNet is \B{NSynth}~\cite{kalchbr
 In~\cite{prengerWaveGlow2018}
 
 FloWaveNet~\cite{kimFloWaveNet2019a}
-
-\subsection{Source separation}
-All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorized, meaning we build a shared model for all sources.
-
-\textcite{rethageWavenet2018} use a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors made the WaveNet non-causal by making the padding symmetrical. Further they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for this case the real valued predicitons bevae better.
-
-\textcite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for musical source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
-
-\begin{marginfigure}
-    \input{figures/unet}%
-    \caption{The U-Net}%
-    \label{fig:unet}
-\end{marginfigure}
-
-The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
-
-\textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
-
-Demucs~\cite{defossezDemucs2019} is another extension building on the U-Net idea. Having a similar structure to the Wave-U-Net they introduce a bidirectional LSTM at the bottleneck~\cite{defossezSING2018}. The LSTM is responsible for keeping long-term temporal informational by running over the high-level latent along the time dimension. They can outperform spectrogram based approaches.

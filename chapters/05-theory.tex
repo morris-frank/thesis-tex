@@ -1,4 +1,5 @@
-\section{Methodology}
+\section{Theory}%
+\label{sec:theory}
 
 \subsection{Theory}
 \begin{marginfigure}
@@ -40,6 +41,8 @@ It is intuitive that this assumption does not, in general, hold for the musical 
 Finally we note that this assumption is not being used for the independent approximate posteriors. While the true posterior certainly is the posterior of the joint source model, we choose our approximate posteriors to be independent. The expectation in \eqref{eq:expectation_over_approx_post} over those is still correct. The error arising from the independence assumption is captured in the thightness of the ELBO.
 
 \subsection{Datasets}
+In this section we introduce the two datasets we will be working on. First a simplified Toy dataset which reudces the problem to a minimla kanonical one and second the musdb18 dataset which is a widely-used testset for musical source separation.
+
 \subsection{ToyData}
 \begin{marginfigure}
     \resizebox{\textwidth}{!}{%
@@ -75,3 +78,12 @@ blablabla
 \subsection{Fixing the priors}
 
 \subsection{Modeling the posteriors}
+
+\subsection{Variational-autoencoder}
+
+\subsection{Langevin Dynamics}
+The second option for estimating the posterior \(p(\s_i | \m)\) is iteratively sampling from the prior, under the the mixing constraint, using Langevin dynamics~\cite{nealMCMC2012}. While they are a classical approach to stochastic modeling of a dynamical modelcular system, \textcite{wellingBayesian2011} has shown how to employ Langevin dynamics as an MCMC sampling process to estimate the posterior in Bayesian modeling. With Stochastic Gradient Langevin Dynamics (SGLD) we can sample from \(\s_i \sim p(\· | \m)\) without computing, explicitly, the posterior \(p(\s_i | \m)\).
+
+\todo{explanation}
+
+The idea of using SGLD in combination with deep parametrized priors was, concurrently to this work, introduced in \textcite{jayaramSource2020}. The authors argue that direct optimization under the prior distribution is not successfull due to the severe peakedness of the priors. Thus, they argue, the stochasticity, added with the Gaussian noise in SGLD, is needed to not get stuck in local optimas under the manifold. We challenge that explanation as it is, blabla
