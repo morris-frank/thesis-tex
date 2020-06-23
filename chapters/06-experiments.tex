@@ -35,6 +35,12 @@ It is noted that the musdb18 dataset, while providing a remarkable diverse 10hr 
     \label{fig:noise_ll_noise}
 \end{marginfigure}
 
+\begin{marginfigure}
+    \includegraphics{noise_likelihood_without_noise.png}%
+    \caption{noise likelihood without noise}%
+    \label{fig:noise_ll_noise}
+\end{marginfigure}
+
 For both the Toy Data and the musdb18 dataset we experiment with prior models on time-domain and spectral-domain input.
 
 In the full model each prior is used to extract its source channel separatly. Through their training they explicitly contract the density for the positive, in-class examples. During separation the priors therefore encounter negative, out-of-distribution samples for the first time. To be useful for separation, it is important that the priors give a low likelihood to samples from the other classes of the dataset.

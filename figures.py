@@ -7,6 +7,7 @@ import pandas as pd
 from colorama import Fore
 import matplotlib as mpl
 from matplotlib import colors, rcParams
+from matplotlib.ticker import LogFormatter
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib import font_manager as fm
@@ -35,17 +36,25 @@ PALETTE = {
 TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
 MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
 
-# mpl config
-mpl.style.use("./mpl.style")
-
-
-def cprint(string, color = Fore.YELLOW):
-    print(f"{color}{string}{Fore.RESET}")
-
 
 def hex2rgb(hex):
     rgb = hex[:2], hex[2:4], hex[4:6]
     return tuple(round(int(c, 16) / 255, 2) for c in rgb)
+
+
+# mpl config
+mpl.style.use("./mpl.style")
+mpl.colors._colors_full_map["r"] = hex2rgb(PALETTE['red'])
+mpl.colors._colors_full_map["g"] = hex2rgb(PALETTE['green'])
+mpl.colors._colors_full_map["b"] = hex2rgb(PALETTE['blue'])
+mpl.colors._colors_full_map["c"] = hex2rgb(PALETTE['aqua'])
+mpl.colors._colors_full_map["m"] = hex2rgb(PALETTE['purple'])
+mpl.colors._colors_full_map["y"] = hex2rgb(PALETTE['yellow'])
+mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE['orange'])
+
+
+def cprint(string, color = Fore.YELLOW):
+    print(f"{color}{string}{Fore.RESET}")
 
 
 def print_color_latex():
@@ -68,9 +77,7 @@ def plot_palette():
     plt.show()
 
 
-def add_plot_tick(
-    ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x", size: float = 0.05
-):
+def add_plot_tick(ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x", size: float = 0.05):
 
     if "x" in where:
         anchor, loc = (pos, 1.01), 8
@@ -111,8 +118,15 @@ def add_plot_tick(
 def plot_heatmap(data, name, signals):
     n = len(signals)
     fig, ax = plt.subplots(
-        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2, wspace=0.2), figsize=(MARGIN_LENGTH, 1.15*MARGIN_LENGTH)
+        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2), figsize=(MARGIN_LENGTH, 1.15*MARGIN_LENGTH)
     )
+
+    if data.max() - data.min() > 10**2:
+        norm = colors.SymLogNorm(linthresh=0.03, base=100)
+        ticks = [-100, 0, 7]
+    else:
+        ticks = None
+        norm = None
 
     cbar_ax = inset_axes(ax, width=1.49, height=0.1, bbox_transform=ax.transAxes, bbox_to_anchor=(0.5, -0.15), loc=8)
     sns.heatmap(data,
@@ -121,21 +135,12 @@ def plot_heatmap(data, name, signals):
         linewidths=2,
         cbar=True,
         cbar_ax=cbar_ax,
-        cbar_kws={"orientation": "horizontal", "ticks": None},
+        cbar_kws={"orientation": "horizontal", "ticks": ticks},
         square=True,
-        # norm=colors.SymLogNorm(linthresh=0.03, base=np.e),
+        norm=norm,
         cmap=DIVERGING)
 
-    ax.tick_params(
-        bottom=False,
-        top=False,
-        left=False,
-        right=False,
-        labelbottom=False,
-        labeltop=False,
-        labelleft=False,
-        labelright=False,
-    )
+    ax.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
 
     pos_tick = np.linspace(0, 1, 2 * n + 1)[1::2]
     size = 1 / n * 0.9
@@ -173,10 +178,12 @@ def plot_noise_box(name):
         np.load(f"data/{name}.npy", allow_pickle=True,).item()
     )
     df = df.melt(var_name="noise", value_name="ll")
+    df = df[df.noise != 0.001]
 
-    _, ax = plt.subplots(figsize=(MARGIN_LENGTH, 0.9*MARGIN_LENGTH))
+    _, ax = plt.subplots(figsize=(MARGIN_LENGTH, 0.9*MARGIN_LENGTH), gridspec_kw=dict(left=0.15, right=0.95))
     add_plot_tick(ax, symbol='saw', size=0.1)
-    sns.boxplot(x="noise", y="ll", data=df, ax=ax, fliersize=1, linewidth=0.5)
+    sns.boxplot(x="noise", y="ll", data=df, ax=ax, fliersize=1, linewidth=0.5, showfliers=False, color='y')
+    ax.set_ylabel("")
 
     plt.savefig(f"figures/{name}.png")
 
@@ -193,6 +200,7 @@ def main(args):
 
     cprint("– Noise plots likelihood", Fore.GREEN)
     plot_noise_box('noise_likelihood_with_noise')
+    plot_noise_box('noise_likelihood_without_noise')
 
     cprint("– Cross-entropy heatmaps", Fore.GREEN)
     plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)

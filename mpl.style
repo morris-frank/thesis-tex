@@ -7,4 +7,4 @@ text.usetex: True
 text.latex.preamble: \usepackage{mathpazo}
 mathtext.fontset: stix
 font.family: STIXGeneral
-font.size: 10.0
+font.size: 7
