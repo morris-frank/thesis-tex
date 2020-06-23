@@ -1,9 +1,10 @@
-font.size: 10.0
-
 figure.figsize: 2.0, 2.0
+figure.dpi: 300
 
-mathtext.fontset: stix
-font.family: STIXGeneral
+lines.linewidth: 1
 
 text.usetex: True
 text.latex.preamble: \usepackage{mathpazo}
+mathtext.fontset: stix
+font.family: STIXGeneral
+font.size: 10.0

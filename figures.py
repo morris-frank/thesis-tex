@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from math import tau as τ
 from itertools import product
 
+import pandas as pd
 from colorama import Fore
 import matplotlib as mpl
 from matplotlib import colors, rcParams
@@ -36,7 +37,6 @@ MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
 
 # mpl config
 mpl.style.use("./mpl.style")
-
 
 
 def cprint(string, color = Fore.YELLOW):
@@ -111,7 +111,7 @@ def add_plot_tick(
 def plot_heatmap(data, name, signals):
     n = len(signals)
     fig, ax = plt.subplots(
-        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2, wspace=0.2), figsize=(MARGIN_LENGTH, 1.15*MARGIN_LENGTH), dpi=300
+        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2, wspace=0.2), figsize=(MARGIN_LENGTH, 1.15*MARGIN_LENGTH)
     )
 
     cbar_ax = inset_axes(ax, width=1.49, height=0.1, bbox_transform=ax.transAxes, bbox_to_anchor=(0.5, -0.15), loc=8)
@@ -168,8 +168,18 @@ def plot_cross_likelihood(name, signals):
     plot_heatmap(log_p, name, signals)
 
 
-def plot_noise_box():
-    pass
+def plot_noise_box(name):
+    df = pd.DataFrame(
+        np.load(f"data/{name}.npy", allow_pickle=True,).item()
+    )
+    df = df.melt(var_name="noise", value_name="ll")
+
+    _, ax = plt.subplots(figsize=(MARGIN_LENGTH, 0.9*MARGIN_LENGTH))
+    add_plot_tick(ax, symbol='saw', size=0.1)
+    sns.boxplot(x="noise", y="ll", data=df, ax=ax, fliersize=1, linewidth=0.5)
+
+    plt.savefig(f"figures/{name}.png")
+
 
 def main(args):
     if args.verbose:
@@ -182,6 +192,7 @@ def main(args):
     cprint("Will process all data figures:")
 
     cprint("– Noise plots likelihood", Fore.GREEN)
+    plot_noise_box('noise_likelihood_with_noise')
 
     cprint("– Cross-entropy heatmaps", Fore.GREEN)
     plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)
