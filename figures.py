@@ -3,17 +3,19 @@ from argparse import ArgumentParser
 from math import tau as τ
 
 from colorama import Fore
+import matplotlib as mpl
 from matplotlib import colors, rcParams
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from matplotlib import font_manager as fm
 from scipy.signal import sawtooth, square
 import numpy as np
 import seaborn as sns
 
-
+# geometry lengths from LaTeX
 MARGIN_LENGTH = 2
-TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
-MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
+
+# choosen colors
 DIVERGING = 'viridis'
 PALETTE = {
     'green':        '98971a',
@@ -26,6 +28,14 @@ PALETTE = {
     'extlinkcolor': 'ff0000', # external links
     'intlinkcolor': '00ff00', # internal links
 }
+
+# data configs
+TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
+MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
+
+# mpl config
+mpl.style.use("./mpl.style")
+
 
 
 def cprint(string, color = Fore.YELLOW):
@@ -106,10 +116,10 @@ def plot_cross_likelihood(name, signals):
     n = len(signals)
 
     fig, ax = plt.subplots(
-        1, 1, gridspec_kw=dict(left=0.2, right=0.97, top=0.85, bottom=0, wspace=0.2), figsize=(MARGIN_LENGTH*1.5, MARGIN_LENGTH*1.5), dpi=200
+        1, 1, gridspec_kw=dict(left=0.23, right=1, top=0.85, bottom=-0.09, wspace=0.2), figsize=(MARGIN_LENGTH, MARGIN_LENGTH), dpi=300
     )
 
-    sns.heatmap(log_p, ax=ax, annot=True, linewidths=2, cbar=False, square=True, norm=colors.SymLogNorm(linthresh=0.03, base=np.e), cmap=DIVERGING)
+    sns.heatmap(log_p, ax=ax, annot=False, linewidths=2, cbar=False, square=True, norm=colors.SymLogNorm(linthresh=0.03, base=np.e), cmap=DIVERGING)
 
     ax.tick_params(
         bottom=False,
@@ -123,7 +133,7 @@ def plot_cross_likelihood(name, signals):
     )
 
     pos_tick = np.linspace(0, 1, 2 * n + 1)[1::2]
-    size = 1 / n * 1.75
+    size = 1 / n * 1.2
 
     for i in range(n):
         add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
