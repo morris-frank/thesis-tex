@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from argparse import ArgumentParser
 from math import tau as τ
+from itertools import product
 
 from colorama import Fore
 import matplotlib as mpl
@@ -107,19 +108,23 @@ def add_plot_tick(
         raise ValueError("unknown symbol")
 
 
-def plot_cross_likelihood(name, signals):
-    log_p = np.load(f"data/{name}.npy")
-    log_p[log_p == -np.inf] = -1e3
-    log_p = np.maximum(log_p, -1e3)
-    log_p = log_p.swapaxes(0, 1)
-    log_p = log_p.mean(-1)
+def plot_heatmap(data, name, signals):
     n = len(signals)
-
     fig, ax = plt.subplots(
-        1, 1, gridspec_kw=dict(left=0.23, right=1, top=0.85, bottom=-0.09, wspace=0.2), figsize=(MARGIN_LENGTH, MARGIN_LENGTH), dpi=300
+        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2, wspace=0.2), figsize=(MARGIN_LENGTH, 1.15*MARGIN_LENGTH), dpi=300
     )
 
-    sns.heatmap(log_p, ax=ax, annot=False, linewidths=2, cbar=False, square=True, norm=colors.SymLogNorm(linthresh=0.03, base=np.e), cmap=DIVERGING)
+    cbar_ax = inset_axes(ax, width=1.49, height=0.1, bbox_transform=ax.transAxes, bbox_to_anchor=(0.5, -0.15), loc=8)
+    sns.heatmap(data,
+        ax=ax,
+        annot=False,
+        linewidths=2,
+        cbar=True,
+        cbar_ax=cbar_ax,
+        cbar_kws={"orientation": "horizontal", "ticks": None},
+        square=True,
+        # norm=colors.SymLogNorm(linthresh=0.03, base=np.e),
+        cmap=DIVERGING)
 
     ax.tick_params(
         bottom=False,
@@ -133,7 +138,7 @@ def plot_cross_likelihood(name, signals):
     )
 
     pos_tick = np.linspace(0, 1, 2 * n + 1)[1::2]
-    size = 1 / n * 1.2
+    size = 1 / n * 0.9
 
     for i in range(n):
         add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
@@ -141,6 +146,30 @@ def plot_cross_likelihood(name, signals):
 
     plt.savefig(f"figures/{name}.png")
 
+
+def plot_cross_entropy(name, signals):
+    data = np.load(f"data/{name}.npy", allow_pickle=True).item()
+    y, logits, logp = np.array(data['y']), np.array(data['ŷ']), np.array(data['logp'])
+
+    data = np.zeros((4, 4))
+    for k in range(4):
+        data[k,:] = logits[y==k].mean(0)
+
+    plot_heatmap(data, name, signals)
+
+
+def plot_cross_likelihood(name, signals):
+    log_p = np.load(f"data/{name}.npy")
+    log_p[log_p == -np.inf] = -1e3
+    log_p = np.maximum(log_p, -1e3)
+    log_p = log_p.swapaxes(0, 1)
+    log_p = log_p.mean(-1)
+
+    plot_heatmap(log_p, name, signals)
+
+
+def plot_noise_box():
+    pass
 
 def main(args):
     if args.verbose:
@@ -151,6 +180,11 @@ def main(args):
     print_color_latex()
 
     cprint("Will process all data figures:")
+
+    cprint("– Noise plots likelihood", Fore.GREEN)
+
+    cprint("– Cross-entropy heatmaps", Fore.GREEN)
+    plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)
 
     cprint("– Cross-Likelihood heatmaps", Fore.GREEN)
     plot_cross_likelihood('heatmap_musdb', MUSDB_SIGNALS)
