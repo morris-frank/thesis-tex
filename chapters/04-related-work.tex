@@ -3,19 +3,19 @@
 
 In this section we give an overview of recent approaches to (sound) source separation which are related to our own approach either in the chosen model choices or implicit ideas. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work.
 
-\todo{ICA???}
 
 \section{Source separation}
+\subsection{ICA}
+
 All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorizd, meaning we build a shared model for all sources.
 
-\subsection{WaveNet}
-
+\subsection{WaveNet based}
 \textcite{rethageWavenet2018} use a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors made the WaveNet non-causal by making the padding symmetrical. Further they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for their case the real valued predictions behave better.
 
 \textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
 
 \subsection{U-Net based}
-\begin{marginfigure}
+\begin{marginfigure}[-10em]
     \input{figures/unet}%
     \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling conolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermeidate filter activations of the encoding are used as conditional inputs at the resepctive output scaling.}%
     \label{fig:unet}
@@ -35,5 +35,5 @@ The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. 
 
 Demucs~\cite{defossezDemucs2019} also introduces a BiLSTM at the bottleneck~\cite{defossezSING2018}. Additionally to the ideas from the HydraNet Demucs also adds data augmentation and makes additional internal changes to the network architecture. They simplify the layer blocks by using the simpler Gated Linear Units~\cite{dauphinLanguage2017} and while the Wave-U-Net is using upsampling followed by a convolutional layer in the decoder, here the others directly use transposed convolutions to achieve the upsampling. Demucs is the first time-domain based end-to-end model that is achieving similar or better results compared to spectrogram based models.
 
-\subsection{Auto-encoder}
+\subsection{Auto-encoder based}
 \textcite{graisRaw2018a} present the first work using an auto-encoder for multi-channel sound source separation. Their auto-encoder takes raw audio as the input is using multi-scale convolutional layers (transposed in the decoder) in the encoder and decoder, combining the activations of the different scales before the activation. (Similar to Inception networks~\cite{szegedyGoing2014}).

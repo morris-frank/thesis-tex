@@ -16,7 +16,7 @@ import numpy as np
 import seaborn as sns
 
 # geometry lengths from LaTeX
-MARGIN_LENGTH = 2
+MARGIN_LENGTH = 2 # Maximum width for a figure in the margin, in inches
 
 # choosen colors
 DIVERGING = 'viridis'
@@ -52,6 +52,19 @@ mpl.colors._colors_full_map["c"] = hex2rgb(PALETTE['aqua'])
 mpl.colors._colors_full_map["m"] = hex2rgb(PALETTE['purple'])
 mpl.colors._colors_full_map["y"] = hex2rgb(PALETTE['yellow'])
 mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE['orange'])
+
+
+from scipy.stats import multivariate_normal
+from mpl_toolkits.mplot3d import Axes3D
+def make_a_rand_dist():
+    x, y = np.mgrid[-1:1:.01, -1:1:.01]
+    pos = np.dstack((x, y))
+    rv = multivariate_normal([0.5, -0.2], [[2.0, 0.3], [0.3, 0.5]])
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(x, y, rv.pdf(pos))
+    # ax.contourf(x, y, rv.pdf(pos))
+
 
 
 def cprint(string, color = Fore.YELLOW):

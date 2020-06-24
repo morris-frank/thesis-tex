@@ -27,7 +27,7 @@ From here derive the ELBO in the same way as before, just now with \(N\) priors 
         &= \E_\aprxpost^N \left[ \log \÷{p(\m,\s_1,\…,\s_N)}{\post} \right]\\
         &= \E_\aprxpost^N \left[ \log \÷{p(\m|\s_1,\…,\s_N) \· \Π_k^N p(\s_k)}{\Π_k^N \aprxpost} + \log \÷{\Π_k^N \aprxpost}{\post} \right]\\
         &\geq \Σ_k^N \E_\aprxpost \left[ \log \÷{p(\s_k)}{\aprxpost} \right]
-             +\E_\aprxpost \left[ p(\m|\s_1,\…,\s_N) \right]\\
+             +\E_\aprxpost \left[ p(\m|\s_1,\…,\s_N) \right]\label{eq:final_elbo}\\
     \end{align}
 \end{fullwidth}
 
@@ -53,6 +53,15 @@ blablabla
 \subsection{Fixing the priors}
 
 \section{Modeling the posteriors}
+
+Assuming we have now a set of meaningful, discriminative priors \(p(\s_i)\) we need to combine the independent models to extract sources \(\{\s_i\}\) given a mix \(\m\). At the beginning of this section we already introduced the imagined generative model and derived the lower bound for the approximate posterior. Taking a step back again and looking at the posterior we have two general possibilities to retrieve samples from the posterior \(p(\s_i | \m)\).
+
+\begin{align}
+    p(\s_i|m)
+    &= \÷{p(\m|\s_i)\· p(\s_i)}{p(\m)}
+\end{align}
+
+First we can model the approximate posterior \(\aprxpost\). By doing so we train a new subsequent function which directly retrieves the predicted sources given a mix. This method is, in principle, the same as we would see in a normal variational-autoencoder. Alternatively, finding the actual posterior to difficult to model, we can sample \(\s_i \sim p(\·|m)\) without computing the actual distribution.
 
 \subsection{Variational-autoencoder}
 

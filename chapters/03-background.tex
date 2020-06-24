@@ -54,8 +54,6 @@ To formalize the search for an intractable posterior into a tractable optimizati
 
 Following the derivation in~\textcite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
 
-test~\cite{jordanIntroduction1999}
-
 \begin{align}
     \log p_{\B{\θ}}(\B{x})
     &= \E_{q_{\B{\θ}}(\B{z}|\B{x})} \left[ \log p_{\B{\θ}}(\B{x}) \right]\\
@@ -92,7 +90,7 @@ test~\cite{jordanIntroduction1999}
 
 Note that we separated the likelihood into two parts. The second part is the (positive) Kullback-Leibler divergence of the approximate posterior from the true intractable posterior. This unknown divergence states the `correctness' of our approximation~\footnote{More specifically the divergence marries two errors of our approximate model. First, it gives the error of our posterior estimation from the true posterior, by definition of divergence. Second, it specifies the error of our complete model likelihood from the marginal likelihood. This is called the \I{tightness} of the bound.}.
 
-The first term is the \I{variational free energy}~\todo{explain free energy} or \I{evidence lower bound} (ELBO):
+The first term is the \I{variational free energy} or \I{evidence lower bound} (ELBO):
 
 \begin{align}
     \elbo_{\B{\θ}, \B{\φ}}(\B{x})
