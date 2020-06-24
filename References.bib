@@ -243,6 +243,36 @@
   options = {useprefix=true}
 }
 
+@article{cohen-hadriaImproving2019,
+  title = {Improving Singing Voice Separation Using {{Deep U}}-{{Net}} and {{Wave}}-{{U}}-{{Net}} with Data Augmentation},
+  author = {Cohen-Hadria, Alice and Roebel, Axel and Peeters, Geoffroy},
+  date = {2019-03-04},
+  url = {http://arxiv.org/abs/1903.01415},
+  urldate = {2020-06-24},
+  abstract = {State-of-the-art singing voice separation is based on deep learning making use of CNN structures with skip connections (like U-net model, Wave-U-Net model, or MSDENSELSTM). A key to the success of these models is the availability of a large amount of training data. In the following study, we are interested in singing voice separation for mono signals and will investigate into comparing the U-Net and the Wave-U-Net that are structurally similar, but work on different input representations. First, we report a few results on variations of the U-Net model. Second, we will discuss the potential of state of the art speech and music transformation algorithms for augmentation of existing data sets and demonstrate that the effect of these augmentations depends on the signal representations used by the model. The results demonstrate a considerable improvement due to the augmentation for both models. But pitch transposition is the most effective augmentation strategy for the U-Net model, while transposition, time stretching, and formant shifting have a much more balanced effect on the Wave-U-Net model. Finally, we compare the two models on the same dataset.},
+  archivePrefix = {arXiv},
+  eprint = {1903.01415},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/MI8DL8WW/Cohen-Hadria et al. - 2019 - Improving singing voice separation using Deep U-Ne.pdf},
+  keywords = {Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing},
+  primaryClass = {cs, eess}
+}
+
+@article{dauphinLanguage2017,
+  title = {Language {{Modeling}} with {{Gated Convolutional Networks}}},
+  author = {Dauphin, Yann N. and Fan, Angela and Auli, Michael and Grangier, David},
+  date = {2017-09-08},
+  url = {http://arxiv.org/abs/1612.08083},
+  urldate = {2020-06-24},
+  abstract = {The pre-dominant approach to language modeling to date is based on recurrent neural networks. Their success on this task is often linked to their ability to capture unbounded context. In this paper we develop a finite context approach through stacked convolutions, which can be more efficient since they allow parallelization over sequential tokens. We propose a novel simplified gating mechanism that outperforms Oord et al (2016) and investigate the impact of key architectural decisions. The proposed approach achieves state-of-the-art on the WikiText-103 benchmark, even though it features long-term dependencies, as well as competitive results on the Google Billion Words benchmark. Our model reduces the latency to score a sentence by an order of magnitude compared to a recurrent baseline. To our knowledge, this is the first time a non-recurrent approach is competitive with strong recurrent models on these large scale language tasks.},
+  archivePrefix = {arXiv},
+  eprint = {1612.08083},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/XCIF4XM3/Dauphin et al. - 2017 - Language Modeling with Gated Convolutional Network.pdf},
+  keywords = {Computer Science - Computation and Language},
+  primaryClass = {cs}
+}
+
 @article{defossezDemucs2019,
   title = {Demucs: {{Deep Extractor}} for {{Music Sources}} with Extra Unlabeled Data Remixed},
   shorttitle = {Demucs},
@@ -427,6 +457,21 @@
   eprint = {1803.00702},
   eprinttype = {arxiv},
   file = {/home/morris/docs/lib/Zotero/storage/3TXQBSD2/Grais et al. - 2018 - Raw Multi-Channel Audio Source Separation using Mu.pdf;/home/morris/docs/lib/Zotero/storage/SX4NLYC8/1803.html},
+  keywords = {68T01; 68T10; 68T45; 62H25,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Computer Science - Multimedia,Computer Science - Sound,H.5.5,I.2,I.2.6,I.4,I.4.3,I.5},
+  primaryClass = {cs}
+}
+
+@article{graisRaw2018a,
+  title = {Raw {{Multi}}-{{Channel Audio Source Separation}} Using {{Multi}}-{{Resolution Convolutional Auto}}-{{Encoders}}},
+  author = {Grais, Emad M. and Ward, Dominic and Plumbley, Mark D.},
+  date = {2018-03-01},
+  url = {http://arxiv.org/abs/1803.00702},
+  urldate = {2020-06-24},
+  abstract = {Supervised multi-channel audio source separation requires extracting useful spectral, temporal, and spatial features from the mixed signals. The success of many existing systems is therefore largely dependent on the choice of features used for training. In this work, we introduce a novel multi-channel, multi-resolution convolutional auto-encoder neural network that works on raw time-domain signals to determine appropriate multi-resolution features for separating the singing-voice from stereo music. Our experimental results show that the proposed method can achieve multi-channel audio source separation without the need for hand-crafted features or any pre- or post-processing.},
+  archivePrefix = {arXiv},
+  eprint = {1803.00702},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/T2ZDE7XA/Grais et al. - 2018 - Raw Multi-Channel Audio Source Separation using Mu.pdf},
   keywords = {68T01; 68T10; 68T45; 62H25,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Computer Science - Multimedia,Computer Science - Sound,H.5.5,I.2,I.2.6,I.4,I.4.3,I.5},
   primaryClass = {cs}
 }
@@ -646,6 +691,14 @@
   keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing},
   options = {useprefix=true},
   primaryClass = {cs, eess}
+}
+
+@article{kaspersenHydraNet2019,
+  title = {{{HydraNet}}: {{A Network For Singing Voice Separation}}},
+  shorttitle = {{{HydraNet}}},
+  author = {Kaspersen, Esbern Torgard},
+  date = {2019},
+  file = {/home/morris/docs/lib/Zotero/storage/NPRXLTRZ/Kaspersen - 2019 - HydraNet A Network For Singing Voice Separation.pdf}
 }
 
 @article{kimFloWaveNet2019a,
@@ -884,6 +937,21 @@
   keywords = {Acoustics,Auditory system,Ears,Human performance,Phonology,read,Semantics,Sensory perception,Vision},
   langid = {english},
   number = {5}
+}
+
+@article{narayanaswamyAudio2019,
+  title = {Audio {{Source Separation}} via {{Multi}}-{{Scale Learning}} with {{Dilated Dense U}}-{{Nets}}},
+  author = {Narayanaswamy, Vivek Sivaraman and Katoch, Sameeksha and Thiagarajan, Jayaraman J. and Song, Huan and Spanias, Andreas},
+  date = {2019-04-08},
+  url = {http://arxiv.org/abs/1904.04161},
+  urldate = {2020-06-24},
+  abstract = {Modern audio source separation techniques rely on optimizing sequence model architectures such as, 1D-CNNs, on mixture recordings to generalize well to unseen mixtures. Specifically, recent focus is on time-domain based architectures such as Wave-U-Net which exploit temporal context by extracting multi-scale features. However, the optimality of the feature extraction process in these architectures has not been well investigated. In this paper, we examine and recommend critical architectural changes that forge an optimal multi-scale feature extraction process. To this end, we replace regular \$1-\$D convolutions with adaptive dilated convolutions that have innate capability of capturing increased context by using large temporal receptive fields. We also investigate the impact of dense connections on the extraction process that encourage feature reuse and better gradient flow. The dense connections between the downsampling and upsampling paths of a U-Net architecture capture multi-resolution information leading to improved temporal modelling. We evaluate the proposed approaches on the MUSDB test dataset. In addition to providing an improved performance over the state-of-the-art, we also provide insights on the impact of different architectural choices on complex data-driven solutions for source separation.},
+  archivePrefix = {arXiv},
+  eprint = {1904.04161},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/282XL74P/Narayanaswamy et al. - 2019 - Audio Source Separation via Multi-Scale Learning w.pdf},
+  keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing,Statistics - Machine Learning},
+  primaryClass = {cs, eess, stat}
 }
 
 @software{nativeinstrumentsStem,
@@ -1158,6 +1226,22 @@
   primaryClass = {cs, stat}
 }
 
+@article{slizovskaiaEndtoEnd2019,
+  title = {End-to-{{End Sound Source Separation Conditioned On Instrument Labels}}},
+  author = {Slizovskaia, Olga and Kim, Leo and Haro, Gloria and Gomez, Emilia},
+  date = {2019-05-09},
+  url = {http://arxiv.org/abs/1811.01850},
+  urldate = {2020-06-24},
+  abstract = {Can we perform an end-to-end music source separation with a variable number of sources using a deep learning model? We present an extension of the Wave-U-Net model which allows end-to-end monaural source separation with a non-fixed number of sources. Furthermore, we propose multiplicative conditioning with instrument labels at the bottleneck of the Wave-U-Net and show its effect on the separation results. This approach leads to other types of conditioning such as audio-visual source separation and score-informed source separation.},
+  archivePrefix = {arXiv},
+  eprint = {1811.01850},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/M4DLUFYT/Slizovskaia et al. - 2019 - End-to-End Sound Source Separation Conditioned On .pdf},
+  keywords = {Computer Science - Machine Learning,Computer Science - Sound,Electrical Engineering and Systems Science - Audio and Speech Processing},
+  primaryClass = {cs, eess},
+  version = {2}
+}
+
 @unpublished{stollerWaveUNet2018,
   title = {Wave-{{U}}-{{Net}}: {{A Multi}}-{{Scale Neural Network}} for {{End}}-to-{{End Audio Source Separation}}},
   shorttitle = {Wave-{{U}}-{{Net}}},
@@ -1196,6 +1280,21 @@
   file = {/home/morris/docs/lib/Zotero/storage/H37YMIHA/Sungheon Park et al. - 2018 - Music Source Separation Using Stacked Hourglass Ne.pdf},
   keywords = {read},
   venue = {{Paris, France}}
+}
+
+@article{szegedyGoing2014,
+  title = {Going {{Deeper}} with {{Convolutions}}},
+  author = {Szegedy, Christian and Liu, Wei and Jia, Yangqing and Sermanet, Pierre and Reed, Scott and Anguelov, Dragomir and Erhan, Dumitru and Vanhoucke, Vincent and Rabinovich, Andrew},
+  date = {2014-09-16},
+  url = {http://arxiv.org/abs/1409.4842},
+  urldate = {2020-06-24},
+  abstract = {We propose a deep convolutional neural network architecture codenamed "Inception", which was responsible for setting the new state of the art for classification and detection in the ImageNet Large-Scale Visual Recognition Challenge 2014 (ILSVRC 2014). The main hallmark of this architecture is the improved utilization of the computing resources inside the network. This was achieved by a carefully crafted design that allows for increasing the depth and width of the network while keeping the computational budget constant. To optimize quality, the architectural decisions were based on the Hebbian principle and the intuition of multi-scale processing. One particular incarnation used in our submission for ILSVRC 2014 is called GoogLeNet, a 22 layers deep network, the quality of which is assessed in the context of classification and detection.},
+  archivePrefix = {arXiv},
+  eprint = {1409.4842},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/7FB4LTWA/Szegedy et al. - 2014 - Going Deeper with Convolutions.pdf},
+  keywords = {Computer Science - Computer Vision and Pattern Recognition},
+  primaryClass = {cs}
 }
 
 @inproceedings{szegedyGoing2015,
@@ -1251,6 +1350,20 @@
   abstract = {This paper deals with the separation of music into individual instrument tracks which is known to be a challenging problem. We describe two different deep neural network architectures for this task, a feed-forward and a recurrent one, and show that each of them yields themselves state-of-the art results on the SiSEC DSD100 dataset. For the recurrent network, we use data augmentation during training and show that even simple separation networks are prone to overfitting if no data augmentation is used. Furthermore, we propose a blending of both neural network systems where we linearly combine their raw outputs and then perform a multi-channel Wiener filter post-processing. This blending scheme yields the best results that have been reported to-date on the SiSEC DSD100 dataset.},
   eventtitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
   file = {/home/morris/docs/lib/Zotero/storage/SXJZGLQA/7952158.html},
+  keywords = {Blending,blending scheme yields,Context,data augmentation,Deep neural network (DNN),deep neural network architectures,Indexes,Instruments,Long-short term memory (LSTM),mixture models,multichannel Wiener filter post-processing,music,Music source separation (MSS),music source separation improvement,recurrent network,recurrent neural nets,Recurrent neural networks,SiSEC DSD100 dataset,Source separation,speech processing,Training,Wiener filters}
+}
+
+@inproceedings{uhlichImproving2017a,
+  title = {Improving Music Source Separation Based on Deep Neural Networks through Data Augmentation and Network Blending},
+  booktitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
+  author = {Uhlich, Stefan and Porcu, Marcello and Giron, Franck and Enenkl, Michael and Kemp, Thomas and Takahashi, Naoya and Mitsufuji, Yuki},
+  date = {2017-03},
+  pages = {261--265},
+  issn = {2379-190X},
+  doi = {10.1109/ICASSP.2017.7952158},
+  abstract = {This paper deals with the separation of music into individual instrument tracks which is known to be a challenging problem. We describe two different deep neural network architectures for this task, a feed-forward and a recurrent one, and show that each of them yields themselves state-of-the art results on the SiSEC DSD100 dataset. For the recurrent network, we use data augmentation during training and show that even simple separation networks are prone to overfitting if no data augmentation is used. Furthermore, we propose a blending of both neural network systems where we linearly combine their raw outputs and then perform a multi-channel Wiener filter post-processing. This blending scheme yields the best results that have been reported to-date on the SiSEC DSD100 dataset.},
+  eventtitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
+  file = {/home/morris/docs/lib/Zotero/storage/4NQUQS45/Uhlich et al. - 2017 - Improving music source separation based on deep ne.pdf},
   keywords = {Blending,blending scheme yields,Context,data augmentation,Deep neural network (DNN),deep neural network architectures,Indexes,Instruments,Long-short term memory (LSTM),mixture models,multichannel Wiener filter post-processing,music,Music source separation (MSS),music source separation improvement,recurrent network,recurrent neural nets,Recurrent neural networks,SiSEC DSD100 dataset,Source separation,speech processing,Training,Wiener filters}
 }
 
