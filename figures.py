@@ -20,6 +20,7 @@ MARGIN_LENGTH = 2
 
 # choosen colors
 DIVERGING = 'viridis'
+DIVERGING = sns.cubehelix_palette(n_colors=12, start=2., rot=0.8, reverse=True, hue=0.65)  # mh is ok, but thats it
 PALETTE = {
     'green':        '98971a',
     'yellow':       'd79921',

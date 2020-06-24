@@ -13,7 +13,7 @@ In this section we introduce the two datasets we will be working on. First a sim
     \label{fig:toy_data}
 \end{marginfigure}
 
-We simplify the problem domain to create a toy-like dataset. We randomly generate waves from four simple oscillations, see~\cref{fig:toy_data}. Given a wave from each source, the mix is computed by simply taking the mean. When sampling from each source we randomly select a period and phase. The frequencies are restricted to the frequency bounds of the 88 keys of a equal-temprament tuned piano. In our experiments we are gonna model these sources with probability density, looking especially at the square that will pose a problem, as those only consist of two unique values (\(-1\) and \(1\)). This collapsing posterior would simplify the problem too much, therefore we also vary the amplitude of the sampled signals.
+We simplify the problem domain to create a toy-like dataset. We randomly generate waves from four simple oscillations, see~\cref{fig:toy_data}. Given a wave from each source, the mix is computed by simply taking the mean. When sampling from each source we randomly select a period and phase. The frequencies are restricted to the frequency bounds of the 88 keys of a equal-temprament tuned piano. In our experiments we are gonna model these sources with probability densities, looking especially at the square that will pose a problem, as those only consist of two unique values (\(-1\) and \(1\)). This collapsing posterior would simplify the problem too much, therefore we also vary the amplitude of the sampled signals in the uniform range \([0.8, 1.0]\).
 
 In ++later++ section we show that estimating densities over these waves is not giving a smooth manifold. Or differently: in the latent space we can not interpolate between two signals, because the model models, simply put, the sample waves as spiked Dirac deltas.
 
@@ -71,6 +71,7 @@ Similar results were shown before in~\todo{cite some OOD VAE stuff}.
 
 The results for both datasets are similar for all tested model architectures and input domains. See Appendix~\todo{add results} for the full results.
 
+\subsection{Increasing discriminative power}
 With the prior models being not discriminative, it is not possible to train the separation model. Following we will try extend the priors to increase their discriminative power. Above that we propose that our method still holds merit given these results, further work on generative models might result in more discriminative generative models. The method can use any density as a drop-in replacement for the prior in the separation model.
 
 As layed out in~\ref{Section methods} the bad out-of-distribution detection of generative models is not a suprising result and multiple recent works go about solving this. We want to increase the
@@ -81,6 +82,7 @@ As layed out in~\ref{Section methods} the bad out-of-distribution detection of g
     \label{fig:heatmap_musdb_classifier}
 \end{marginfigure}
 
+\subsection{Denoising autoencoder}
 
 \subsection{TODO EXPERIMENTS}
 \begin{enumerate}
