@@ -28,8 +28,8 @@ PALETTE = {
     'blue':         '458588',
     'purple':       'b16286',
     'aqua':         '689d6a',
-    'extlinkcolor': 'ff0000', # external links
-    'intlinkcolor': '00ff00', # internal links
+    'extlinkcolor': '076678', # external links
+    'intlinkcolor': 'af3a03', # internal links
 }
 
 # data configs
@@ -55,6 +55,10 @@ mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE['orange'])
 
 def cprint(string, color = Fore.YELLOW):
     print(f"{color}{string}{Fore.RESET}")
+
+
+def savefig(name):
+    plt.savefig(f"figures/{name}.eps")
 
 
 def print_color_latex():
@@ -149,7 +153,7 @@ def plot_heatmap(data, name, signals):
         add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
         add_plot_tick(ax, signals[i], pos=pos_tick[-i - 1], where="y", size=size)
 
-    plt.savefig(f"figures/{name}.png")
+    savefig(name)
 
 
 def plot_cross_entropy(name, signals):
@@ -185,7 +189,7 @@ def plot_noise_box(name):
     sns.boxplot(x="noise", y="ll", data=df, ax=ax, fliersize=1, linewidth=0.5, showfliers=False, color='y')
     ax.set_ylabel("")
 
-    plt.savefig(f"figures/{name}.png")
+    savefig(name)
 
 
 def main(args):

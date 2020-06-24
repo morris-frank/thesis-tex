@@ -5,7 +5,7 @@
 In this section we introduce the two datasets we will be working on. First a simplified Toy dataset which reudces the problem to a minimla kanonical one and second the musdb18 dataset which is a widely-used testset for musical source separation.
 
 \subsection{ToyData}
-\begin{marginfigure}
+\begin{marginfigure}[5em]
     \resizebox{\textwidth}{!}{%
         \input{figures/toy_data}%
     }%
@@ -27,26 +27,30 @@ As the songs are real natural songs, they are of different lengths. Our models w
 
 It is noted that the musdb18 dataset, while providing a remarkable diverse 10hr of real-world music, is a rather small numbered set of samples. Any data modeling from this set of data will consequently be biased. The dataset specifically is created for the accompying separation challenge and will not translate to general music modeling.
 
+For both the Toy Data and the musdb18 dataset we experiment with prior models on time-domain and spectral-domain input.
+
 \section{Testing the priors}
 
+\subsection{Adding noise}
 \begin{marginfigure}
-    \includegraphics{noise_likelihood_with_noise.png}%
+    \includegraphics{noise_likelihood_with_noise}%
     \caption{noise likelihood with noise}%
     \label{fig:noise_ll_noise}
 \end{marginfigure}
 
+In this ablation study we want to check how resiliant the generative prior models are to noisy samples. It is hypothesized that the latent space of the model consists of, intuitively, singular peaks at mappings of in-distribution samples~\cite{jayaramSource2020}. For the separation to be able to optimize under the prior density, we need likelihood to slowly decrease when moving away from positive samples. If the distribution is too peaked only noiseless inputs would be highly likely and adding noise quickly makes samples too unlikely. We propose adding Gaussian noise with a random variance to the positive samples during training. This should smooth out the modeled density.
+
 \begin{marginfigure}
-    \includegraphics{noise_likelihood_without_noise.png}%
+    \includegraphics{noise_likelihood_without_noise}%
     \caption{noise likelihood without noise}%
     \label{fig:noise_ll_noise}
 \end{marginfigure}
 
-For both the Toy Data and the musdb18 dataset we experiment with prior models on time-domain and spectral-domain input.
-
+\subsection{Testing cross-likelihood}
 In the full model each prior is used to extract its source channel separatly. Through their training they explicitly contract the density for the positive, in-class examples. During separation the priors therefore encounter negative, out-of-distribution samples for the first time. To be useful for separation, it is important that the priors give a low likelihood to samples from the other classes of the dataset.
 
 \begin{marginfigure}
-    \includegraphics{heatmap_toy.png}%
+    \includegraphics{heatmap_toy}%
     \caption{We display the mean average log likelihood of the test data under the different priors and the different signal sources.}%
     \label{fig:heatmap_toy}
 \end{marginfigure}
@@ -56,7 +60,7 @@ We test for this by calculating the mean log likelihood of the the test data set
 When running the same experiment for the musdb18 the discriminative power does not hold up, see~\cref{fig:heatmap_musdb}. All signal sources are about equally likely under each prior density. We hypothesize this stems from the fact that the real musical data is severly more complicated compared to the Toy Data. The Flows model the appearance of sound in general, as the in-class variability of sounds is already high, without knowing anything about the \I{discriminative} differences between the instruments and does not infer the distribution from those features.
 
 \begin{marginfigure}
-    \includegraphics{heatmap_musdb.png}%
+    \includegraphics{heatmap_musdb}%
     \caption{We display the mean average likelihood of the test data under the different priors and the different signal sources.}%
     \label{fig:heatmap_musdb}
 \end{marginfigure}

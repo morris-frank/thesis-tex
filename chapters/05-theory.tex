@@ -5,7 +5,7 @@ In this chapter we introduce the theoretical idea of our Bayesian modeling of so
 
 We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of the source separated music tracks. For each source a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality we fix this function to be the mean.
 
-\begin{marginfigure}
+\begin{marginfigure}[-15em]
     \input{figures/graphical_model}%
     \caption{The used graphical model for the source separation task. We have the latent source channel variables \(\s_k\). Exemplary here, as in our data, we have four sources. The mix \(\m\) is observed.}%
     \label{fig:graphical_model}

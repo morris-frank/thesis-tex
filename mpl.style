@@ -8,3 +8,4 @@ text.latex.preamble: \usepackage{mathpazo}
 mathtext.fontset: stix
 font.family: STIXGeneral
 font.size: 7
+pgf.texsystem: xelatex

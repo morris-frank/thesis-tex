@@ -5,5 +5,5 @@
 \definecolor{blue}{rgb}	{0.27, 0.52, 0.53}
 \definecolor{purple}{rgb}	{0.69, 0.38, 0.53}
 \definecolor{aqua}{rgb}	{0.41, 0.62, 0.42}
-\definecolor{extlinkcolor}{rgb}	{1.0, 0.0, 0.0}
-\definecolor{intlinkcolor}{rgb}	{0.0, 1.0, 0.0}
+\definecolor{extlinkcolor}{rgb}	{0.03, 0.4, 0.47}
+\definecolor{intlinkcolor}{rgb}	{0.69, 0.23, 0.01}
