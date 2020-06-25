@@ -20,7 +20,7 @@ MARGIN_LENGTH = 2 # Maximum width for a figure in the margin, in inches
 
 # choosen colors
 DIVERGING = 'viridis'
-DIVERGING = sns.cubehelix_palette(n_colors=12, start=2., rot=0.8, reverse=True, hue=0.65)  # mh is ok, but thats it
+DIVERGING = sns.cubehelix_palette(n_colors=6, start=2., rot=0.8, reverse=True, hue=0.65)  # mh is ok, but thats it
 PALETTE = {
     'green':        '98971a',
     'yellow':       'd79921',
