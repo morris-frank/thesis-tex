@@ -9,3 +9,5 @@ mathtext.fontset: stix
 font.family: STIXGeneral
 font.size: 7
 pgf.texsystem: xelatex
+legend.fontsize: 6
+legend.title_fontsize: 6

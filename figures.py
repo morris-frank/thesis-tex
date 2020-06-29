@@ -192,17 +192,24 @@ def plot_cross_likelihood(name, signals):
 
 
 def plot_noise_box(name):
-    df = pd.DataFrame(
-        np.load(f"data/{name}.npy", allow_pickle=True,).item()
-    )
-    df = df.melt(var_name="noise", value_name="ll")
-    df = df[df.noise != 0.001]
+    df = np.load(f"data/{name}.npy", allow_pickle=True,).item()
 
-    _, ax = plt.subplots(figsize=(MARGIN_LENGTH, 0.9*MARGIN_LENGTH), gridspec_kw=dict(left=0.15, right=0.95))
-    add_plot_tick(ax, symbol='saw', size=0.1)
-    sns.boxplot(x="noise", y="ll", data=df, ax=ax, fliersize=1, linewidth=0.5, showfliers=False, color='y')
-    ax.set_ylabel("")
+    l = []
+    for σ, (i, k) in product(df.keys(), enumerate(TOY_SIGNALS)):
+        l.extend([(σ, k, v) for v in df[σ][i].tolist()])
 
+    df = pd.DataFrame(l, columns=['Noise-Level', 'Source', 'Log-Likelihood'])
+    df = df[df['Log-Likelihood'] != 0]
+    df = df[df['Noise-Level'] != 0.001]
+    df = df[df['Noise-Level'] != 0.01]
+    df = df[df['Noise-Level'] != 0.05]
+
+    _, axs = plt.subplots(2, 2, figsize=(MARGIN_LENGTH, 1.3*MARGIN_LENGTH), gridspec_kw=dict(left=0.13, right=0.99, hspace=0.5, wspace=0.4))
+    for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
+        add_plot_tick(ax, symbol=signal, size=0.1)
+        sns.boxplot(x="Noise-Level", y="Log-Likelihood", data=df[df['Source'] == signal], ax=ax, fliersize=1, linewidth=0.5, showfliers=False)
+        ax.set_ylabel("")
+        ax.set_xlabel("")
     savefig(name)
 
 
