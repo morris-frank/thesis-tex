@@ -3,16 +3,20 @@ from argparse import ArgumentParser
 from math import tau as τ
 from itertools import product
 
-import pandas as pd
 from colorama import Fore
-import matplotlib as mpl
 from matplotlib import colors, rcParams
-from matplotlib.ticker import LogFormatter
-from matplotlib import pyplot as plt
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from matplotlib import font_manager as fm
+from matplotlib import pyplot as plt
+from matplotlib.ticker import LogFormatter
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.signal import sawtooth, square
+from scipy.stats import multivariate_normal
+import librosa
+import librosa.display
+import matplotlib as mpl
 import numpy as np
+import pandas as pd
 import seaborn as sns
 
 # geometry lengths from LaTeX
@@ -54,8 +58,7 @@ mpl.colors._colors_full_map["y"] = hex2rgb(PALETTE['yellow'])
 mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE['orange'])
 
 
-from scipy.stats import multivariate_normal
-from mpl_toolkits.mplot3d import Axes3D
+
 def make_a_rand_dist():
     x, y = np.mgrid[-1:1:.01, -1:1:.01]
     pos = np.dstack((x, y))
@@ -64,7 +67,6 @@ def make_a_rand_dist():
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(x, y, rv.pdf(pos))
     # ax.contourf(x, y, rv.pdf(pos))
-
 
 
 def cprint(string, color = Fore.YELLOW):
@@ -213,26 +215,29 @@ def plot_noise_box(name):
     savefig(name)
 
 
+def plot_waveforms():
+
+
 def main(args):
     if args.verbose:
         cprint("Palette example plot:")
         plot_palette()
 
-    cprint("Overwriting LaTeX color definitions")
-    print_color_latex()
+    # cprint("Overwriting LaTeX color definitions")
+    # print_color_latex()
 
-    cprint("Will process all data figures:")
+    # cprint("Will process all data figures:")
 
-    cprint("– Noise plots likelihood", Fore.GREEN)
-    plot_noise_box('noise_likelihood_with_noise')
-    plot_noise_box('noise_likelihood_without_noise')
+    # cprint("– Noise plots likelihood", Fore.GREEN)
+    # plot_noise_box('noise_likelihood_with_noise')
+    # plot_noise_box('noise_likelihood_without_noise')
 
-    cprint("– Cross-entropy heatmaps", Fore.GREEN)
-    plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)
+    # cprint("– Cross-entropy heatmaps", Fore.GREEN)
+    # plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)
 
-    cprint("– Cross-Likelihood heatmaps", Fore.GREEN)
-    plot_cross_likelihood('heatmap_musdb', MUSDB_SIGNALS)
-    plot_cross_likelihood('heatmap_toy', TOY_SIGNALS)
+    # cprint("– Cross-Likelihood heatmaps", Fore.GREEN)
+    # plot_cross_likelihood('heatmap_musdb', MUSDB_SIGNALS)
+    # plot_cross_likelihood('heatmap_toy', TOY_SIGNALS)
 
 
 if __name__ == "__main__":

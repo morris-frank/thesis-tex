@@ -167,7 +167,11 @@ RealNVP~\cite{dinhDensity2017} builds on top of NICE creating a more general, no
 
 Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
-\section{Modeling raw audio}
+\section{Modeling audio}
+
+\subsection{Representations of audio}
+
+\subsection{Modeling raw audio}
 Deep learning models as used for image applications are unsuitable for raw audio signals (signals in \I{time-domain}). Digital audio is sampled at high sample rates, commonly 16kHz up to 44kHz. The features of interest lie at scales of strongly different magnitudes. Recognizing the local-structure of a signal, like frequency and timbre, might require features at short intervals (\(\approx\) tens of milliseconds) but modeling of speech or music features happens at the scale of seconds to minutes. As such a generative model for this domain has to model at these different scales.
 
 \begin{figure}[]
