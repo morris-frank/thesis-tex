@@ -48,7 +48,7 @@ The two main variants of normalizing flows we build our priors from are the Real
 
 For the case of the time-domain representation, the data has only one channel (mono-audio). Therefore a Glow-like shuffleing of channels is not possible and we resort to using spatial masking for the coupling layers. In the case of using a spectral representation of the audio data we can also experiment with channel-shuffleing.
 
-blablabla
+\itodo{blabla}
 
 \subsection{Fixing the priors}
 
@@ -65,9 +65,11 @@ First we can model the approximate posterior \(\aprxpost\). By doing so we train
 
 \subsection{Variational-autoencoder}
 
+\itodo{blabla}
+
 \subsection{Langevin Dynamics}
 The second option for estimating the posterior \(p(\s_i | \m)\) is iteratively sampling from the prior, under the the mixing constraint, using Langevin dynamics~\cite{nealMCMC2012}. While they are a classical approach to stochastic modeling of a dynamical modelcular system, \textcite{wellingBayesian2011} has shown how to employ Langevin dynamics as an MCMC sampling process to estimate the posterior in Bayesian modeling. With Stochastic Gradient Langevin Dynamics (SGLD) we can sample from \(\s_i \sim p(\· | \m)\) without computing, explicitly, the posterior \(p(\s_i | \m)\).
 
-\todo{explanation}
+\itodo{explanation}
 
 The idea of using SGLD in combination with deep parametrized priors was, concurrently to this work, introduced in \textcite{jayaramSource2020}. The authors argue that direct optimization under the prior distribution is not successfull due to the severe peakedness of the priors. Thus, they argue, the stochasticity, added with the Gaussian noise in SGLD, is needed to not get stuck in local optimas under the manifold. We challenge that explanation as it is, blabla

@@ -7,7 +7,7 @@ First we introduce the concept of deep latent-variable models, which important c
 
 \section{Deep Latent-Variable Models}%
 \label{sec:dlvm}
-In this section we introduce the idea of latent variable and the idea of finding models of data using those laten variables. Further we discuss what practical ways are currently successfull ain estimating the model parameters and how they are trained.
+In this section we introduce the idea of latent variable and the idea of finding models of data using those latent variables. Further we discuss what practical ways are currently successfull ain estimating the model parameters and how they are trained.
 
 For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. Further we introduce an approximate model with the density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
@@ -28,7 +28,7 @@ The maximum likelihood estimation of our model parameters maximizes this objecti
 
 To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\mathcal{D}\). For example if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. But we could also introduce the instrument as an underlying latent variable \(\B{z}\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example.
 
-The data likelihood now is the marginal density of the joint latent density, with one latent variable:
+Now the data likelihood is the marginal density of the joint latent density. With one latent variable we get:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
@@ -186,11 +186,17 @@ RealNVP~\cite{dinhDensity2017} builds on top of NICE creating a more general, no
 
 Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
-\section{Modeling audio}
-
-\itodo{What is audio?}
+\section{Modeling audio}%
+\label{sec:audio}
+In the physical world a sound signal is a change of the density of the carrier air over time. As such it is a one-dimensional temporal signal\footnote{Sound waves in gases are purely compressive, therefore they cannot be polarized which would introduce a higher complexity. In solids a sound signal can have polarization, think of an earthquake with shear and pressure components.}. Humans sound preception is \I{stereo} as we have two ears and sense the changes in pressure at two different points in space simoustantly.
 
 \subsection{Representations of audio}
+The simplest form of digitally recording a sound signal is recording the air pressure at fixed intervals at one or multiple points in space with a microphone. Thie method is called Pulse-Code modulation (PCM). It introduces two parameters which will bias the result the record. First we have to pick a temporal frequency with which the pressure samples a taken, the so called sample rate. The Nyquist-Shannon theorem~\cite{kotelnikovCarrying1933} tells us that if the highest frequency in the true signal is \(B\ \si{\Hz}\) than with a sample rate of \(2\· B\ \si{\Hz}\) we will capture the complete signal with all frequencies. At a lower sample rate we might introduce aliasing effects. Second we have to represent each sample as a digital value. The pressure, or amplitude, at this time point is a physical value which is encoded. The microphone has a range of air pressure which w.l.o.g is set to \([-1, 1]\), where a value of \(0\) is no signal. The simplest form of encoding is Linear PCM where the amplitudes are quantized on a linear grid in the possible range. More advanced quantization include \(\μ\)-law encoding~\cite{Pulse1972} in which the quantization intervals are varied with the amplitude\footnote{The actual formula for calcuating the \(\μ\)-law quantization is: \[F(x) = \sgn{(x)} \· \÷{\ln{(1 + \μ |x|)}}{\ln{(1 + \μ)}}\]}. As human perception of loudness is logarithmic this encoding also quantizes the amplitude values on a logarithmic response curve. This makes it possible to achieve a higher signal-to-noise ratio at smaller encoding sizes for sound signals.
+
+
+As an example, if encoding a sound signal with \(\SI{8}{\kHz}\) \(\SI{16}{\bit}\) Linear PCM we sample a amplitude value every \(\÷{1}{8000} \si{\s}\) and quantize those into \(2^{16} = 65536\) bins. A sample with 100 values is only \(\SI{12.5}{\ms}\) long!
+
+A standard full piano with 88 keys tuned to \(\SI{440}{\Hz}\) at the \(\t{A}_4\) has a frequency range of \([\SI{27.5}{\Hz}, \SI{4186}{\Hz}]\) from the \(\t{A}_0\) to the \(\t{C}_8\), respectively. Therefore just for recording a standard piano we need a sampling rate of more than \(\SI{8}{\kHz}\). Beyond the piano many instruments exhibit even larger frequency content which leads to the conclusion that not just for recording but also for our goal of modeling musical sounds a resonably high sampling rate is crucial.
 
 \itodo{Time-domain vs spectrogram, what is a spectrogram, missing phase information, complex spectrograms…}
 
