@@ -1,14 +1,15 @@
 \chapter{Background}%
 \label{ch:background}
 
-In this section we
-In general this research work is build on prior work first on deep generative models, or latetn models, which try to estimate the distribution / density of a data space to find smooth manifolds. Second we will give an overview of contemporary works on using deep models for music and speech analysis and generation.
+In this section we introduce the minimally necessary background concepts our work is buidling upon. Our work marries two fields of research: on the one side generative, graphical models. With those one tries to model the data distribution of a observed variable by inducing dependencies of latent (unobserved) variables generating the observered variables. Modeling those dependencies, the meaningful latent variables allow us to build an intuitive generative story for the probabilistic model of the observed data. On the other hand we introduce the recent body of of work on how to practically model sound signals, in particular how this compares differently to modeling images.
 
-\section{Deep Latent-Variable Models}
+First we introduce the concept of deep latent-variable models, which important classes of models exist and how to train them. Second we will shortly draw up the difficulties of modeling sound and which recent solutions exist and how they differ.
 
+\section{Deep Latent-Variable Models}%
+\label{sec:dlvm}
 In this section we introduce the idea of latent variable and the idea of finding models of data using those laten variables. Further we discuss what practical ways are currently successfull ain estimating the model parameters and how they are trained.
 
-For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. We introduce an approximate model with density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
+For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. Further we introduce an approximate model with the density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
     p_{\B{\θ}}(\mathcal{D}) \approx p^*(\mathcal{D})
@@ -16,7 +17,7 @@ For our process, we have observations from the data space \({\B{x}}\∈\mathcal{
 
 The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learned. Every choice for the form of the model will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model, even before we maximize a learning objective using the parameters \(\B{\θ}\).
 
-In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points}. Therefore we can write the data log-likelihood as:
+In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points and we all draw them the same way}. Therefore we can write the data log-likelihood as:
 
 \begin{equation}
     \log p_{\B{\θ}}(\mathcal{D})
@@ -25,13 +26,15 @@ In the following described models we assume the sampled data points \(\B{x}\) to
 
 The maximum likelihood estimation of our model parameters maximizes this objective.
 
-To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. The data likelihood now is the marginal density of the joint latent density:
+To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\mathcal{D}\). For example if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. But we could also introduce the instrument as an underlying latent variable \(\B{z}\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example.
+
+The data likelihood now is the marginal density of the joint latent density, with one latent variable:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
 \end{equation}
 
-Typically we introduce a factorization of the joint. Most commonly and simplest:
+Typically we introduce a factorization of the joint. The most common one and also the one from our previous example is:
 
 \begin{equation}
     p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z}) d\B{z}
@@ -50,7 +53,7 @@ If the latent is small, discrete, it might be possible to directly marginalize o
 
 For more complicated models the data likelihood \(p_{\B{\θ}}(\B{x})\) as well as the model posterior \(p_{\B{\θ}}(\B{z}|\B{x})\) are intractable because of the integration over the latent \(\B{z}\) in \cref{eq:factorized_data_likelihood}.
 
-To formalize the search for an intractable posterior into a tractable optimization problem we follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases as such that even in asymptotic expectation we can not obtain the true posterior.
+To formalize the search for an intractable posterior into a tractable optimization problem we can follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases, as such that even in asymptotic expectation we can not obtain the true posterior.
 
 Following the derivation in~\textcite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
 
@@ -124,9 +127,9 @@ We can introduce the same factorization as in~\cref{eq:factorized_data_likelihoo
     \label{eq:elbo}
 \end{align}
 
-Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{this will later be the reconstruction error. How well can we return to the data density from latent space}.
+Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{This will later be the reconstruction error. How well can we return to the data density from latent space?}.
 
-The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. We can \I{not} though do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\cite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
+The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. Though we can \I{not} do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\cite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
 
 \begin{equation}
     \B{z} = f_{\B{\η}}(\B{\ε})
@@ -136,9 +139,25 @@ For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as 
 
 \subsection{The VAE framework}
 
-VAE~\footnotemark[\value{footnote}]\cite{rezendeStochastic2014}
+The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeStochastic2014} is the previously introduced ideas together into a trainable model.
 
-The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of in the information bottleneck~\cite{burgessUnderstanding2018}.
+\itodo{more}
+
+\begin{algorithm}
+    \caption{Trainings procedure for a variational autoencoder}%
+    \label{alg:vae}
+    \begin{algorithmic}[1]
+        \While{Training is not converged}
+            \State \(\B{X} \sim \mathcal{D}\)\Comment{Sample random minibatch}
+            \State \(\η \gets \text{EncoderNN}(\B{X})\)
+            \State \(\B{\ε} \sim p(\B{\ε})\)
+            \State \(\B{z} \gets f_{\B{\η}}(\B{\ε})\)
+            \State \(\B{X}' \gets \text{DecoderNN}(\B{z})\)
+        \EndWhile%
+    \end{algorithmic}
+\end{algorithm}
+
+The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space, controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of the information bottleneck~\cite{burgessUnderstanding2018}.
 
 \subsection{Flow based models}
 
@@ -169,7 +188,11 @@ Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-
 
 \section{Modeling audio}
 
+\itodo{What is audio?}
+
 \subsection{Representations of audio}
+
+\itodo{Time-domain vs spectrogram, what is a spectrogram, missing phase information, complex spectrograms…}
 
 \subsection{Modeling raw audio}
 Deep learning models as used for image applications are unsuitable for raw audio signals (signals in \I{time-domain}). Digital audio is sampled at high sample rates, commonly 16kHz up to 44kHz. The features of interest lie at scales of strongly different magnitudes. Recognizing the local-structure of a signal, like frequency and timbre, might require features at short intervals (\(\approx\) tens of milliseconds) but modeling of speech or music features happens at the scale of seconds to minutes. As such a generative model for this domain has to model at these different scales.

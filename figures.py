@@ -221,7 +221,11 @@ def plot_noise_box(name):
     savefig(name)
 
 
-def plot_waveforms():
+def plot_waveforms(signals):
+    for signal in signals:
+        wave, _ = librosa.load(f"data/{signal}.wav")
+        stft = librosa.stft(wave)
+
     pass
 
 
