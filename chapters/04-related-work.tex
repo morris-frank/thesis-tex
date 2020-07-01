@@ -6,7 +6,7 @@ In this section we give an overview of recent approaches to (sound) source separ
 
 \section{Source separation}
 
-All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorizd, meaning we build a shared model for all sources.
+All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorized, meaning we build a shared model for all sources.
 
 \subsection{WaveNet based}
 \textcite{rethageWavenet2018} use a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors made the WaveNet non-causal by making the padding symmetrical. Further they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for their case the real valued predictions behave better.
@@ -16,7 +16,7 @@ All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extrac
 \subsection{U-Net based}
 \begin{marginfigure}[-10em]
     \input{figures/unet}%
-    \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling conolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermeidate filter activations of the encoding are used as conditional inputs at the resepctive output scaling.}%
+    \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling convolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermediate filter activations of the encoding are used as conditional inputs at the respective output scaling.}%
     \label{fig:unet}
 \end{marginfigure}
 
@@ -26,7 +26,7 @@ The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. 
 
 \textcite{slizovskaiaEndtoEnd2019} extends the Wave-U-Net by conditioning the filter activations at the bottleneck with the instrument class label. The additional information is improving the separation quality.
 
-\textcite{cohen-hadriaImproving2019} show improvements of training a Wave-U-Net when using additional data augmentation. They apply a hand-crafted set of auditory transformations (pitch-shiftin, time-stretching, transforming the spectral envelope of the singing voice) to the training set of the musdb18 dataset.
+\textcite{cohen-hadriaImproving2019} show improvements of training a Wave-U-Net when using additional data augmentation. They apply a hand-crafted set of auditory transformations (pitch-shifting, time-stretching, transforming the spectral envelope of the singing voice) to the training set of the musdb18 dataset.
 
 \textcite{kaspersenHydraNet2019} adds an bidirectional LSTM at the bottleneck of the Wave-U-Net. The BiLSTM is capable of select and keep information at the bottleneck over time and combine this memory with the new encoded information. This makes it possible for the network to keep information about the source signal at scales larger than the actual receptive field of the U-Net. The research shows an significant improvement over previous U-Net based approaches.
 
