@@ -198,14 +198,18 @@ As an example, if encoding a sound signal with \(\SI{8}{\kHz}\) \(\SI{16}{\bit}\
 
 A standard full piano with 88 keys tuned to \(\SI{440}{\Hz}\) at the \(\t{A}_4\)\cite{iso/tc43acousticsISO1975} has a frequency range of \([\SI{27.5}{\Hz}, \SI{4186}{\Hz}]\) from the \(\t{A}_0\) to the \(\t{C}_8\), respectively. Therefore just for the recording of a standard piano we need a sampling rate of more than \(\SI{8}{\kHz}\). Beyond the piano many instruments exhibit even larger frequency content which leads to the conclusion that not just for recording but also for our goal of modeling musical sounds a reasonably high sampling rate is crucial.
 
-Looking at the temporal scales of musical information on the small end we have the modeling of pitch as discussed before which happens at scales of \([10^{-1}\,\si{\ms}, 10^2\,\si{\ms}]\) over single notes happening at scales of \([10^2\,\si{\ms}, 10^3\,\si{\ms}]\) to the structure of melodies and full songs happening at \([10^4\,\si{ms}, 10^6\,\si{\ms}]\). The modeling of music happens over 7 magnitudes!
+Looking at the temporal scales of musical information, on the small end we have the modeling of pitch as discussed before which happens at scales of \([10^{-1}\,\si{\ms}, 10^2\,\si{\ms}]\) over single notes happening at scales of \([10^2\,\si{\ms}, 10^3\,\si{\ms}]\) to the structure of melodies and full songs happening at \([10^4\,\si{ms}, 10^6\,\si{\ms}]\). The modeling of music happens over 7 magnitudes of time! In \cref{sec:raw_audio} we will present common solutions to this difficulty.
+
+\subsection{Spectrograms}
+Commonly used alternative representations of signals in sound processing are spectrograms. Spectrograms transport the signal as it is in time-domain into the frequency domain.
 
 \itodo{Time-domain vs spectrogram, what is a spectrogram, missing phase information, complex spectrograms…}
 
-\subsection{Modeling raw audio}
+\subsection{Modeling raw audio}%
+\label{sec:raw_audio}
 Deep learning models as used for image applications are unsuitable for raw audio signals (signals in \I{time-domain}). Digital audio is sampled at high sample rates, commonly 16kHz up to 44kHz. The features of interest lie at scales of strongly different magnitudes. Recognizing the local-structure of a signal, like frequency and timbre, might require features at short intervals (\(\approx\) tens of milliseconds) but modeling of speech or music features happens at the scale of seconds to minutes. As such a generative model for this domain has to model at these different scales.
 
-\begin{figure}[]
+\begin{figure}
     \input{figures/wavenet.tex}
     \caption{An example of how dilated convolutions are used in the WaveNet. We see three hidden layers with each a kernel size of two. By using the dilations the prediction of the new output element has a receptive field of 18. This convolution is \I{causal} as the prediction depends only on previous input values. Causality is enforced through asymmetric padding.}
     \label{fig:wavenet}

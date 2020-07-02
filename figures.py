@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 from argparse import ArgumentParser
-from math import tau as τ
 from itertools import product
+from math import sin, cos
+from math import tau as τ
+from random import random, randint
 
 from colorama import Fore
 from matplotlib import colors, rcParams
@@ -24,7 +26,7 @@ MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
 
 # choosen colors
 DIVERGING = "viridis"
-DIVERGING = sns.cubehelix_palette(n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65)  # mh is ok, but thats it
+DIVERGING = sns.cubehelix_palette(n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True)  # mh is ok, but thats it
 PALETTE = {
     "green": "98971a",
     "yellow": "d79921",
@@ -58,16 +60,6 @@ mpl.colors._colors_full_map["y"] = hex2rgb(PALETTE["yellow"])
 mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE["orange"])
 
 
-def make_a_rand_dist():
-    x, y = np.mgrid[-1:1:0.01, -1:1:0.01]
-    pos = np.dstack((x, y))
-    rv = multivariate_normal([0.5, -0.2], [[2.0, 0.3], [0.3, 0.5]])
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    ax.plot_surface(x, y, rv.pdf(pos))
-    # ax.contourf(x, y, rv.pdf(pos))
-
-
 def cprint(string, color=Fore.YELLOW):
     print(f"{color}{string}{Fore.RESET}")
 
@@ -97,7 +89,7 @@ def plot_palette():
     plt.show()
 
 
-def add_plot_tick(ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x", size: float = 0.05):
+def add_plot_tick(ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x", size: float = 0.05, linewidth: float = 1):
 
     if "x" in where:
         anchor, loc = (pos, 1.01), 8
@@ -111,16 +103,16 @@ def add_plot_tick(ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x",
 
     if "sin" in symbol:
         y = np.sin(x)
-        _ax.plot(x, y, linewidth=1, c="k")
+        _ax.plot(x, y, linewidth=linewidth, c="k")
     elif "tri" in symbol:
         y = sawtooth(x, width=0.5)
-        _ax.plot(x, y, linewidth=1, c="k")
+        _ax.plot(x, y, linewidth=linewidth, c="k")
     elif "saw" in symbol:
         y = sawtooth(x, width=1.0)
-        _ax.plot(x, y, linewidth=1, c="k")
+        _ax.plot(x, y, linewidth=linewidth, c="k")
     elif "sq" in symbol:
         y = square(x)
-        _ax.plot(x, y, linewidth=1, c="k")
+        _ax.plot(x, y, linewidth=linewidth, c="k")
     elif symbol in ["drums", "bass", "voice", "other"]:
         icon = plt.imread(f"figures/mixing/{symbol}.png")
         _ax.imshow(np.repeat(icon[..., None], 3, 2))
@@ -197,16 +189,16 @@ def plot_noise_box(name):
 
     df = pd.DataFrame(l, columns=["Noise-Level", "Source", "Log-Likelihood"])
     df = df[df["Log-Likelihood"] != 0]
-    df = df[~df["Noise-level"].isin((0.001, 0.01, 0.05))]
+    df = df[~df["Noise-Level"].isin((0.001, 0.01, 0.05))]
 
     _, axs = plt.subplots(
         2,
         2,
         figsize=(MARGIN_LENGTH, 1.3 * MARGIN_LENGTH),
-        gridspec_kw=dict(left=0.13, right=0.99, hspace=0.5, wspace=0.4),
+        gridspec_kw=dict(left=0.17, right=0.99, hspace=0.5, wspace=0.5),
     )
     for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
-        add_plot_tick(ax, symbol=signal, size=0.1)
+        add_plot_tick(ax, symbol=signal, size=0.1, linewidth=0.5)
         sns.boxplot(
             x="Noise-Level",
             y="Log-Likelihood",
@@ -229,10 +221,64 @@ def plot_waveforms(signals):
     pass
 
 
+def make_a_rand_dist(ax):
+    def rand(v):
+        return 2 * v * random() + (1 - v)
+
+    def rasta(low, high, step):
+        ls = np.linspace(low, high, 300)
+        ls += 0.001*np.random.randn(ls.shape[0])
+        gr = (ls // step).astype(int)
+        return np.clip((ls // step).astype(int), 0, int(1/step)-1)
+
+    f = 0.005
+    N = randint(4, 7)
+    centroids = np.random.rand(N, 2)
+
+    X, Y = np.mgrid[0:1:f, 0:1:f]
+    pts = np.dstack((X, Y))
+    Z = np.zeros(pts.shape[:-1])
+    for μ in centroids:
+        a = rand(0.2)  # Amplitude
+        σx, σy = rand(0.5), rand(0.5)  # Variances
+        φ = τ * random()  # Angle
+        R = np.array([[cos(φ), -sin(φ)], [sin(φ), cos(φ)]])
+        Σ = np.array([[0.05*σx, 0], [0, 0.05*σy]])
+        Σ = R @ Σ @ R.T
+        rv = multivariate_normal(μ, Σ)
+        Z += a * 0.3 * rv.pdf(pts)
+
+    xmin, ymin = pts[np.unravel_index(np.argmin(Z), Z.shape)]
+    # xmin, ymin = 0.5, 0.5
+    xmax, ymax = pts[np.unravel_index(np.argmax(Z), Z.shape)]
+    lx, ly = rasta(xmin, xmax, f), rasta(ymin, ymax, f)
+    lz = Z[lx, ly]
+
+    ax.plot_surface(X, Y, Z, cmap=DIVERGING, shade=False, zorder=1)
+    ax.plot3D(lx * f, ly * f, lz + 0.05, linestyle='-', linewidth=0.5, c='n', zorder=10)
+
+    plt.axis('off')
+
+
+def plot_sampling():
+    N = 2
+
+    for i in range(1, N + 1):
+        fig = plt.figure(tight_layout=True)
+        ax = fig.add_subplot(111, projection="3d")
+        make_a_rand_dist(ax)
+        for angle in range(30, 360, 180):
+            ax.view_init(70, angle)
+            savefig(f'dist_{i}_{angle}')
+
+
+
 def main(args):
     if args.verbose:
         cprint("Palette example plot:")
         plot_palette()
+
+    # plot_sampling()
 
     # cprint("Overwriting LaTeX color definitions")
     # print_color_latex()

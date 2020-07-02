@@ -52,6 +52,8 @@ For the case of the time-domain representation, the data has only one channel (m
 
 \subsection{Fixing the priors}
 
+\itodo{blabla}
+
 \section{Modeling the posteriors}
 
 Assuming we have now a set of meaningful, discriminative priors \(p(\s_i)\) we need to combine the independent models to extract sources \(\{\s_i\}\) given a mix \(\m\). At the beginning of this section we already introduced the imagined generative model and derived the lower bound for the approximate posterior. Taking a step back again and looking at the posterior we have two general possibilities to retrieve samples from the posterior \(p(\s_i | \m)\).
@@ -73,3 +75,9 @@ The second option for estimating the posterior \(p(\s_i | \m)\) is iteratively s
 \itodo{explanation}
 
 The idea of using SGLD in combination with deep parametrized priors was, concurrently to this work, introduced in \textcite{jayaramSource2020}. The authors argue that direct optimization under the prior distribution is not successfull due to the severe peakedness of the priors. Thus, they argue, the stochasticity, added with the Gaussian noise in SGLD, is needed to not get stuck in local optimas under the manifold. We challenge that explanation as it is, blabla
+
+\begin{figure}[]
+    \includegraphics{sampling.eps}
+    \caption{The method visualized}
+    \label{fig:method}
+\end{figure}
