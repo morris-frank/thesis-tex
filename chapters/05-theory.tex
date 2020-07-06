@@ -1,4 +1,4 @@
-\chapter{Theory}%
+\chapter{Theory {\color{red} Would call this Section Method}}%
 \label{ch:theory}
 
 In this chapter we introduce the theoretical idea of our Bayesian modeling of source separation. First we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
@@ -39,7 +39,7 @@ Like in the VAE we now formulate the lower bound for approximting the graphical 
 
 It is intuitive that this assumption does not, in general, hold for the musical domain. We can expect a different behaviour for a guitar in a song involving a second source like a percussion set. The joint of those two models is different than their independent densities. Nevertheless this assumption is crucial to be able to model the prior instrumental models without needing the tuples \((\s_1,\…,\s_N)\) of co-occurring stems.
 
-Finally we note that this assumption is not being used for the independent approximate posteriors. While the true posterior certainly is the posterior of the joint source model, we choose our approximate posteriors to be independent. The expectation in \eqref{eq:expectation_over_approx_post} over those is still correct. The error arising from the independence assumption is captured in the thightness of the ELBO.
+Finally we note that this assumption is not being used for the independent approximate posteriors. While the true posterior certainly is the posterior of the joint source model, we choose our approximate posteriors to be independent. The expectation in \eqref{eq:expectation_over_approx_post} over those is still correct. The error arising from the independence assumption is captured in the thightness of the ELBO. {\color{red} I would add a paragraph that states what choices need to be made: Encoder, Decoder, Prior}
 
 \section{Modeling the priors}
 The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors with flow models for which we gave an overview in \cref{methods}. For different representation of the input different network architectures are mode suited. We experiment both with inputing directly the time-domain wave but also modeling on top of a spectral transformation of the time-domain data.
@@ -81,3 +81,5 @@ The idea of using SGLD in combination with deep parametrized priors was, concurr
     \caption{The method visualized}
     \label{fig:method}
 \end{figure}
+
+{\color{red} I like the section so far, but I think you should emphasize more what are the challenges, e.g., for both the VAE approach and the Langevin dynamics we need a prior and a posterior. In addition, since we have a probabilistic approach we need to choose distributions for everything.}
