@@ -225,17 +225,11 @@ def make_a_rand_dist(ax):
     def rand(v):
         return 2 * v * random() + (1 - v)
 
-    def rasta(low, high, step):
-        ls = np.linspace(low, high, 300)
-        ls += 0.001*np.random.randn(ls.shape[0])
-        gr = (ls // step).astype(int)
-        return np.clip((ls // step).astype(int), 0, int(1/step)-1)
-
-    f = 0.005
+    gw = 200
     N = randint(4, 7)
     centroids = np.random.rand(N, 2)
 
-    X, Y = np.mgrid[0:1:f, 0:1:f]
+    X, Y = np.mgrid[0:1:1/gw, 0:1:1/gw]
     pts = np.dstack((X, Y))
     Z = np.zeros(pts.shape[:-1])
     for μ in centroids:
@@ -243,21 +237,32 @@ def make_a_rand_dist(ax):
         σx, σy = rand(0.5), rand(0.5)  # Variances
         φ = τ * random()  # Angle
         R = np.array([[cos(φ), -sin(φ)], [sin(φ), cos(φ)]])
-        Σ = np.array([[0.05*σx, 0], [0, 0.05*σy]])
+        Σ = np.array([[0.02*σx, 0], [0, 0.02*σy]])
         Σ = R @ Σ @ R.T
         rv = multivariate_normal(μ, Σ)
         Z += a * 0.3 * rv.pdf(pts)
 
-    xmin, ymin = pts[np.unravel_index(np.argmin(Z), Z.shape)]
-    # xmin, ymin = 0.5, 0.5
-    xmax, ymax = pts[np.unravel_index(np.argmax(Z), Z.shape)]
-    lx, ly = rasta(xmin, xmax, f), rasta(ymin, ymax, f)
-    lz = Z[lx, ly]
+    lx, ly, lz = hillclimber(*np.unravel_index(np.argmin(Z), Z.shape), Z, gw)
 
     ax.plot_surface(X, Y, Z, cmap=DIVERGING, shade=False, zorder=1)
-    ax.plot3D(lx * f, ly * f, lz + 0.05, linestyle='-', linewidth=0.5, c='n', zorder=10)
+    ax.plot3D(lx / gw, ly / gw, lz + 0.05, linestyle='-', linewidth=0.5, c='w', zorder=10)
 
     plt.axis('off')
+
+
+def hillclimber(px, py, Z, gw):
+    pz = Z[px, py]
+    pts = [(px, py, pz)]
+    while True:
+        xy = [(np.clip(x + px, 0, gw-1), np.clip(y + py, 0, gw-1)) for x, y in product((-1, 0, 1), (-1, 0, 1))]
+        z = [Z[x,y] for x,y in xy]
+        x, y, z = *xy[np.argmax(z)], np.max(z)
+        if x == px and y == py and z == pz:
+            break
+        pts.append((px, py, pz))
+        px, py, pz = x, y, z
+
+    return map(np.array, zip(*pts))
 
 
 def plot_sampling():
@@ -278,7 +283,7 @@ def main(args):
         cprint("Palette example plot:")
         plot_palette()
 
-    # plot_sampling()
+    plot_sampling()
 
     # cprint("Overwriting LaTeX color definitions")
     # print_color_latex()
