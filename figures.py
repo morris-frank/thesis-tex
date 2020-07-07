@@ -221,12 +221,13 @@ def plot_waveforms(signals):
     pass
 
 
-def make_a_rand_dist(ax):
+def make_a_rand_dist(ax, N=None):
     def rand(v):
         return 2 * v * random() + (1 - v)
 
     gw = 200
-    N = randint(4, 7)
+    if N is None:
+        N = randint(4, 7)
     centroids = np.random.rand(N, 2)
 
     X, Y = np.mgrid[0:1:1/gw, 0:1:1/gw]
@@ -242,10 +243,12 @@ def make_a_rand_dist(ax):
         rv = multivariate_normal(μ, Σ)
         Z += a * 0.3 * rv.pdf(pts)
 
-    lx, ly, lz = hillclimber(*np.unravel_index(np.argmin(Z), Z.shape), Z, gw)
+    # lx, ly, lz = hillclimber(199, 199, Z, gw)
+    # lx, ly = lx/gw, ly/gw
+    # lu, lv, lw = np.gradient(lx), np.gradient(ly), np.gradient(lz)
 
-    ax.plot_surface(X, Y, Z, cmap=DIVERGING, shade=False, zorder=1)
-    ax.plot3D(lx / gw, ly / gw, lz + 0.05, linestyle='-', linewidth=0.5, c='w', zorder=10)
+    ax.plot_surface(X, Y, Z, cmap=DIVERGING, zorder=1, linewidths=(0.05))
+    # ax.quiver(lx, ly, lz + 0.01, lu, lv, lw, zorder=10, normalize=True, length=0.08, arrow_length_ratio=0.3, linewidths=(0.1))
 
     plt.axis('off')
 
@@ -266,15 +269,23 @@ def hillclimber(px, py, Z, gw):
 
 
 def plot_sampling():
-    N = 2
-
-    for i in range(1, N + 1):
+    def _plot(pks=None):
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111, projection="3d")
-        make_a_rand_dist(ax)
-        for angle in range(30, 360, 180):
-            ax.view_init(70, angle)
-            savefig(f'dist_{i}_{angle}')
+        make_a_rand_dist(ax, N=pks)
+        ax.view_init(25, 45)
+
+    N = 4
+
+    for i in range(N):
+        _plot()
+        savefig(f'dist_{i}')
+        plt.close()
+
+        _plot(2)
+        savefig(f'dist_{i}_post')
+        plt.close()
+
 
 
 
