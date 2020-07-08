@@ -125,7 +125,7 @@ We can introduce the same factorization as in~\cref{eq:factorized_data_likelihoo
     &= -\KL[q_{\B{\φ}}(\B{z}|\B{x})\|p(\B{z})]
     + \E_{q_{\B{\θ}}(\B{z}|\B{x})}
         \left[\log p_{\B{\θ}}(\B{x}|\B{z})\right]
-    \label{eq:elbo}
+    \label{eq:elbo_factorized}
 \end{align}
 
 Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{This will later be the reconstruction error. How well can we return to the data density from latent space?}.
@@ -161,6 +161,7 @@ The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeS
 The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space, controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of the information bottleneck~\cite{burgessUnderstanding2018}.
 
 \subsection{Flow based models}
+\label{sub:flows}
 
 Another class of common deep latent models is based on \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
 
@@ -224,7 +225,7 @@ The \B{WaveNet}~\cite{vandenoordWaveNet2016} introduced an autoregressive genera
     \label{fig:wavenet_layer}
 \end{marginfigure}
 
-\todo{add PixelCNN++?}
+\itodo{add PixelCNN++?}
 
 The first generative sounds model to employ a WaveNet is \B{NSynth}~\cite{kalchbrennerEfficient2018}. They construct a VAE where encoder and decoder are both WaveNet-like. The so-called \I{non-causal temporal encoder} uses a stack of dilated residual non-causal convolutions. The convolutions are not gated and no skip-connections are used. The decoder is a WaveNet taking the original input chunk as an input and predicts the next value of the sound sample, while being conditioned on the latent variable. The authors use this model to learn latent temporal codes from a new large set of notes played by natural and synthesized instruments. The latent of the VAE is conditioned on the pitch of these notes. While the model is difficult to train, they show great improvement of the WaveNet-based VAE compared to a spectral-based VAE.
 

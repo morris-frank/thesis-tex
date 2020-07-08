@@ -35,7 +35,7 @@ For both the Toy Data and the musdb18 dataset we experiment with prior models on
 \begin{marginfigure}
     \includegraphics{noise_likelihood_with_noise}%
     \caption{noise likelihood with noise}%
-    \label{fig:noise_ll_noise}
+    \label{fig:noise_ll_with_noise}
 \end{marginfigure}
 
 In this ablation study we want to check how resilient the generative prior models are to noisy samples. It is hypothesized that the latent space of the model consists of, intuitively, singular peaks at mappings of in-distribution samples~\cite{jayaramSource2020}. For the separation to be able to optimize under the prior density, we need likelihood to slowly decrease when moving away from positive samples. If the distribution is too peaked only noiseless inputs would be highly likely and adding noise quickly makes samples too unlikely. We propose adding Gaussian noise with a random variance to the positive samples during training. This should smooth out the modeled density.
@@ -43,7 +43,7 @@ In this ablation study we want to check how resilient the generative prior model
 \begin{marginfigure}
     \includegraphics{noise_likelihood_without_noise}%
     \caption{noise likelihood without noise}%
-    \label{fig:noise_ll_noise}
+    \label{fig:noise_ll_without_noise}
 \end{marginfigure}
 
 \subsection{Testing cross-likelihood}
@@ -67,14 +67,14 @@ When running the same experiment for the musdb18 the discriminative power does n
 
 Even above that the results exhibit an additional failing for the musdb18 dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Because of this the results show the unintuitive result that the test samples from the \I{other} class are \I{less likely} under its own prior model compared to the out-of-distribution samples. While this makes it rather final that the at hand dataset is not completely suitable to out trainings regime, it is a data-dependent restriction that would not correspond to our hypothesized application.
 
-Similar results were shown before in~\todo{cite some OOD VAE stuff}.
+Similar results were shown before in~\itodo{cite some OOD VAE stuff}.
 
-The results for both datasets are similar for all tested model architectures and input domains. See Appendix~\todo{add results} for the full results.
+The results for both datasets are similar for all tested model architectures and input domains. See Appendix~\itodo{add results} for the full results.
 
 \subsection{Increasing discriminative power}
 With the prior models being not discriminative, it is not possible to train the separation model. Following we will try extend the priors to increase their discriminative power. Above that we propose that our method still holds merit given these results, further work on generative models might result in more discriminative generative models. The method can use any density as a drop-in replacement for the prior in the separation model.
 
-As layed out in~\ref{Section methods} the bad out-of-distribution detection of generative models is not a surprising result and multiple recent works go about solving this. We want to increase the
+As layed out in~\ref{ch:background} the bad out-of-distribution detection of generative models is not a surprising result and multiple recent works go about solving this. We want to increase the
 
 \begin{marginfigure}
     \includegraphics{heatmap_musdb_classifier}
