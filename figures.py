@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from argparse import ArgumentParser
-from itertools import product
+from itertools import product, chain
 from math import sin, cos
 from math import tau as τ
 from random import random, randint
@@ -14,6 +14,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.signal import sawtooth, square
 from scipy.stats import multivariate_normal
+import colorsys
 import librosa
 import librosa.display
 import matplotlib as mpl
@@ -25,18 +26,20 @@ import seaborn as sns
 MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
 
 # choosen colors
-DIVERGING = "viridis"
-DIVERGING = sns.cubehelix_palette(n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True)  # mh is ok, but thats it
-PALETTE = {
-    "green": "98971a",
-    "yellow": "d79921",
-    "red": "cc241d",
-    "orange": "d65d0e",
-    "blue": "458588",
-    "purple": "b16286",
-    "aqua": "689d6a",
-    "extlinkcolor": "076678",  # external links
-    "intlinkcolor": "af3a03",  # internal links
+CMAP_DIV = "viridis"
+CMAP_DIV = sns.cubehelix_palette(n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True)  # mh is ok, but thats it
+CMAP_CAT = {
+    "green": "#98971a",
+    "blue": "#458588",
+    "red": "#cc241d",
+    "purple": "#b16286",
+    "yellow": "#d79921",
+    "aqua": "#689d6a",
+    "orange": "#d65d0e",
+}
+COLORS = {
+    "extlinkcolor": "#076678",  # external links
+    "intlinkcolor": "#af3a03",  # internal links
 }
 
 # data configs
@@ -45,20 +48,29 @@ MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
 
 
 def hex2rgb(hex):
+    if hex[0] == '#':
+        hex = hex[1:]
     rgb = hex[:2], hex[2:4], hex[4:6]
     return tuple(round(int(c, 16) / 255, 2) for c in rgb)
 
 
-# mpl config
-mpl.style.use("./mpl.style")
-mpl.colors._colors_full_map["r"] = hex2rgb(PALETTE["red"])
-mpl.colors._colors_full_map["g"] = hex2rgb(PALETTE["green"])
-mpl.colors._colors_full_map["b"] = hex2rgb(PALETTE["blue"])
-mpl.colors._colors_full_map["c"] = hex2rgb(PALETTE["aqua"])
-mpl.colors._colors_full_map["m"] = hex2rgb(PALETTE["purple"])
-mpl.colors._colors_full_map["y"] = hex2rgb(PALETTE["yellow"])
-mpl.colors._colors_full_map["n"] = hex2rgb(PALETTE["orange"])
+def rgb2hex(r, g, b):
+    return '#' + ''.join([f"{int(x*255):x}" for x in (r,g,b)])
 
+# Align color maps
+def adapt_colors(target, dicti):
+    _h,_s,_v = colorsys.rgb_to_hsv(*target)
+    for k in dicti:
+        h,s,v = colorsys.rgb_to_hsv(*hex2rgb(dicti[k]))
+        dicti[k] = rgb2hex(*colorsys.hsv_to_rgb(h, _s, _v))
+
+# adapt_colors(CMAP_DIV.colors[-20, :3], CMAP_CAT)
+
+# Update matplotlib config
+mpl.style.use("./mpl.style")
+for k, c in [('r','red'),('g','green'),('b','blue'),('c','aqua'),('m','purple'),('y','yellow'),('n','orange')]:
+    mpl.colors._colors_full_map[k] = hex2rgb(CMAP_CAT[c])
+sns.set_palette(sns.color_palette(list(CMAP_CAT.values())))
 
 def cprint(string, color=Fore.YELLOW):
     print(f"{color}{string}{Fore.RESET}")
@@ -70,7 +82,7 @@ def savefig(name):
 
 def print_color_latex():
     with open("colors.def", "w") as fp:
-        for name, hex in PALETTE.items():
+        for name, hex in chain(CMAP_CAT.items(), COLORS.items()):
             rgb = str(hex2rgb(hex))[1:-1]
             fp.write(f"\\definecolor{{{name}}}{{rgb}}\t{{{rgb}}}\n")
 
@@ -80,7 +92,7 @@ def plot_palette():
         x = np.linspace(-τ, τ, 200)
         for color in colors:
             y = np.random.rand() * np.sin(x * np.random.rand()) + np.random.rand()
-            ax.plot(x, y, c="#" + PALETTE[color])
+            ax.plot(x, y, c=CMAP_CAT[color])
 
     fig, axs = plt.subplots(1, 1)
 
@@ -144,7 +156,7 @@ def plot_heatmap(data, name, signals):
         cbar_kws={"orientation": "horizontal", "ticks": ticks},
         square=True,
         norm=norm,
-        cmap=DIVERGING,
+        cmap=CMAP_DIV,
     )
 
     ax.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
@@ -216,9 +228,13 @@ def plot_noise_box(name):
 def plot_waveforms(signals):
     for signal in signals:
         wave, _ = librosa.load(f"data/{signal}.wav")
-        stft = librosa.stft(wave)
-
-    pass
+        # stft = librosa.stft(wave)
+        fig = plt.figure(tight_layout=True)
+        ax = fig.add_subplot(111)
+        librosa.display.waveplot(wave, max_points=500, max_sr=50, ax=ax, color=CMAP_DIV.colors[-70])
+        plt.axis('off')
+        savefig(f"wave_{signal}")
+        plt.close()
 
 
 def make_a_rand_dist(ax, N=None):
@@ -247,7 +263,7 @@ def make_a_rand_dist(ax, N=None):
     # lx, ly = lx/gw, ly/gw
     # lu, lv, lw = np.gradient(lx), np.gradient(ly), np.gradient(lz)
 
-    ax.plot_surface(X, Y, Z, cmap=DIVERGING, zorder=1, linewidths=(0.05))
+    ax.plot_surface(X, Y, Z, cmap=CMAP_DIV, zorder=1, linewidths=(0.05))
     # ax.quiver(lx, ly, lz + 0.01, lu, lv, lw, zorder=10, normalize=True, length=0.08, arrow_length_ratio=0.3, linewidths=(0.1))
 
     plt.axis('off')
@@ -287,19 +303,21 @@ def plot_sampling():
         plt.close()
 
 
-
-
 def main(args):
     if args.verbose:
         cprint("Palette example plot:")
         plot_palette()
 
-    plot_sampling()
+    cprint("Will process all data figures:")
 
-    # cprint("Overwriting LaTeX color definitions")
+    cprint("Write the waveforms", Fore.GREEN)
+    plot_waveforms(MUSDB_SIGNALS + ['mix'])
+
+    cprint("Sample some random dsitributions", Fore.GREEN)
+    # plot_sampling()
+
+    # cprint("Overwriting LaTeX color definitions", Fore.GREEN)
     # print_color_latex()
-
-    # cprint("Will process all data figures:")
 
     # cprint("– Noise plots likelihood", Fore.GREEN)
     # plot_noise_box('noise_likelihood_with_noise')
