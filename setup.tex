@@ -72,7 +72,7 @@
 \DeclareCiteCommand{\cite}[\mkbibfootnote]
   {\usebibmacro{prenote}}%
   {\usebibmacro{citeindex}%
-    \usebibmacro{longcite}}%
+    \scriptsize\usebibmacro{longcite}}%
   {\multicitedelim}%
   {\usebibmacro{postnote}}%
 
@@ -90,8 +90,8 @@
 
 % Even more ugly hacks
 \makeatletter
-\let\oldtextcite\textcite%
-\renewcommand*{\textcite}[1]{\oldtextcite{#1}\cite{#1}}
+\let\@textcite\textcite%
+\renewcommand*{\textcite}[1]{\@textcite{#1}\cite{#1}}
 \makeatother
 
 \usepackage{multicol}
