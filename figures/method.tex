@@ -36,11 +36,17 @@
     \draw[->] (dp3) to (ps3);
 
     % Top row, notes
-    \node[above=0pt of s0] (ts) {\(\mathcal{D}_k\)};
-    \node[above=-9pt of d0] (td) {\(p_{\B{\θ}}(\s_k)\)};
-    \path (ts) -- (td) node [midway,align=center] {estimate\\with flow};
-    \node[above=-9pt of dp0] (tp) {\(\aprxpost\)};
-    \node[above=0pt of ps0] (tps) {\(\s_k\)};
+    \node[above=0pt of s0]   (ts)  {\(\mathcal{D}_k\)};
+    \node[above=-9pt of d0]  (td)  {\(p_{\B{\θ}}(\s_k)\)};
+    % \path (ts) -- (td) node [midway,align=center] {estimate\\with flow};
+    \node[above=-9pt of dp0] (tdp) {\(\aprxpost\)};
+    \node[above=0pt of ps0]  (tps) {\(\s_k\)};
+
+    % Top top row
+    \node[above=0pt of ts]  () {data};
+    \node[above=0pt of td]  () {prior};
+    \node[above=0pt of tdp] () {posterior};
+    \node[above=0pt of tps] () {sample};
 
     % Mix wave
     \node[right=5pt of ps1, yshift=-20pt] (sum) {\(+\)};
