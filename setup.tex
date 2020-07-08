@@ -60,27 +60,39 @@
 
 \newbibmacro*{cite:longtitle}{%
   \printtext[bibhyperref]{%
-    \printfield[title]{title}}}
+    \printfield[title]{title}}}%
 
 \newbibmacro*{longcite}{%
   \printnames{labelname}%
   \setunit*{\printdelim{nametitledelim}}%
   \usebibmacro{cite:longtitle}%
   \setunit{\printdelim{nametitledelim}}%
-  \printlabeldateextra%
-}
+  \printlabeldateextra}%
 
 \DeclareCiteCommand{\cite}[\mkbibfootnote]
-  {\usebibmacro{prenote}}
+  {\usebibmacro{prenote}}%
   {\usebibmacro{citeindex}%
-    \usebibmacro{longcite}}
-  {\multicitedelim}
-  {\usebibmacro{postnote}}
+    \usebibmacro{longcite}}%
+  {\multicitedelim}%
+  {\usebibmacro{postnote}}%
+
+% This removes printing the year from textcite, this is ugly af but hell biblatex is difficult af
+\newbibmacro*{cite:labeldate+extradate}{%
+  \iffieldundef{labelyear}
+  {}
+  {}}
 
 \def\bibfont{\small}
+
 \addbibresource{References.bib}
 
 \usepackage[capitalise, noabbrev]{cleveref}
+
+% Even more ugly hacks
+\makeatletter
+\let\oldtextcite\textcite%
+\renewcommand*{\textcite}[1]{\oldtextcite{#1}\cite{#1}}
+\makeatother
 
 \usepackage{multicol}
 \usepackage{environ}

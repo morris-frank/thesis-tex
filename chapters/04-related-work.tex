@@ -1,6 +1,10 @@
 \chapter{Related work}%
 \label{ch:related_work}
-
+\begin{marginfigure}
+    \input{figures/unet}%
+    \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling convolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermediate filter activations of the encoding are used as conditional inputs at the respective output scaling.}%
+    \label{fig:unet}
+\end{marginfigure}
 In this section we give an overview of recent approaches to (sound) source separation which are related to our own approach either in the chosen model choices or implicit ideas. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work.
 
 
@@ -14,11 +18,6 @@ All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extrac
 \textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
 
 \subsection{U-Net based}
-\begin{marginfigure}[-10em]
-    \input{figures/unet}%
-    \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling convolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermediate filter activations of the encoding are used as conditional inputs at the respective output scaling.}%
-    \label{fig:unet}
-\end{marginfigure}
 
 \textcite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for musical source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
 
