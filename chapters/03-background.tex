@@ -161,7 +161,7 @@ The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeS
 The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) hyperparameter in front of the KL divergence. The value \(\β\) gives a constraint on the latent space, controlling the capacity of it. Adapting \(\β\) gives a trade-off between the reconstruction quality of the autoencoder and the simplicity of the latent representations\footnotemark[\value{footnote}]. Using such a constraint is similar to the use of the information bottleneck~\cite{burgessUnderstanding2018}.
 
 \subsection{Flow based models}
-\label{sub:flows}
+\label{subsec:flows}
 
 Another class of common deep latent models is based on \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
 
@@ -188,12 +188,36 @@ RealNVP~\cite{dinhDensity2017} builds on top of NICE creating a more general, no
 
 Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
+\section{Langevin dynamics}%
+\label{sec:langevin}
+In stochastic optimization we update the parameters \(\B{\θ}\) with the gradient of the posterior using a subset of samples from our data set.
+
+\begin{align}
+    \Δ\B{\θ}_t &= \÷{\ε_t}{2} \{(\∇\log{p(\B{\θ}_t)}) + \÷{N}{n}\Σ_{i=1}^n \∇\log{p(x_{ti} | \B{\θ}_t)}\}
+\end{align}
+
+This will lead to the maximum a posteriori (MAP) estimates of the parameters \(\B{\θ}\). By taking the gradient of the posterior only under a subset of the data will give us a noisy estimate of the real gradient, but is computationally cheaper. The idea is, that the noise of the noisy gradients smoothes out while sampling different subsets. When using a decaying step size \(\ε_t\) the stochastic optimization is guareenteed to converge to a local maximum.
+
+Now the
+Langevin dynamics~\cite{nealMCMC2012} provides a Markov chain Monte Carlo (MCMC) sampling technique for estimating the parameters of a distribution without overfitting on the data(??).
+
+\begin{align}
+    \Δ\B{\θ}_t &= \÷{\ε}{2}\{( \∇\log{p(\B{\θ}_t)} + \÷{N}{n}\Σ_{i=1}^N \∇\log{p(x_i | \B{\θ}_i)} )\} + \η_t\\
+    \η_t &\sim \N(0, \ε)
+\end{align}
+
+\begin{align}
+    \Δ\B{\θ}_t &= \÷{\ε}{2}\{( \∇\log{p(\B{\θ}_t)} + \Σ_{i=1}^N \∇\log{p(x_i | \B{\θ}_i)} )\} + \η_t\\
+    \η_t &\sim \N(0, \ε)
+\end{align}
+
 \section{Modeling audio}%
 \label{sec:audio}
 In the physical world a sound signal is a change of the density of the carrier air over time. As such it is a one-dimensional temporal signal\footnote{Sound waves in gases are purely compressive, therefore they cannot be polarized which would introduce a higher complexity. In solids a sound signal can have polarization, think of an earthquake with shear and pressure components.}. Humans sound perception is \I{stereo} as we have two ears and sense the changes in pressure at two different points in space simultaneously.
 
-\subsection{Representations of audio}
-The simplest form of digitally representing a sound signal is recording the amplitude at fixed intervals at one or multiple points in space with a microphone. This method is called Pulse-Code modulation (PCM). It introduces two parameters which will bias the result of the record. First we have to pick a temporal frequency with which the pressure samples are taken, the so called sample rate. The Nyquist-Shannon theorem~\cite{kotelnikovCarrying1933} tells us that if the highest frequency in the true signal is \(B\ \si{\Hz}\) than with a sample rate of \(2\· B\ \si{\Hz}\) we will capture the complete signal with all frequencies. At a lower sample rate we might introduce aliasing effects. Second we have to represent each amplitude sample as a digital value. Most commonly the sample is encoded into a \(\SI{8}{\bit}\) or \(\SI{16}{\bit}\) integer. The microphone has a range of air pressure which w.l.o.g we set to \([-1, 1]\), where a value of 0 is no signal, 1 shows maximum compression and -1 maximum decompression of the carrier air.  The simplest form of encoding is Linear PCM. In Linear PCM amplitudes are quantized on a evenly spaced grid over the possible value range. More advanced quantization include \(\μ\)-law encoding~\cite{Pulse1972} in which the quantization intervals are varied with the amplitude\footnote{The actual formula for calculating the \(\μ\)-law quantization is: \[\t{\μ law}(x) = \sgn{(x)} \· \÷{\ln{(1 + \μ |x|)}}{\ln{(1 + \μ)}}\]}. As human perception of loudness is logarithmic this encoding also quantizes the amplitude values on a logarithmic response curve. Simply speaking the lower amplitudes will be quantized on a finer grid than higher amplitudes. This makes it possible to achieve a higher signal-to-noise ratio at smaller encoding sizes for sound signals.
+\subsection{Representations of audio}%
+\label{subsec:audio}
+The simplest form of digitally representing a sound signal is recording the amplitude at fixed intervals at one or multiple points in space with a microphone. This method is called Pulse-Code modulation (PCM). It introduces two parameters which will bias the result of the record. First we have to pick a temporal frequency with which the pressure samples are taken, the so-called sample rate. The Nyquist-Shannon theorem~\cite{kotelnikovCarrying1933} tells us that if the highest frequency in the true signal is \(B\ \si{\Hz}\) than with a sample rate of \(2\· B\ \si{\Hz}\) we will capture the complete signal with all frequencies. At a lower sample rate we might introduce aliasing effects. Second we have to represent each amplitude sample as a digital value. Most commonly the sample is encoded into a \(\SI{8}{\bit}\) or \(\SI{16}{\bit}\) integer. The microphone has a range of air pressure which w.l.o.g we set to \([-1, 1]\), where a value of 0 is no signal, 1 shows maximum compression and -1 maximum decompression of the carrier air.  The simplest form of encoding is Linear PCM. In Linear PCM amplitudes are quantized on an evenly spaced grid over the possible value range. More advanced quantization include \(\μ\)-law encoding~\cite{Pulse1972} in which the quantization intervals are varied with the amplitude\footnote{The actual formula for calculating the \(\μ\)-law quantization is: \[\t{\μ law}(x) = \sgn{(x)} \· \÷{\ln{(1 + \μ |x|)}}{\ln{(1 + \μ)}}\]}. As the human perception of loudness is logarithmic this encoding also quantizes the amplitude values on a logarithmic response curve. Simply speaking the lower amplitudes will be quantized on a finer grid than higher amplitudes. This makes it possible to achieve a higher signal-to-noise ratio at smaller encoding sizes for sound signals.
 
 
 As an example, if encoding a sound signal with \(\SI{8}{\kHz}\) \(\SI{16}{\bit}\) Linear PCM we sample an amplitude value every \(\÷{1}{8000} \si{\s}\) and quantize those into \(2^{16} = 65536\) bins. A sample with 100 values is only \(\SI{12.5}{\ms}\) long!
