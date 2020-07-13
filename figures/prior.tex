@@ -1,26 +1,26 @@
 
 \begin{tikzpicture}[every node/.style={scale=0.8}]
-    \tikzstyle{box}=[rectangle,draw,minimum width=25mm,minimum height=5.55mm,fill=black!10]
+    \tikzstyle{box}=[rectangle,draw,minimum width=25mm,minimum height=5.55mm,fill=yellow!10]
     \tikzstyle{hbox}=[box,minimum width=12mm,fill=yellow!10]
-    \tikzstyle{label}=[rotate=-90,yshift=5]
+    \tikzstyle{label}=[rotate=90,yshift=5]
 
     \begin{scope}
-        \node (z) {\(z\)};
+        \node (z) {\(\B{z}\)};
         \coordinate[below=10pt of z] (belowz) {};
         \coordinate[below=10pt of belowz] (aboveflow) {};
         \node[below=7pt of aboveflow,box,fill=orange!40] (flow)    {Flow};
         \coordinate[below=7pt of flow] (belowflow) {};
-        \node[below=13pt of belowflow,box,fill=green!40] (squeeze) {Squeeze};
-        \coordinate[below=10pt of squeeze] (abovex) {};
-        \node[below=10pt of abovex] (x) {\(x\)};
+        \node[below=13pt of belowflow,box] (squeeze) {Squeeze};
+        \coordinate[below=15pt of squeeze] (abovex) {};
+        \node[below=5pt of abovex] (x) {\(\B{x}\)};
 
 
         \draw[->] (x) to (abovex) to (squeeze);
         \draw[->] (squeeze) to (flow);
         \draw[->] (flow) to (belowz) to (z);
 
-        \draw (belowz) -| (1.7, -2) node[label] {\(\times n_f\)} [->]|- (abovex);
-        \draw (aboveflow) -| (1.1,-1.35) node[label] {\(\times n_b\)} [->]|- (belowflow);
+        \draw (belowz) -| (-1.7, -2) node[label] {\(\times n_b\)} [->]|- (abovex);
+        \draw (aboveflow) -| (-1.1,-1.35) node[label] {\(\times n_f\)} [->]|- (belowflow);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,black!10]
@@ -28,17 +28,20 @@
         \end{pgfonlayer}
     \end{scope}
 
-    \begin{scope}[xshift=4cm]
+    \begin{scope}[xshift=3.5cm]
         \node (end) {};
         \node[box,below=23pt of end] (corder) {change order};
         \node[box,below=10pt of corder,fill=aqua!40] (ac) {Affine coupling};
         \node[box,below=10pt of ac] (an) {ActNorm};
-        \node[below=12pt of an] (start) {\(z\)};
+        \node[below=12pt of an] (start) {\(\B{z}\)};
 
         \draw[->] (start) to (an);
         \draw[->] (an) to (ac);
         \draw[->] (ac) to (corder);
         \draw[->] (corder) to (end);
+
+        \draw[densely dotted] (-2.5, -1.125) .. controls (-1.6, -0.71) .. (-1.35, -0.71);
+        \draw[densely dotted] (-2.5, -1.57) .. controls (-1.6, -3.19) .. (-1.35, -3.19);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,orange!20]
@@ -46,22 +49,25 @@
         \end{pgfonlayer}
     \end{scope}
 
-    \begin{scope}[xshift=8cm]
+    \begin{scope}[xshift=7cm]
         \coordinate[yshift=-10pt] (end) {};
         \node[hbox,left=1pt of end] (oodd) {\({out}_{odd}\)};
         \node[hbox,right=1pt of end] (oeven) {\({out}_{even}\)};
 
-        \node[hbox, below=50pt of oodd] (wn) {WN};
-        \node[hbox, below=15pt of oeven] (trans) {\(\exp{s} \· x + t\)};
+        \node[hbox, below=55pt of oeven] (wn) {WN};
+        \node[hbox, below=15pt of oodd] (trans) {\(\B{s} \· \B{x} + \B{t}\)};
 
         \node[hbox,below=80pt of oodd] (iodd) {\({in}_{odd}\)};
         \node[hbox,below=80pt of oeven] (ieven) {\({in}_{even}\)};
 
-        \draw[->] (iodd) to (wn);
-        \draw[->] (trans) to (oeven);
-        \draw[->] (ieven) to node[label] {\(x\)} (trans);
-        \draw[->] (wn) |- node[label,xshift=20pt] {\(s, t\)} (trans);
-        \draw (iodd.west) -| (-1.45, -1.3) [->]|- (oodd);
+        \draw[->] (ieven) to (wn);
+        \draw[->] (trans) to (oodd);
+        \draw[->] (iodd) to node[label] {\(\B{x}\)} (trans);
+        \draw[->] (wn) |- node[label,xshift=-20pt] {\(\log \B{s}, \B{t}\)} (trans);
+        \draw (ieven.east) -| (1.6, -1.3) [->]|- (oeven);
+
+        \draw[densely dotted] (-2.44, -1.75) .. controls (-1.6, -0.71) .. (-1.35, -0.71);
+        \draw[densely dotted] (-2.44, -2.22) .. controls (-1.6, -3.19) .. (-1.35, -3.19);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,aqua!20]
