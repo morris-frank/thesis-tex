@@ -193,7 +193,7 @@ def plot_waveforms(signals):
         plt.close()
 
 
-def plot_sampling():
+def plot_prior_dists():
     def _plot(pks=None):
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111, projection="3d")
@@ -212,7 +212,7 @@ def plot_sampling():
         plt.close()
 
 
-def plot_dist():
+def plot_toy_dist():
     bins = 100
     signal = "triangle"
     hist = np.zeros(bins)
@@ -231,13 +231,13 @@ def main(args):
         plot_palette()
 
     cprint("Will process all data figures:")
-    plot_dist()
+    plot_toy_dist()
 
     # cprint("Write the waveforms", Fore.GREEN)
     # plot_waveforms(MUSDB_SIGNALS + ['mix'])
 
     # cprint("Sample some random dsitributions", Fore.GREEN)
-    # plot_sampling()
+    # plot_prior_dists()
 
     # cprint("Overwriting LaTeX color definitions", Fore.GREEN)
     # print_color_latex()

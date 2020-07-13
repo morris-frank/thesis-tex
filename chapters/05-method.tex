@@ -73,7 +73,11 @@ We make it clear that the success of this method depends strongly on the express
 
 More practically we again point out the high difficulty of modelling audio data. As laid out in \sref{subsec:audio} audio consists of information at greatly different resolutions. A generative model of an instrument has to model the low-range components, e.g.\ pitch, timbre, tremolo and high-range components, e.g.\ notes and rhythm.
 
-\itodo{explain how prior actually looks like}
+\begin{figure}[]
+    \input{figures/prior}
+    \caption{The prior model}%
+    \label{fig:prior_network}
+\end{figure}
 
 \section{Sampling from the posteriors}
 After having estimated the \(N\) prior distributions the first possibility for retrieving sample estimates \(\s_k\) is sampling from the posterior using Langevin dynamics~\cite{wellingBayesian2011}. With Stochastic Gradient Langevin Dynamics (SGLD) we can sample from \(\s_i \sim p(\· | \m)\) without computing, explicitly, the posterior \(p(\s_i | \m)\). For a overview of SGLD see~\sref{sec:langevin}.
@@ -162,3 +166,8 @@ The lower bound, as in the normal VAE, will be our optimization target for train
 The Kullback-Leibler divergence term is computationally expensive, therefore the divergence is the stochastic estimate using just one mini-batch.
 
 With \cref{eq:final_elbo} we have the optimization objective set up and now have to choose a fitting parametrized posterior for \(\aprxpost\). In many recent
+
+\section{Difficulties of this method}
+\begin{enumerate}
+    \item Good prior densities
+\end{enumerate}
