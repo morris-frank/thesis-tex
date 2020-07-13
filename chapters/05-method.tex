@@ -1,9 +1,9 @@
 \chapter{Method}%
 \label{ch:method}
 
-\newthought{In this chapter}, we introduce the theoretical idea of our Bayesian modelling of source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
+\newthought{In this chapter}, we introduce the theoretical idea of our probability modelling of musical source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
 
-We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of music tracks being generated from separate source tracks. For each source a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
+We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
 
 \begin{marginfigure}[-15em]
     \input{figures/graphical_model}%
@@ -29,7 +29,7 @@ Looking back at the graphical model in \cref{fig:graphical_model}, it implies th
     &= \∫^N p(\m | \s_1,\…,\s_N) \· p(\s_1) \cdots p(\s_N) \,d^N \s
 \end{align}
 
-While the conditional \(p(\m | \s_1,\…,\s_N)\) is not even probabilistic, as the mix is generated deterministically as the mean of the sources, the model posterior \(p(\s_1,\…,\s_N | \m)\) is intractable and precisely what we are interested in. Again we want to make it clear that this setup changes the typical optimization target, as seen in other source separation approaches. We factorize the distribution \(p(\m)\) of mixed songs, only then to extract the most likely \I{latent} components that generate this mix, the sources. Therefore we are explicitly modelling the generative process of the mixed songs, and only implicitly the separation task.
+While the conditional \(p(\m | \s_1,\…,\s_N)\) is not even probabilistic, as the mix is generated deterministically with the mean of the sources, the model posterior \(p(\s_1,\…,\s_N | \m)\) is intractable and precisely what we are interested in. Again we want to make it clear that this setup changes the typical optimization target, as seen in other source separation approaches. We factorize the distribution \(p(\m)\) of mixed songs, only then to extract the most likely \I{latent} components that generate this mix, the sources. Therefore we are explicitly modelling the generative process of the mixed songs, and only implicitly the separation task.
 
 Already with the graphical model we introduce a fairly big assumption, namely that we can model the source distributions independently from each other when modeling the joint:
 
@@ -159,7 +159,6 @@ The lower bound, as in the normal VAE, will be our optimization target for train
     \end{align}
 \end{fullwidth}
 
-The Kullback-Leibler divergence term is computationally expensive, therefore the divergence is approximated with the divergence of just one mini-batch.
+The Kullback-Leibler divergence term is computationally expensive, therefore the divergence is the stochastic estimate using just one mini-batch.
 
-\itodo{explain the choice of posterior}
-\itodo{explain choice of inference model}
+With \cref{eq:final_elbo} we have the optimization objective set up and now have to choose a fitting parametrized posterior for \(\aprxpost\). In many recent

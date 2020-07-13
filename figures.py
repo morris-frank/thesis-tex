@@ -1,33 +1,26 @@
 #!/usr/bin/env python
-from argparse import ArgumentParser
-from itertools import product, chain
-from math import sin, cos
-from math import tau as τ
-from random import random, randint
 
-from colorama import Fore
-from matplotlib import colors, rcParams
-from matplotlib import font_manager as fm
-from matplotlib import pyplot as plt
-from matplotlib.ticker import LogFormatter
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.signal import sawtooth, square
-from scipy.stats import multivariate_normal
-import colorsys
+from random import random
+from argparse import ArgumentParser
+from itertools import chain
+
 import librosa
 import librosa.display
 import matplotlib as mpl
-import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import colors
+
+from utils import *
 
 # geometry lengths from LaTeX
 MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
 
 # choosen colors
-CMAP_DIV = "viridis"
-CMAP_DIV = sns.cubehelix_palette(n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True)  # mh is ok, but thats it
+# CMAP_DIV = "viridis"
+CMAP_DIV = sns.cubehelix_palette(
+    n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True
+)  # mh is ok, but thats it
 CMAP_CAT = {
     "green": "#98971a",
     "blue": "#458588",
@@ -47,37 +40,19 @@ TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
 MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
 
 
-def hex2rgb(hex):
-    if hex[0] == '#':
-        hex = hex[1:]
-    rgb = hex[:2], hex[2:4], hex[4:6]
-    return tuple(round(int(c, 16) / 255, 2) for c in rgb)
-
-
-def rgb2hex(r, g, b):
-    return '#' + ''.join([f"{int(x*255):x}" for x in (r,g,b)])
-
-# Align color maps
-def adapt_colors(target, dicti):
-    _h,_s,_v = colorsys.rgb_to_hsv(*target)
-    for k in dicti:
-        h,s,v = colorsys.rgb_to_hsv(*hex2rgb(dicti[k]))
-        dicti[k] = rgb2hex(*colorsys.hsv_to_rgb(h, _s, _v))
-
-# adapt_colors(CMAP_DIV.colors[-20, :3], CMAP_CAT)
-
 # Update matplotlib config
 mpl.style.use("./mpl.style")
-for k, c in [('r','red'),('g','green'),('b','blue'),('c','aqua'),('m','purple'),('y','yellow'),('n','orange')]:
+for k, c in [
+    ("r", "red"),
+    ("g", "green"),
+    ("b", "blue"),
+    ("c", "aqua"),
+    ("m", "purple"),
+    ("y", "yellow"),
+    ("n", "orange"),
+]:
     mpl.colors._colors_full_map[k] = hex2rgb(CMAP_CAT[c])
 sns.set_palette(sns.color_palette(list(CMAP_CAT.values())))
-
-def cprint(string, color=Fore.YELLOW):
-    print(f"{color}{string}{Fore.RESET}")
-
-
-def savefig(name):
-    plt.savefig(f"figures/{name}.eps")
 
 
 def print_color_latex():
@@ -101,41 +76,13 @@ def plot_palette():
     plt.show()
 
 
-def add_plot_tick(ax: plt.Axes, symbol: str, pos: float = 0.5, where: str = "x", size: float = 0.05, linewidth: float = 1):
-
-    if "x" in where:
-        anchor, loc = (pos, 1.01), 8
-    else:
-        anchor, loc = (-0.025, pos), 7
-
-    _ax = inset_axes(ax, width=size, height=size, bbox_transform=ax.transAxes, bbox_to_anchor=anchor, loc=loc,)
-    _ax.axison = False
-
-    x = np.linspace(0, τ)
-
-    if "sin" in symbol:
-        y = np.sin(x)
-        _ax.plot(x, y, linewidth=linewidth, c="k")
-    elif "tri" in symbol:
-        y = sawtooth(x, width=0.5)
-        _ax.plot(x, y, linewidth=linewidth, c="k")
-    elif "saw" in symbol:
-        y = sawtooth(x, width=1.0)
-        _ax.plot(x, y, linewidth=linewidth, c="k")
-    elif "sq" in symbol:
-        y = square(x)
-        _ax.plot(x, y, linewidth=linewidth, c="k")
-    elif symbol in ["drums", "bass", "voice", "other"]:
-        icon = plt.imread(f"figures/mixing/{symbol}.png")
-        _ax.imshow(np.repeat(icon[..., None], 3, 2))
-    else:
-        raise ValueError("unknown symbol")
-
-
 def plot_heatmap(data, name, signals):
     n = len(signals)
     fig, ax = plt.subplots(
-        1, 1, gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2), figsize=(MARGIN_LENGTH, 1.15 * MARGIN_LENGTH),
+        1,
+        1,
+        gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2),
+        figsize=(MARGIN_LENGTH, 1.15 * MARGIN_LENGTH),
     )
 
     if data.max() - data.min() > 10 ** 2:
@@ -145,7 +92,14 @@ def plot_heatmap(data, name, signals):
         ticks = None
         norm = None
 
-    cbar_ax = inset_axes(ax, width=1.49, height=0.1, bbox_transform=ax.transAxes, bbox_to_anchor=(0.5, -0.15), loc=8,)
+    cbar_ax = inset_axes(
+        ax,
+        width=1.49,
+        height=0.1,
+        bbox_transform=ax.transAxes,
+        bbox_to_anchor=(0.5, -0.15),
+        loc=8,
+    )
     sns.heatmap(
         data,
         ax=ax,
@@ -231,76 +185,44 @@ def plot_waveforms(signals):
         # stft = librosa.stft(wave)
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111)
-        librosa.display.waveplot(wave, max_points=500, max_sr=50, ax=ax, color=CMAP_DIV.colors[-70])
-        plt.axis('off')
+        librosa.display.waveplot(
+            wave, max_points=500, max_sr=50, ax=ax, color=CMAP_DIV.colors[-70]
+        )
+        plt.axis("off")
         savefig(f"wave_{signal}")
         plt.close()
-
-
-def make_a_rand_dist(ax, N=None):
-    def rand(v):
-        return 2 * v * random() + (1 - v)
-
-    gw = 200
-    if N is None:
-        N = randint(4, 7)
-    centroids = np.random.rand(N, 2)
-
-    X, Y = np.mgrid[0:1:1/gw, 0:1:1/gw]
-    pts = np.dstack((X, Y))
-    Z = np.zeros(pts.shape[:-1])
-    for μ in centroids:
-        a = rand(0.2)  # Amplitude
-        σx, σy = rand(0.5), rand(0.5)  # Variances
-        φ = τ * random()  # Angle
-        R = np.array([[cos(φ), -sin(φ)], [sin(φ), cos(φ)]])
-        Σ = np.array([[0.02*σx, 0], [0, 0.02*σy]])
-        Σ = R @ Σ @ R.T
-        rv = multivariate_normal(μ, Σ)
-        Z += a * 0.3 * rv.pdf(pts)
-
-    # lx, ly, lz = hillclimber(199, 199, Z, gw)
-    # lx, ly = lx/gw, ly/gw
-    # lu, lv, lw = np.gradient(lx), np.gradient(ly), np.gradient(lz)
-
-    ax.plot_surface(X, Y, Z, cmap=CMAP_DIV, zorder=1, linewidths=(0.05))
-    # ax.quiver(lx, ly, lz + 0.01, lu, lv, lw, zorder=10, normalize=True, length=0.08, arrow_length_ratio=0.3, linewidths=(0.1))
-
-    plt.axis('off')
-
-
-def hillclimber(px, py, Z, gw):
-    pz = Z[px, py]
-    pts = [(px, py, pz)]
-    while True:
-        xy = [(np.clip(x + px, 0, gw-1), np.clip(y + py, 0, gw-1)) for x, y in product((-1, 0, 1), (-1, 0, 1))]
-        z = [Z[x,y] for x,y in xy]
-        x, y, z = *xy[np.argmax(z)], np.max(z)
-        if x == px and y == py and z == pz:
-            break
-        pts.append((px, py, pz))
-        px, py, pz = x, y, z
-
-    return map(np.array, zip(*pts))
 
 
 def plot_sampling():
     def _plot(pks=None):
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111, projection="3d")
-        make_a_rand_dist(ax, N=pks)
+        make_a_rand_dist(ax, N=pks, cmap=CMAP_DIV)
         ax.view_init(25, 45)
 
     N = 4
 
     for i in range(N):
         _plot()
-        savefig(f'dist_{i}')
+        savefig(f"dist_{i}")
         plt.close()
 
         _plot(2)
-        savefig(f'dist_{i}_post')
+        savefig(f"dist_{i}_post")
         plt.close()
+
+
+def plot_dist():
+    bins = 100
+    signal = "triangle"
+    hist = np.zeros(bins)
+    for i in range(1):
+        wave = (1 - 0.2 * random()) * oscillator(1000, signal, *rand_period_phase())
+        _h, _ = np.histogram(wave, np.linspace(-1, 1, bins + 1))
+        hist += _h
+    hist /= hist.sum()
+    plt.plot(hist)
+    plt.show()
 
 
 def main(args):
@@ -309,11 +231,12 @@ def main(args):
         plot_palette()
 
     cprint("Will process all data figures:")
+    plot_dist()
 
-    cprint("Write the waveforms", Fore.GREEN)
-    plot_waveforms(MUSDB_SIGNALS + ['mix'])
+    # cprint("Write the waveforms", Fore.GREEN)
+    # plot_waveforms(MUSDB_SIGNALS + ['mix'])
 
-    cprint("Sample some random dsitributions", Fore.GREEN)
+    # cprint("Sample some random dsitributions", Fore.GREEN)
     # plot_sampling()
 
     # cprint("Overwriting LaTeX color definitions", Fore.GREEN)
