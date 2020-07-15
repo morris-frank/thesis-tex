@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from random import random
 from argparse import ArgumentParser
 from itertools import chain
 
@@ -19,7 +18,7 @@ MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
 # choosen colors
 # CMAP_DIV = "viridis"
 CMAP_DIV = sns.cubehelix_palette(
-    n_colors=6, start=2.0, rot=0.8, reverse=True, hue=0.65, as_cmap=True
+    n_colors=12, start=2.4, rot=0.8, reverse=True, hue=0.5, dark=0.3, as_cmap=True
 )  # mh is ok, but thats it
 CMAP_CAT = {
     "green": "#98971a",
@@ -212,6 +211,24 @@ def plot_prior_dists():
         plt.close()
 
 
+def plot_squeeze_and_flip():
+    N = 24
+
+    def hm(dat, i, w=1):
+        plt.figure(figsize=(w*1,1))
+        sns.heatmap(dat, vmin=1, vmax=N, cmap=CMAP_DIV, annot=True, cbar=False, square=True, xticklabels=False, yticklabels=False)
+        plt.tight_layout()
+        savefig(f'squeeze_{i}')
+
+    x = np.array(range(1,N+1))[None, ...]
+    x = squeeze(x)
+    hm(x, 0, 2)
+    x = squeeze(x)
+    hm(x, 1)
+    x = flip(x)
+    hm(x, 2)
+
+
 def plot_toy_dist():
     bins = 100
     signal = "triangle"
@@ -230,28 +247,40 @@ def main(args):
         cprint("Palette example plot:")
         plot_palette()
 
-    cprint("Will process all data figures:")
-    plot_toy_dist()
+    cprint("Will process all data figures:", Fore.CYAN)
 
-    # cprint("Write the waveforms", Fore.GREEN)
-    # plot_waveforms(MUSDB_SIGNALS + ['mix'])
+    cprint("Print squeeze and flip", Fore.YELLOW)
+    plot_squeeze_and_flip()
 
-    # cprint("Sample some random dsitributions", Fore.GREEN)
+    # cprint("Print toy data distributions", Fore.YELLOW, end="")
+    # plot_toy_dist()
+    # cprint("\t👍", Fore.GREEN)
+
+    # cprint("- Write the waveforms", Fore.YELLOW, end="")
+    # plot_waveforms(MUSDB_SIGNALS + ["mix"])
+    # cprint("\t👍", Fore.GREEN)
+
+    # cprint("- Sample some random distributions", Fore.YELLOW, end="")
     # plot_prior_dists()
+    # cprint("\t👍", Fore.GREEN)
 
-    # cprint("Overwriting LaTeX color definitions", Fore.GREEN)
+    # cprint("Overwriting LaTeX color definitions", Fore.YELLOW, end="")
     # print_color_latex()
+    # cprint("\t👍", Fore.GREEN)
 
-    # cprint("– Noise plots likelihood", Fore.GREEN)
+    # cprint("– Noise plots likelihood", Fore.YELLOW, end="")
     # plot_noise_box('noise_likelihood_with_noise')
     # plot_noise_box('noise_likelihood_without_noise')
+    # cprint("\t👍", Fore.GREEN)
 
-    # cprint("– Cross-entropy heatmaps", Fore.GREEN)
-    # plot_cross_entropy('heatmap_musdb_classifier', MUSDB_SIGNALS)
+    # cprint("– Cross-entropy heatmaps", Fore.YELLOW, end="")
+    # plot_cross_entropy("heatmap_musdb_classifier", MUSDB_SIGNALS)
+    # cprint("\t👍", Fore.GREEN)
 
-    # cprint("– Cross-Likelihood heatmaps", Fore.GREEN)
-    # plot_cross_likelihood('heatmap_musdb', MUSDB_SIGNALS)
-    # plot_cross_likelihood('heatmap_toy', TOY_SIGNALS)
+    # cprint("– Cross-Likelihood heatmaps", Fore.YELLOW, end="")
+    # plot_cross_likelihood("heatmap_musdb", MUSDB_SIGNALS)
+    # plot_cross_likelihood("heatmap_toy", TOY_SIGNALS)
+    # cprint("\t👍", Fore.GREEN)
 
 
 if __name__ == "__main__":

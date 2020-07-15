@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+    \node                   (s0) {\includegraphics[width=1.2in]{squeeze_0}};
+    \node[right=50pt of s0] (s1) {\includegraphics[width=0.9in]{squeeze_1}};
+    \node[right=50pt of s1] (s2) {\includegraphics[width=0.9in]{squeeze_2}};
+
+    \graph {(s0) ->["squeeze"] (s1) ->["flip"] (s2)};
+\end{tikzpicture}

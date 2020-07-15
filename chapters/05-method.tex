@@ -41,7 +41,7 @@ Intuitively this assumption does not, in general, hold for the musical domain. W
 
 The general process is as follows:
 
-First, because we assumed in our graphical model the latent sources to be independent, there exists a probability distribution \(p(\s_k)\) for each source \(k\). Thereout we need to choose a model which gives the parametrized approximated prior \(p_{\B{\θ}}(\s_k)\) with the parameters \(\B{\θ}\) which we optimize with the samples from \(\mathcal{D}_k\).
+First, because we assumed in our graphical model the latent sources to be independent, there exists a probability distribution \(p(\s_k)\) for each source \(k\). Thereout we need to choose a model which gives the parametrized approximated prior \(p_{\B{\θ}}(\s_k)\) with the parameters \(\B{\θ}\) which we optimize with the samples from \(\D_k\).
 
 Second, for each source, there exists a posterior given a mix \(p(\s_k | \m)\) from which we want to draw samples. Here two approaches are possible. Either we can propose an approximate posterior \(\aprxpost\), which is trained to minimize the divergence from the previously trained and fixed corresponding prior (VAE setting). Or, we can sample directly from the posterior using Stochastic Gradient Langevin Dynamics (SGLD)~\cite{wellingBayesian2011} without explicitly approximating the posterior distribution (sampling setting). Both optimization, either training or sampling, happen under the mixing constraint:
 
@@ -63,7 +63,7 @@ Thinking in the common terms of the VAE we need to choose:
 As stated before the decoder in our case is the mean function, thus not probabilistic and without parameters. It is certainly possible to parametrize the decoder with trainable parameters. This would imply though that the latent samples are not in the \I{direct form} of the source sounds but under an (unknown) transformation.
 
 \section{Modeling the priors}
-The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors with flow models for which we gave an overview in \sref{subsec:flows}. For different representations of the input, different network architectures are more suited. We experiment both with using directly the time-domain wave but also modelling on top of a spectral transformation of the time-domain data.
+The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors, with flow models for which we gave an overview in \sref{subsec:flows}. The invertibility of the flow gives us the ability to sample from the priors, which is necessary for the sampling-based approach. For the variational-based approach sampling is not necessary, nevertheless we utilize the same generative priors for both experiments. For different representations of the input, different network architectures are more suited. We experiment both with using directly the time-domain wave but also modelling on top of a spectral transformation of the time-domain data.
 
 The two main variants of normalizing flows we build our priors from are the RealNVP and Glow. Their most important difference is the different formulation of the coupling layers. For the coupling layers, we have to split the layer input into two equally sized subsets, one of whom will be transformed using an invertible transformation parametrized by the other. The RealNVP masks the data spatially or over the channels. When done spatially a checkerboard binary mask is used (same for all channels), for the channel variant the channels are assigned in an even-odd switching. Glow, on the other hand, learns a \(1\× 1\)-convolution which permutes the data channel-wise and than just splits the data along the channel dimension into two. For both RealNVP and Glow prior work exists specifically adapting the architecture to the time-series domain by integrating WaveNet modules, FloWaveNet~\cite{kimFloWaveNet2019a} and WaveGlow~\cite{prengerWaveGlow2018}, respectively.
 \itodo{Remove Glow if no experiment will use it…}
@@ -78,20 +78,77 @@ More practically we again point out the high difficulty of modelling audio data.
 
 See the visualization of the prior model's architecture in \cref{fig:prior_network}. We construct normalizing flow models, following the description in \textcite{kimFloWaveNet2019a}.
 
+The flow network, at the highest level, consists of \(n_b\) context blocks, each of whom contain one squeeze operation and \(n_f\) flows. The squeeze operation halves the length of the signal by doubling the number of channels. By doing so, we effectively double the receptive field of the WaveNet operators in the affine couplings. One flow contains one affine coupling layer after which the masking for the coupling (\I{even}/\I{odd}) is inverted. Before the coupling layer, we apply activation normalization~\cite{kingmaGlow2018}. The affine coupling is applying an affine transformation on the \I{odd} set of the input, with scale \(\s\) and translation \(\B{t}\) coming from the \I{even} input put through a \I{non-causal} WaveNet.
+
 \begin{figure}[t]
     \input{figures/prior}
     \caption{The building blocks for the prior model. The model consists of \(n_b\) blocks (left). Each block consists of \(n_f\) flows (middle). In each flow we apply activation normalization, followed by the affine coupling (right), after which the binary mask for the even/odd mapping is inverted. The affine coupling layer uses a WaveNet with the \I{even} set as the input to output scaling \(\log s\) and translation \(t\) which which the \I{odd} set is transformed.}%
     \label{fig:prior_network}
 \end{figure}
 
-\begin{algorithm}
-    \begin{algorithmic}[1]
-        \For{\(x\∈\mathcal{D}_k\)}
-        \EndFor%
-    \end{algorithmic}
-    \caption{Training of the prior models}%
-    \label{alg:prior_training}%
-\end{algorithm}
+\begin{figure}
+    \hspace*{-25pt}\input{figures/squeeze}%
+    \caption{Flip and squeeze operation for the coupling layers. The squeeze operation doubles the channels and halves the length while the flip operation inverts the tensor along the channel dimension.}%
+    \label{fig:squeeze}%
+\end{figure}
+
+The \I{even}/\I{odd} masking for the coupling layer is simply achieved by splitting the channel dimension into two equal parts. Flipping the masking exchanges the top half of channels with the bottom half. No channel transformation of the channels is learned as in Glow. Further observe that through the repeated squeeze operation the masking implicitly includes a checkerboard pattern on the temporal dimension, similar to the explicit pattern used in RealNVP\@.
+
+As explained in \cref{subsec:flows} the invertible flow \(f(\·)\) network directly maps the data space into a prior distribution \(p(\z)\). Through the invertibility we can directly optimize the log probability with the change of variable formula:
+
+\begin{equation}
+    \log p(\x) = \log p(f(\x)) + \log\det\left(\pf{f(\x)}{\x}\right)%
+    \label{eq:priorflow_likelihood}
+\end{equation}
+
+Our network consists of \(n_b\) blocks with each \(n_f\) flows each with one activation normalization layer \(f_{\t{AN}}\) and an affine coupling layer \(f_{\t{AC}}\). Therefore the log-determinant becomes:
+
+\begin{equation}
+    \log\det\left(\pf{f(\x)}{\x}\right)
+    = \Σ_i^{n_b \· n_f} \log\det\pf{f_{\t{AN}}(\x)}{\x} + \log\det\pf{f_{\t{AC}}(\x)}{\x}
+\end{equation}
+
+The activation normalization layer \(f_{\t{AN}}\) learns an affine transformation per channel \(i\):
+
+\marginnote[2.5em]{The inverse is:\\\(f^{-1}_{\t{AN}}(\B{y}_i) = \÷{\B{y}_i -  t_i}{s_i}\)}
+\begin{equation}
+    f_{\t{AN}}^i(\x_i) = s_i \· \x_i + t_i
+\end{equation}
+
+The log-determinant is easily computed with\footnotemark[\value{footnote}]:
+
+\begin{equation}
+    \log\det\pf{f_{\t{AN}}(\x)}{\x}
+    = T \· \Σ_i^C \log |s_i|%
+    \label{eq:priorflow_det1}
+\end{equation}
+
+where C is the number of channels and T is the length of the signal.
+
+For the affine coupling layer, the log-determinant is made tractable by only transforming half the elements in each application. The coupling transforms the \I{odd} part as follows:
+
+\begin{align}
+    \log\B{s}, \B{t} &= \t{WN}({in}_{odd})\\
+    {out}_{odd} &= f_{\t{AC}}({in}_{odd}) = \÷{{in}_{odd} - \B{t}}{\B{s}}
+\end{align}
+\marginnote[-4em]{The inverse is:\\\(f^{-1}_{\t{AC}}({out}_{odd}) = {out}_{odd}\·\B{s} + \B{t}\)}
+
+where \(\t{WN}(\·)\) is a WaveNet. The Jacobian of the coupling function is a lower triangular matrix\cite{dinhDensity2017} because of which the log-determinant becomes the product of the diagonal elements:
+
+\begin{equation}
+    \log\det\pf{f_{\t{AC}}(\x)}{\x}
+    = - \Σ \B{s}%
+    \label{eq:priorflow_det2}
+\end{equation}
+
+The purpose of the invertible flow is it to project the complex data distribution into a tractable defined prior distribution. In most cases, as in this, the prior \(p(\z)\) is set to be a factorized Gaussian distribution with zero mean and variance of one. As such the likelihood of \(f(\x) \sim p(\z)\) can be evaluated with:
+
+\begin{equation}
+    \log p(f(\x)) = -\÷{1}{2}(\log(2\· \π)) + {f(\x)}^2%
+    \label{eq:priorflow_ll}
+\end{equation}
+
+To train the model we maximize the likelihood in \cref{eq:priorflow_likelihood} which we is the sum of the parts in \cref{eq:priorflow_det1,eq:priorflow_det2,eq:priorflow_ll}. Optimization is done in mini-batches with the Adam optimzer~\cite{kingmaAdam2017} and a decaying learning rate scheme.
 
 \section{Sampling from the posteriors}
 After having estimated the \(N\) prior distributions the first possibility for retrieving sample estimates \(\s_k\) is sampling from the posterior using Langevin dynamics~\cite{wellingBayesian2011}. With Stochastic Gradient Langevin Dynamics (SGLD) we can sample from \(\s_i \sim p(\· | \m)\) without computing, explicitly, the posterior \(p(\s_i | \m)\). For a overview of SGLD see~\sref{sec:langevin}.
@@ -183,7 +240,7 @@ With \cref{eq:final_elbo} we have the optimization objective set up and now have
 
 \begin{algorithm}
     \begin{algorithmic}[1]
-        \For{\(x\∈\mathcal{D}_k\)}
+        \For{\(x\∈\D_k\)}
         \EndFor%
     \end{algorithmic}
     \caption{Training of the approximate posterior.}%

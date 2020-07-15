@@ -9,86 +9,86 @@ First we introduce the concept of deep latent-variable models, which important c
 \label{sec:dlvm}
 In this section we introduce the idea of latent variable and the idea of finding models of data using those latent variables. Further we discuss what practical ways are currently successful in estimating the model parameters and how they are trained.
 
-For our process, we have observations from the data space \({\B{x}}\∈\mathcal{D}\) for which there exists an unknown data probability distribution \(p^*(\mathcal{D})\). We collect a data set \(\{\B{x}_1\…\B{x}_N\}\) with \(N\) samples. Further we introduce an approximate model with the density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\mathcal{D})\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
+For our process, we have observations from the data space \({\x}\∈\D\) for which there exists an unknown data probability distribution \(p^*(\D)\). We collect a data set \(\{\x_1\…\x_N\}\) with \(N\) samples. Further we introduce an approximate model with the density\footnote{We write density and distribution interchangeably to denote a probability function.} \(p_{\B{\θ}}(\D)\) and model parameters \(\B{\θ}\). Learning or modeling means finding the values for \(\B{\θ}\) which will give the closest approximation of the true underlying process:
 
 \begin{equation}
-    p_{\B{\θ}}(\mathcal{D}) \approx p^*(\mathcal{D})
+    p_{\B{\θ}}(\D) \approx p^*(\D)
 \end{equation}
 
 The model \(p_{\B{\θ}}\) has to be complex enough to be able to fit the data density while little enough parameters to be learned. Every choice for the form of the model will \I{induce} biases\footnote{called \I{inductive biases}} about what density we can model, even before we maximize a learning objective using the parameters \(\B{\θ}\).
 
-In the following described models we assume the sampled data points \(\B{x}\) to be drawn from \(\mathcal{D}\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points and we all draw them the same way}. Therefore we can write the data log-likelihood as:
+In the following described models we assume the sampled data points \(\x\) to be drawn from \(\D\) \I{independent and identically distributed}\footnote{meaning the sample of one datum does not depend on the other data points and we all draw them the same way}. Therefore we can write the data log-likelihood as:
 
 \begin{equation}
-    \log p_{\B{\θ}}(\mathcal{D})
-    = \Σ_{\B{x}\∈\mathcal{D}} \log p_{\B{\θ}}(\B{x})
+    \log p_{\B{\θ}}(\D)
+    = \Σ_{\x\∈\D} \log p_{\B{\θ}}(\x)
 \end{equation}
 
 The maximum likelihood estimation of our model parameters maximizes this objective.
 
-To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\mathcal{D}\). For example if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. But we could also introduce the instrument as an underlying latent variable \(\B{z}\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example.
+To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\D\). For example if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. But we could also introduce the instrument as an underlying latent variable \(\z\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example.
 
 Now the data likelihood is the marginal density of the joint latent density. With one latent variable we get:
 
 \begin{equation}
-    p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x},\B{z}) d\B{z}
+    p_{\B{\θ}}(\x) = \∫ p_{\B{\θ}}(\x,\z) d\z
 \end{equation}
 
 Typically we introduce a factorization of the joint. The most common one and also the one from our previous example is:
 
 \begin{equation}
-    p_{\B{\θ}}(\B{x}) = \∫ p_{\B{\θ}}(\B{x}|\B{z})p(\B{z}) d\B{z}
+    p_{\B{\θ}}(\x) = \∫ p_{\B{\θ}}(\x|\z)p(\z) d\z
     \label{eq:factorized_data_likelihood}
 \end{equation}
 
 \begin{marginfigure}%
     \input{figures/factorization_pgm}
-    \caption{The graphical model with a introduced latent variable \(\B{z}\). Observed variables are shaded.}
+    \caption{The graphical model with a introduced latent variable \(\z\). Observed variables are shaded.}
     \label{fig:factorization_pgm}
 \end{marginfigure}
 
-This corresponds to the graphical model in which \(\B{z}\) is generative parent node of the observed \(\B{x}\), see~\cref{fig:factorization_pgm}. The density \(p(\B{z})\) is called the \I{prior distribution}.
+This corresponds to the graphical model in which \(\z\) is generative parent node of the observed \(\x\), see~\cref{fig:factorization_pgm}. The density \(p(\z)\) is called the \I{prior distribution}.
 
-If the latent is small, discrete, it might be possible to directly marginalize over it. If for example, \(\B{z}\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\B{x}|\B{z})\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\B{x})\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
+If the latent is small, discrete, it might be possible to directly marginalize over it. If for example, \(\z\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\x|\z)\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\x)\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
 
-For more complicated models the data likelihood \(p_{\B{\θ}}(\B{x})\) as well as the model posterior \(p_{\B{\θ}}(\B{z}|\B{x})\) are intractable because of the integration over the latent \(\B{z}\) in \cref{eq:factorized_data_likelihood}.
+For more complicated models the data likelihood \(p_{\B{\θ}}(\x)\) as well as the model posterior \(p_{\B{\θ}}(\z|\x)\) are intractable because of the integration over the latent \(\z\) in \cref{eq:factorized_data_likelihood}.
 
-To formalize the search for an intractable posterior into a tractable optimization problem we can follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\B{z}|\B{x})\), also called the \I{inference model}. Again the choice of the model here carries inductive biases, as such that even in asymptotic expectation we can not obtain the true posterior.
+To formalize the search for an intractable posterior into a tractable optimization problem we can follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\z|\x)\), also called the \I{inference model}. Again the choice of the model here carries inductive biases, as such that even in asymptotic expectation we can not obtain the true posterior.
 
 Following the derivation in~\textcite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
 
 \begin{align}
-    \log p_{\B{\θ}}(\B{x})
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})} \left[ \log p_{\B{\θ}}(\B{x}) \right]\\
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    \log p_{\B{\θ}}(\x)
+    &= \E_{q_{\B{\θ}}(\z|\x)} \left[ \log p_{\B{\θ}}(\x) \right]\\
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
-          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x, \z)}
+          {p_{\B{\θ}}(\z|\x)}
         \right]\\
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
-          {q_{\B{\φ}}(\B{z}|\B{x})}
-        \÷{q_{\B{\φ}}(\B{z}|\B{x})}
-          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x, \z)}
+          {q_{\B{\φ}}(\z|\x)}
+        \÷{q_{\B{\φ}}(\z|\x)}
+          {p_{\B{\θ}}(\z|\x)}
         \right]\\
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
-          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x, \z)}
+          {q_{\B{\φ}}(\z|\x)}
         \right]
-    +  \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    +  \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{q_{\B{\φ}}(\B{z}|\B{x})}
-          {p_{\B{\θ}}(\B{z}|\B{x})}
+        \÷{q_{\B{\φ}}(\z|\x)}
+          {p_{\B{\θ}}(\z|\x)}
         \right]\\
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
-            {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x, \z)}
+            {q_{\B{\φ}}(\z|\x)}
         \right]
-    +  \KL[q_{\B{\φ}}(\B{z}|\B{x}) \|
-           p_{\B{\θ}}(\B{z}|\B{x})  ]
+    +  \KL[q_{\B{\φ}}(\z|\x) \|
+           p_{\B{\θ}}(\z|\x)  ]
 \end{align}
 
 Note that we separated the likelihood into two parts. The second part is the (positive) Kullback-Leibler divergence of the approximate posterior from the true intractable posterior. This unknown divergence states the `correctness' of our approximation~\footnote{More specifically the divergence marries two errors of our approximate model. First, it gives the error of our posterior estimation from the true posterior, by definition of divergence. Second, it specifies the error of our complete model likelihood from the marginal likelihood. This is called the \I{tightness} of the bound.}.
@@ -97,11 +97,11 @@ Note that we separated the likelihood into two parts. The second part is the (po
 The first term is the \I{variational free energy} or \I{evidence lower bound} (ELBO):
 
 \begin{align}
-    \elbo_{\B{\θ}, \B{\φ}}(\B{x})
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    \elbo_{\B{\θ}, \B{\φ}}(\x)
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}, \B{z})}
-          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x, \z)}
+          {q_{\B{\φ}}(\z|\x)}
         \right]
     \label{eq:elbo}
 \end{align}
@@ -109,31 +109,31 @@ The first term is the \I{variational free energy} or \I{evidence lower bound} (E
 We can introduce the same factorization as in~\cref{eq:factorized_data_likelihood}:
 
 \begin{align}
-    \elbo_{\B{\θ}, \B{\φ}}(\B{x})
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    \elbo_{\B{\θ}, \B{\φ}}(\x)
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p_{\B{\θ}}(\B{x}|\B{z}) p(\B{z})}
-          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{p_{\B{\θ}}(\x|\z) p(\z)}
+          {q_{\B{\φ}}(\z|\x)}
         \right]\\
-    &= \E_{q_{\B{\θ}}(\B{z}|\B{x})}
+    &= \E_{q_{\B{\θ}}(\z|\x)}
         \left[\log
-        \÷{p(\B{z})}
-          {q_{\B{\φ}}(\B{z}|\B{x})}
+        \÷{p(\z)}
+          {q_{\B{\φ}}(\z|\x)}
         \right]
-    + \E_{q_{\B{\θ}}(\B{z}|\B{x})}
-        \left[\log p_{\B{\θ}}(\B{x}|\B{z})\right]\\
-    &= -\KL[q_{\B{\φ}}(\B{z}|\B{x})\|p(\B{z})]
-    + \E_{q_{\B{\θ}}(\B{z}|\B{x})}
-        \left[\log p_{\B{\θ}}(\B{x}|\B{z})\right]
+    + \E_{q_{\B{\θ}}(\z|\x)}
+        \left[\log p_{\B{\θ}}(\x|\z)\right]\\
+    &= -\KL[q_{\B{\φ}}(\z|\x)\|p(\z)]
+    + \E_{q_{\B{\θ}}(\z|\x)}
+        \left[\log p_{\B{\θ}}(\x|\z)\right]
     \label{eq:elbo_factorized}
 \end{align}
 
 Under this factorization, we separated the lower bound into two parts. First, the divergence of the approximate posterior from the latent prior distribution and second the data posterior likelihood from the latent~\footnote{This will later be the reconstruction error. How well can we return to the data density from latent space?}.
 
-The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\B{x}, \B{z}) \)}. Though we can \I{not} do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\cite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
+The optimization of the \(\elbo_{\B{\θ}, \B{\φ}}\) allows us to jointly optimize the parameter sets \(\B{\θ}\) and \(\B{\φ}\). The gradient with respect to \(\B{\θ}\) can be estimated with an unbiased Monte Carlo estimate using data samples~\footnote{\( \∇_{\B{\θ}} \elbo_{\B{\θ}, \B{\φ}} \approxeq \∇_{\B{\θ}} \log p_{\B{\θ}} (\x, \z) \)}. Though we can \I{not} do the same for the variational parameters \(\B{\φ}\), as the expectation of the ELBO is over the approximate posterior which depends on \(\B{\φ}\). By a change of variable of the latent variable we can make this gradient tractable, the so called \I{reparameterization trick}~\cite{kingmaAutoEncoding2014}. We express the \(z\sim q_{\B{\θ}}\) as an random sample from a unparametrized source of entropy \(\B{\ε}\) and a parametrized transformation:
 
 \begin{equation}
-    \B{z} = f_{\B{\η}}(\B{\ε})
+    \z = f_{\B{\η}}(\B{\ε})
 \end{equation}
 
 For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as \(z = \μ + \σ\·\ε\) with \(\ε\sim \N(0,1)\) and \(\η = \{\μ,\σ\}\).
@@ -149,11 +149,11 @@ The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeS
     \label{alg:vae}
     \begin{algorithmic}[1]
         \While{Training is not converged}
-            \State \(\B{X} \sim \mathcal{D}\)\Comment{Sample random mini-batch}
+            \State \(\B{X} \sim \D\)\Comment{Sample random mini-batch}
             \State \(\η \gets \text{EncoderNN}(\B{X})\)
             \State \(\B{\ε} \sim p(\B{\ε})\)
-            \State \(\B{z} \gets f_{\B{\η}}(\B{\ε})\)
-            \State \(\B{X}' \gets \text{DecoderNN}(\B{z})\)
+            \State \(\z \gets f_{\B{\η}}(\B{\ε})\)
+            \State \(\B{X}' \gets \text{DecoderNN}(\z)\)
         \EndWhile%
     \end{algorithmic}
 \end{algorithm}
@@ -163,7 +163,7 @@ The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) 
 \subsection{Flow based models}
 \label{subsec:flows}
 
-Another class of common deep latent models is based on \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f(\B{x})\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\B{x}))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\B{z}|\B{x})\).  Again this is commonly set to be a factorized Gaussian distribution.
+Another class of common deep latent models is based on \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f(\x)\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\x))\), in that normalizing the density~\footnote{The extreme of this idea is, of course, an infinitesimal, continuous-time flow with a velocity field.}. They use a flow for the approximate posterior \(q_{\B{\φ}}(\z|\x)\).  Again this is commonly set to be a factorized Gaussian distribution.
 
 For a finite normalizing flow, we consider a chain of invertible, smooth mappings.
 

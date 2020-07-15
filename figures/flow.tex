@@ -5,7 +5,7 @@
 \begin{tikzpicture}[node distance=3mm, outer sep=1mm]
     \node (s) [var] {\(\B{s}_k\)};
     \node (f) [box, right=of s] {\(f_k^{-1}(\·)\)};
-    \node (z) [var, right=of f] {\(\B{z}_k\)};
+    \node (z) [var, right=of f] {\(\z_k\)};
 
     \path (s) edge[arr] (f)
           (f) edge[arr] (z);

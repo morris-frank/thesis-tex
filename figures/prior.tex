@@ -2,17 +2,17 @@
 \begin{tikzpicture}[every node/.style={scale=0.8}]
     \tikzstyle{box}=[rectangle,draw,minimum width=25mm,minimum height=5.55mm,fill=yellow!10]
     \tikzstyle{hbox}=[box,minimum width=12mm,fill=yellow!10]
-    \tikzstyle{label}=[rotate=90,yshift=5]
+    \tikzstyle{label}=[rotate=90,yshift=6]
 
     \begin{scope}
-        \node (z) {\(\B{z}\)};
+        \node (z) {\z};
         \coordinate[below=10pt of z] (belowz) {};
         \coordinate[below=10pt of belowz] (aboveflow) {};
         \node[below=7pt of aboveflow,box,fill=orange!40] (flow)    {Flow};
         \coordinate[below=7pt of flow] (belowflow) {};
         \node[below=13pt of belowflow,box] (squeeze) {Squeeze};
         \coordinate[below=15pt of squeeze] (abovex) {};
-        \node[below=5pt of abovex] (x) {\(\B{x}\)};
+        \node[below=5pt of abovex] (x) {\(\s\)};
 
 
         \draw[->] (x) to (abovex) to (squeeze);
@@ -20,32 +20,32 @@
         \draw[->] (flow) to (belowz) to (z);
 
         \draw (belowz) -| (-1.7, -2) node[label] {\(\times n_b\)} [->]|- (abovex);
-        \draw (aboveflow) -| (-1.1,-1.35) node[label] {\(\times n_f\)} [->]|- (belowflow);
+        \draw (aboveflow) -| (-1.07,-1.35) node[label] {\(\times n_f\)} [->]|- (belowflow);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,black!10]
-              (-1.15,-0.9) rectangle (1.15,-3);
+              (-1.25,-0.9) rectangle (1.25,-3);
         \end{pgfonlayer}
     \end{scope}
 
     \begin{scope}[xshift=3.5cm]
         \node (end) {};
-        \node[box,below=23pt of end] (corder) {change order};
+        \node[box,below=23pt of end] (corder) {flip \I{even} and \I{odd}};
         \node[box,below=10pt of corder,fill=aqua!40] (ac) {Affine coupling};
         \node[box,below=10pt of ac] (an) {ActNorm};
-        \node[below=12pt of an] (start) {\(\B{z}\)};
+        \node[below=12pt of an] (start) {\z};
 
         \draw[->] (start) to (an);
         \draw[->] (an) to (ac);
         \draw[->] (ac) to (corder);
         \draw[->] (corder) to (end);
 
-        \draw[densely dotted] (-2.5, -1.125) .. controls (-1.6, -0.71) .. (-1.35, -0.71);
-        \draw[densely dotted] (-2.5, -1.57) .. controls (-1.6, -3.19) .. (-1.35, -3.19);
+        \draw[densely dotted] (-2.5, -1.125) .. controls (-1.6, -0.71) .. (-1.45, -0.71);
+        \draw[densely dotted] (-2.5, -1.57) .. controls (-1.6, -3.19) .. (-1.45, -3.19);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,orange!20]
-              (-1.15,-0.9) rectangle (1.15,-3);
+              (-1.25,-0.9) rectangle (1.25,-3);
         \end{pgfonlayer}
     \end{scope}
 
@@ -55,23 +55,23 @@
         \node[hbox,right=1pt of end] (oeven) {\({out}_{even}\)};
 
         \node[hbox, below=55pt of oeven] (wn) {WN};
-        \node[hbox, below=15pt of oodd] (trans) {\(\B{s} \· \B{x} + \B{t}\)};
+        \node[hbox, below=15pt of oodd] (trans) {\(\÷{{\color{red}\x} - {\color{yellow}\B{t}}}{{\color{yellow}\B{s}}}\)};
 
         \node[hbox,below=80pt of oodd] (iodd) {\({in}_{odd}\)};
         \node[hbox,below=80pt of oeven] (ieven) {\({in}_{even}\)};
 
         \draw[->] (ieven) to (wn);
         \draw[->] (trans) to (oodd);
-        \draw[->] (iodd) to node[label] {\(\B{x}\)} (trans);
-        \draw[->] (wn) |- node[label,xshift=-20pt] {\(\log \B{s}, \B{t}\)} (trans);
+        \draw[->] (iodd) to node[label] {\(\color{red}\x\)} (trans);
+        \draw[->] (wn) |- node[label,xshift=-20pt] {\(\color{yellow}\log \B{s}, \B{t}\)} (trans);
         \draw (ieven.east) -| (1.6, -1.3) [->]|- (oeven);
 
-        \draw[densely dotted] (-2.44, -1.75) .. controls (-1.6, -0.71) .. (-1.35, -0.71);
-        \draw[densely dotted] (-2.44, -2.22) .. controls (-1.6, -3.19) .. (-1.35, -3.19);
+        \draw[densely dotted] (-2.44, -1.75) .. controls (-1.6, -0.71) .. (-1.45, -0.71);
+        \draw[densely dotted] (-2.44, -2.22) .. controls (-1.6, -3.19) .. (-1.45, -3.19);
 
         \begin{pgfonlayer}{background}
             \filldraw [inner sep=50pt,line width=4mm,aqua!20]
-              (-1.15,-0.9) rectangle (1.25,-3);
+              (-1.25,-0.9) rectangle (1.25,-3);
         \end{pgfonlayer}
     \end{scope}
 \end{tikzpicture}

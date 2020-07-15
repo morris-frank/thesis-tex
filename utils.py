@@ -13,8 +13,8 @@ from scipy.signal import square, sawtooth
 from scipy.stats import multivariate_normal
 
 
-def cprint(string, color=Fore.YELLOW):
-    print(f"{color}{string}{Fore.RESET}")
+def cprint(string, color=Fore.YELLOW, end="\n"):
+    print(f"{color}{string}{Fore.RESET}", end=end, flush=True)
 
 
 def adapt_colors(target, dicti):
@@ -171,3 +171,12 @@ def rand_period_phase(high: int = 88, low: int = 1, sr: int = 16000) -> Tuple[in
     ν = int(sr // freq)
     φ = randint(0, ν)
     return ν, φ
+
+
+def flip(x):
+    return np.vstack(list(reversed(np.split(x, 2))))
+
+
+def squeeze(x):
+    N, L = x.shape
+    return x.reshape(N, L//2, 2).transpose(0,2,1).reshape(N*2, L//2)
