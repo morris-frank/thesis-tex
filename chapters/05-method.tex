@@ -227,7 +227,7 @@ We arrive at the ELBO by leaving out the divergence of the approximate posterior
     \end{align}
 \end{fullwidth}
 
-The lower bound, as in the normal VAE, will be our optimization target for training the inference models that give the variational parameters \(\B\φ_k\). We can also formulate the objective for just one source, as the Encoders are trained independently\footnote{While the optimization of the Encoders is independent, the training is, of course, concurrent as the mixing conditions depends on all \(N\) source samples.}. Thus we come to:
+The lower bound, as in the normal VAE, will be our optimization target for training the inference models that give the variational parameters \(\B\φ_k\). We can also formulate the objective for just one source, as the Encoders are trained independently\footnote{While the optimization of the Encoders is independent, the training is, of course, concurrent as the mixing condition depends on all \(N\) source samples.}. Thus we come to:
 
 \begin{fullwidth}
     \begin{align}
@@ -241,7 +241,15 @@ The lower bound, as in the normal VAE, will be our optimization target for train
 
 The Kullback-Leibler divergence term is computationally expensive, therefore the divergence is the stochastic estimate using just one mini-batch.
 
-With \cref{eq:final_elbo} we have the optimization objective set up and now have to choose a fitting parametrized posterior for \(\aprxpost\). In many recent
+As both the prior \(p(\s_k)\) and the approximate posterior \(\aprxpost\) are parametrized by deep neural network, the gradient of \cref{eq:final_elbo} is tractable with respect to the mini-batch.
+
+With the optimization regime set up, we have to choose a fitting posterior distribution and the deep neural network which computes its parameters from data. In many typical VAE setti,ngs the prior density is fixed probability distribution, typically a multivariate normal distribution and accordingly the approximate posterior also is set to be a normal distribution.
+
+\begin{marginfigure}
+    \includegraphics{toy_dist}
+    \caption{The logits of different classes of the different outputs}%
+    \label{fig:toy_dist}
+\end{marginfigure}
 
 \begin{algorithm}
     \begin{algorithmic}[1]

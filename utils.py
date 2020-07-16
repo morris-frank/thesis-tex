@@ -25,7 +25,7 @@ def adapt_colors(target, dicti):
 
 
 def savefig(name):
-    plt.savefig(f"figures/{name}.eps")
+    plt.savefig(f"figures/{name}.eps", transparent=False)
 
 
 def hex2rgb(hex):
@@ -172,6 +172,8 @@ def rand_period_phase(high: int = 88, low: int = 1, sr: int = 16000) -> Tuple[in
     φ = randint(0, ν)
     return ν, φ
 
+def clip_noise(wave, amount=1.):
+    return np.clip(wave + (amount * np.random.randn(*wave.shape)), -1, 1)
 
 def flip(x):
     return np.vstack(list(reversed(np.split(x, 2))))

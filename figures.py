@@ -21,13 +21,13 @@ CMAP_DIV = sns.cubehelix_palette(
     n_colors=12, start=2.4, rot=0.8, reverse=True, hue=0.5, dark=0.3, as_cmap=True
 )  # mh is ok, but thats it
 CMAP_CAT = {
-    "green": "#98971a",
-    "blue": "#458588",
-    "red": "#cc241d",
     "purple": "#b16286",
+    "orange": "#d65d0e",
+    "blue": "#458588",
+    "green": "#98971a",
+    "red": "#cc241d",
     "yellow": "#d79921",
     "aqua": "#689d6a",
-    "orange": "#d65d0e",
 }
 COLORS = {
     "extlinkcolor": "#076678",  # external links
@@ -229,17 +229,21 @@ def plot_squeeze_and_flip():
     hm(x, 2)
 
 
-def plot_toy_dist():
-    bins = 100
-    signal = "triangle"
-    hist = np.zeros(bins)
-    for i in range(1):
-        wave = (1 - 0.2 * random()) * oscillator(1000, signal, *rand_period_phase())
-        _h, _ = np.histogram(wave, np.linspace(-1, 1, bins + 1))
-        hist += _h
-    hist /= hist.sum()
-    plt.plot(hist)
-    plt.show()
+def plot_toy_dist(signals):
+    _, axs = plt.subplots(
+        2,
+        2,
+        figsize=(MARGIN_LENGTH, 1.3 * MARGIN_LENGTH),
+        gridspec_kw=dict(left=0.17, right=0.99, hspace=0.5, wspace=0.5),
+    )
+    for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
+        add_plot_tick(ax, symbol=signal, size=0.1, linewidth=0.5)
+        wave = clip_noise(oscillator(15000, signal, 200), 0.02)
+        sns.distplot(wave, ax=ax, kde=False, bins=20, hist_kws={'alpha': 1})
+        ax.tick_params(bottom=True, left=False, labelbottom=True, labelleft=False)
+        # hist, _ = np.histogram(wave, np.linspace(-1, 1, 100 + 1))
+        # ax.plot(hist)
+    savefig(f"toy_dist")
 
 
 def main(args):
@@ -247,40 +251,25 @@ def main(args):
         cprint("Palette example plot:")
         plot_palette()
 
+    processes = [
+        (print_color_latex, ()),
+        # (plot_toy_dist, (TOY_SIGNALS,)),
+        # (plot_prior_dists, ()),
+        # (plot_waveforms, (MUSDB_SIGNALS + ["mix"],)),
+        # (plot_squeeze_and_flip, ()),
+        # (plot_cross_entropy, ("heatmap_musdb_classifier", MUSDB_SIGNALS)),
+        # (plot_cross_likelihood, ("heatmap_musdb", MUSDB_SIGNALS)),
+        # (plot_cross_likelihood, ("heatmap_toy", TOY_SIGNALS)),
+        # (plot_noise_box, ('noise_likelihood_with_noise',)),
+        # (plot_noise_box, ('noise_likelihood_without_noise',)),
+    ]
+
     cprint("Will process all data figures:", Fore.CYAN)
+    for f, arg in processes:
+        cprint(f"- {f.__name__}", Fore.YELLOW, end="")
+        f(*arg)
+        cprint("\t👍", Fore.GREEN)
 
-    cprint("Print squeeze and flip", Fore.YELLOW)
-    plot_squeeze_and_flip()
-
-    # cprint("Print toy data distributions", Fore.YELLOW, end="")
-    # plot_toy_dist()
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("- Write the waveforms", Fore.YELLOW, end="")
-    # plot_waveforms(MUSDB_SIGNALS + ["mix"])
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("- Sample some random distributions", Fore.YELLOW, end="")
-    # plot_prior_dists()
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("Overwriting LaTeX color definitions", Fore.YELLOW, end="")
-    # print_color_latex()
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("– Noise plots likelihood", Fore.YELLOW, end="")
-    # plot_noise_box('noise_likelihood_with_noise')
-    # plot_noise_box('noise_likelihood_without_noise')
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("– Cross-entropy heatmaps", Fore.YELLOW, end="")
-    # plot_cross_entropy("heatmap_musdb_classifier", MUSDB_SIGNALS)
-    # cprint("\t👍", Fore.GREEN)
-
-    # cprint("– Cross-Likelihood heatmaps", Fore.YELLOW, end="")
-    # plot_cross_likelihood("heatmap_musdb", MUSDB_SIGNALS)
-    # plot_cross_likelihood("heatmap_toy", TOY_SIGNALS)
-    # cprint("\t👍", Fore.GREEN)
 
 
 if __name__ == "__main__":
