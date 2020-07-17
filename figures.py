@@ -3,12 +3,14 @@
 from argparse import ArgumentParser
 from itertools import chain
 
+from scipy import stats
 import librosa
 import librosa.display
 import matplotlib as mpl
 import pandas as pd
 import seaborn as sns
 from matplotlib import colors
+
 
 from utils import *
 
@@ -246,6 +248,20 @@ def plot_toy_dist(signals):
     savefig(f"toy_dist")
 
 
+def plot_beta():
+    _, ax = plt.subplots()
+
+    ε = 0.00001
+    N = 400
+
+    for a,b in zip([0.5, 1.01, 2, 2, 6], [0.5, 1, 2, 5, 1]):
+        x = np.linspace(stats.beta.ppf(ε, a, b), stats.beta.ppf(1-ε, a, b), N)
+        ax.plot(x * 2 - 1, stats.beta.pdf(x, a, b))
+    ax.set_ylim(0, 3)
+    savefig("beta")
+
+
+
 def main(args):
     if args.verbose:
         cprint("Palette example plot:")
@@ -253,6 +269,7 @@ def main(args):
 
     processes = [
         (print_color_latex, ()),
+        # (plot_beta, ()),
         # (plot_toy_dist, (TOY_SIGNALS,)),
         # (plot_prior_dists, ()),
         # (plot_waveforms, (MUSDB_SIGNALS + ["mix"],)),

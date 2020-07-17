@@ -65,7 +65,7 @@ As stated before the decoder in our case is the mean function, thus not probabil
 \section{Modeling the priors}
 The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors, with flow models for which we gave an overview in \sref{subsec:flows}. The invertibility of the flow gives us the ability to sample from the priors, which is necessary for the sampling-based approach. For the variational-based approach sampling is not necessary, nevertheless we utilize the same generative priors for both experiments. For different representations of the input, different network architectures are more suited. We experiment both with using directly the time-domain wave but also modelling on top of a spectral transformation of the time-domain data.
 
-The two main variants of normalizing flows we build our priors from are the RealNVP and Glow. Their most important difference is the different formulation of the coupling layers. For the coupling layers, we have to split the layer input into two equally sized subsets, one of whom will be transformed using an invertible transformation parametrized by the other. The RealNVP masks the data spatially or over the channels. When done spatially a checkerboard binary mask is used (same for all channels), for the channel variant the channels are assigned in an even-odd switching. Glow, on the other hand, learns a \(1\× 1\)-convolution which permutes the data channel-wise and than just splits the data along the channel dimension into two. For both RealNVP and Glow prior work exists specifically adapting the architecture to the time-series domain by integrating WaveNet modules, FloWaveNet~\cite{kimFloWaveNet2019a} and WaveGlow~\cite{prengerWaveGlow2018}, respectively.
+The two main variants of normalizing flows we build our priors from are the RealNVP and Glow. Their most important difference is the different formulation of the coupling layers. For the coupling layers, we have to split the layer input into two equally sized subsets, one of whom will be transformed using an invertible transformation parametrized by the other. The RealNVP masks the data spatially or over the channels. When done spatially a checkerboard binary mask is used (same for all channels), for the channel variant the channels are assigned in an even-odd switching. Glow, on the other hand, learns a \(1\× 1\)-convolution which permutes the data channel-wise and than just splits the data along the channel dimension into two. For both RealNVP and Glow prior work exists specifically adapting the architecture to the time-series domain by integrating WaveNet modules, FloWaveNet~\cite{kimFloWaveNet2019} and WaveGlow~\cite{prengerWaveGlow2018}, respectively.
 \itodo{Remove Glow if no experiment will use it…}
 
 For the case of the time-domain representation, the data has only one channel (mono-audio). Therefore a Glow-like shuffling of channels is not possible and we resort to using spatial masking for the coupling layers. A one-dimensional mask is used over the time dimension. In the case of using a spectral representation of the audio data, the input samples have a lower time resolution but instead the frequency distribution over a deeper channel dimension. Therefore we can also experiment with channel-shuffling.
@@ -76,7 +76,7 @@ More practically we again point out the high difficulty of modelling audio data.
 
 \subsection{Prior architecture}
 
-See the visualization of the prior model's architecture in \cref{fig:prior_network}. We construct normalizing flow models, following the description in \textcite{kimFloWaveNet2019a}.
+See the visualization of the prior model's architecture in \cref{fig:prior_network}. We construct normalizing flow models, following the description in \textcite{kimFloWaveNet2019}.
 
 The flow network, at the highest level, consists of \(n_b\) context blocks, each of whom contain one squeeze operation and \(n_f\) flows. The squeeze operation halves the length of the signal by doubling the number of channels. By doing so, we effectively double the receptive field of the WaveNet operators in the affine couplings. One flow contains one affine coupling layer after which the masking for the coupling (\I{even}/\I{odd}) is inverted. Before the coupling layer, we apply activation normalization~\cite{kingmaGlow2018}. The affine coupling is applying an affine transformation on the \I{odd} set of the input, with scale \(\s\) and translation \(\B{t}\) coming from the \I{even} input put through a \I{non-causal} WaveNet.
 
@@ -243,13 +243,26 @@ The Kullback-Leibler divergence term is computationally expensive, therefore the
 
 As both the prior \(p(\s_k)\) and the approximate posterior \(\aprxpost\) are parametrized by deep neural network, the gradient of \cref{eq:final_elbo} is tractable with respect to the mini-batch.
 
-With the optimization regime set up, we have to choose a fitting posterior distribution and the deep neural network which computes its parameters from data. In many typical VAE setti,ngs the prior density is fixed probability distribution, typically a multivariate normal distribution and accordingly the approximate posterior also is set to be a normal distribution.
-
-\begin{marginfigure}
+With the optimization regime set up, we have to choose a fitting posterior distribution and the deep neural network which computes its parameters from data. In many typical VAE settings, the prior density is a fixed probability distribution, typically a multivariate normal distribution and accordingly the approximate posterior also is set to be a normal distribution. As our prior is a greatly complex distribution estimated by the flow, we are not incentivized by this to choose the posterior accordingly. Further, we have the benefit of knowing our posteriors to model sound in the time-domain. Therefore we take a look at the distributions induced by our data samples, in the two cases of the Toy Data and the real musical recordings. For a more in-depth discussion of the datasets see \sref{ch:experiments}.
+\begin{marginfigure}[-20em]
     \includegraphics{toy_dist}
     \caption{The logits of different classes of the different outputs}%
     \label{fig:toy_dist}
+\end{marginfigure}%
+In the case of the \B{Toy data}, the waveforms are regular, simple patterns. If we plot the histograms of an example wave for each source class (\cref{fig:toy_dist}), the probability distribution induced by those sources is again simply formulated. Both the \I{triangle} and \I{sawtooth} waves induce a uniform distribution, the \I{square} wave collapses on the only two values contained in the signal (the maxima) and the sine wave also gives a symmetrical distribution with the values around the maxima greatly more likely. We propose modelling these posteriors with a \B{Beta distribution}.
+\begin{marginfigure}
+    \includegraphics{beta}%
+    \caption{Beta distributions with different concentrations \(\α\) and \(\β\)}%
+    \label{fig:beta}
 \end{marginfigure}
+
+To learn the variational parameters \(\B{\φ}\) of the encoder network \(\texttt{Encoder}_{\B{\φ}}(\m) = \B{\η}\) which infers the parameters \(\B{\η}\) of the approximate posterior we need the gradient of samples taken from the posterior with respect to the parameters. The Beta distribution is parametrized by the two concentrations \(\α\) and \(\β\). Therefore we need:
+
+\begin{equation}
+    \pf{}{\B{\α}} \B{z}\ ,\quad\pf{}{\B{\β}} \B{z} \quad \B{z} \sim \aprxpost
+\end{equation}
+
+As described in \sref{sec:dlvm} with choosing a Gaussian posterior, one can use the reparametrization trick to get low-variance gradients, simply and efficiently. In the case of using a Beta posterior, the reparametrization trick is not applicable. There exists multiple approaches to compute implicit gradients through approximate differentiation of different probability distribution. \textcite{figurnovImplicit2019} provides an new fast general gradient estimator. You employ this estimator in the form that it is implemented in the PyTorch framework.
 
 \begin{algorithm}
     \begin{algorithmic}[1]

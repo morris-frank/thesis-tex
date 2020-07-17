@@ -293,7 +293,7 @@
   title = {{{SING}}: {{Symbol}}-to-{{Instrument Neural Generator}}},
   shorttitle = {{{SING}}},
   booktitle = {Advances in {{Neural Information Processing Systems}} 31},
-  author = {Defossez, Alexandre and Zeghidour, Neil and Usunier, Nicolas and Bottou, Leon and Bach, Francis},
+  author = {Défossez, Alexandre and Zeghidour, Neil and Usunier, Nicolas and Bottou, Leon and Bach, Francis},
   editor = {Bengio, S. and Wallach, H. and Larochelle, H. and Grauman, K. and Cesa-Bianchi, N. and Garnett, R.},
   date = {2018},
   pages = {9041--9051},
@@ -403,6 +403,21 @@
   venue = {{Paris, France}}
 }
 
+@article{figurnovImplicit2019,
+  title = {Implicit {{Reparameterization Gradients}}},
+  author = {Figurnov, Michael and Mohamed, Shakir and Mnih, Andriy},
+  date = {2019-01-30},
+  url = {http://arxiv.org/abs/1805.08498},
+  urldate = {2020-07-17},
+  abstract = {By providing a simple and efficient way of computing low-variance gradients of continuous random variables, the reparameterization trick has become the technique of choice for training a variety of latent variable models. However, it is not applicable to a number of important continuous distributions. We introduce an alternative approach to computing reparameterization gradients based on implicit differentiation and demonstrate its broader applicability by applying it to Gamma, Beta, Dirichlet, and von Mises distributions, which cannot be used with the classic reparameterization trick. Our experiments show that the proposed approach is faster and more accurate than the existing gradient estimators for these distributions.},
+  archivePrefix = {arXiv},
+  eprint = {1805.08498},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/R44BRY2Z/Figurnov et al. - 2019 - Implicit Reparameterization Gradients.pdf},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @article{gabbayStyle2019,
   title = {Style {{Generator Inversion}} for {{Image Enhancement}} and {{Animation}}},
   author = {Gabbay, Aviv and Hoshen, Yedid},
@@ -457,21 +472,6 @@
   eprint = {1803.00702},
   eprinttype = {arxiv},
   file = {/home/morris/docs/lib/Zotero/storage/3TXQBSD2/Grais et al. - 2018 - Raw Multi-Channel Audio Source Separation using Mu.pdf;/home/morris/docs/lib/Zotero/storage/SX4NLYC8/1803.html},
-  keywords = {68T01; 68T10; 68T45; 62H25,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Computer Science - Multimedia,Computer Science - Sound,H.5.5,I.2,I.2.6,I.4,I.4.3,I.5},
-  primaryClass = {cs}
-}
-
-@article{graisRaw2018a,
-  title = {Raw {{Multi}}-{{Channel Audio Source Separation}} Using {{Multi}}-{{Resolution Convolutional Auto}}-{{Encoders}}},
-  author = {Grais, Emad M. and Ward, Dominic and Plumbley, Mark D.},
-  date = {2018-03-01},
-  url = {http://arxiv.org/abs/1803.00702},
-  urldate = {2020-06-24},
-  abstract = {Supervised multi-channel audio source separation requires extracting useful spectral, temporal, and spatial features from the mixed signals. The success of many existing systems is therefore largely dependent on the choice of features used for training. In this work, we introduce a novel multi-channel, multi-resolution convolutional auto-encoder neural network that works on raw time-domain signals to determine appropriate multi-resolution features for separating the singing-voice from stereo music. Our experimental results show that the proposed method can achieve multi-channel audio source separation without the need for hand-crafted features or any pre- or post-processing.},
-  archivePrefix = {arXiv},
-  eprint = {1803.00702},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/lib/Zotero/storage/T2ZDE7XA/Grais et al. - 2018 - Raw Multi-Channel Audio Source Separation using Mu.pdf},
   keywords = {68T01; 68T10; 68T45; 62H25,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Computer Science - Multimedia,Computer Science - Sound,H.5.5,I.2,I.2.6,I.4,I.4.3,I.5},
   primaryClass = {cs}
 }
@@ -709,7 +709,7 @@
   file = {/home/morris/docs/lib/Zotero/storage/NPRXLTRZ/Kaspersen - 2019 - HydraNet A Network For Singing Voice Separation.pdf}
 }
 
-@article{kimFloWaveNet2019a,
+@article{kimFloWaveNet2019,
   title = {{{FloWaveNet}} : {{A Generative Flow}} for {{Raw Audio}}},
   shorttitle = {{{FloWaveNet}}},
   author = {Kim, Sungwon and Lee, Sang-gil and Song, Jongyoon and Kim, Jaehyeon and Yoon, Sungroh},
@@ -1332,15 +1332,6 @@
   primaryClass = {cs}
 }
 
-@inproceedings{szegedyGoing2015,
-  title = {Going Deeper with Convolutions},
-  booktitle = {Proceedings of the {{IEEE}} Conference on Computer Vision and Pattern Recognition},
-  author = {Szegedy, Christian and Liu, Wei and Jia, Yangqing and Sermanet, Pierre and Reed, Scott and Anguelov, Dragomir and Erhan, Dumitru and Vanhoucke, Vincent and Rabinovich, Andrew},
-  date = {2015},
-  pages = {1--9},
-  file = {/home/morris/docs/lib/Zotero/storage/BI7BUXL9/Szegedy et al. - 2015 - Going deeper with convolutions.pdf}
-}
-
 @article{tabakFamily2013,
   title = {A family of nonparametric density estimation algorithms},
   author = {Tabak, Esteban and Turner, Cristina V.},
@@ -1385,20 +1376,6 @@
   abstract = {This paper deals with the separation of music into individual instrument tracks which is known to be a challenging problem. We describe two different deep neural network architectures for this task, a feed-forward and a recurrent one, and show that each of them yields themselves state-of-the art results on the SiSEC DSD100 dataset. For the recurrent network, we use data augmentation during training and show that even simple separation networks are prone to overfitting if no data augmentation is used. Furthermore, we propose a blending of both neural network systems where we linearly combine their raw outputs and then perform a multi-channel Wiener filter post-processing. This blending scheme yields the best results that have been reported to-date on the SiSEC DSD100 dataset.},
   eventtitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
   file = {/home/morris/docs/lib/Zotero/storage/SXJZGLQA/7952158.html},
-  keywords = {Blending,blending scheme yields,Context,data augmentation,Deep neural network (DNN),deep neural network architectures,Indexes,Instruments,Long-short term memory (LSTM),mixture models,multichannel Wiener filter post-processing,music,Music source separation (MSS),music source separation improvement,recurrent network,recurrent neural nets,Recurrent neural networks,SiSEC DSD100 dataset,Source separation,speech processing,Training,Wiener filters}
-}
-
-@inproceedings{uhlichImproving2017a,
-  title = {Improving Music Source Separation Based on Deep Neural Networks through Data Augmentation and Network Blending},
-  booktitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
-  author = {Uhlich, Stefan and Porcu, Marcello and Giron, Franck and Enenkl, Michael and Kemp, Thomas and Takahashi, Naoya and Mitsufuji, Yuki},
-  date = {2017-03},
-  pages = {261--265},
-  issn = {2379-190X},
-  doi = {10.1109/ICASSP.2017.7952158},
-  abstract = {This paper deals with the separation of music into individual instrument tracks which is known to be a challenging problem. We describe two different deep neural network architectures for this task, a feed-forward and a recurrent one, and show that each of them yields themselves state-of-the art results on the SiSEC DSD100 dataset. For the recurrent network, we use data augmentation during training and show that even simple separation networks are prone to overfitting if no data augmentation is used. Furthermore, we propose a blending of both neural network systems where we linearly combine their raw outputs and then perform a multi-channel Wiener filter post-processing. This blending scheme yields the best results that have been reported to-date on the SiSEC DSD100 dataset.},
-  eventtitle = {2017 {{IEEE International Conference}} on {{Acoustics}}, {{Speech}} and {{Signal Processing}} ({{ICASSP}})},
-  file = {/home/morris/docs/lib/Zotero/storage/4NQUQS45/Uhlich et al. - 2017 - Improving music source separation based on deep ne.pdf},
   keywords = {Blending,blending scheme yields,Context,data augmentation,Deep neural network (DNN),deep neural network architectures,Indexes,Instruments,Long-short term memory (LSTM),mixture models,multichannel Wiener filter post-processing,music,Music source separation (MSS),music source separation improvement,recurrent network,recurrent neural nets,Recurrent neural networks,SiSEC DSD100 dataset,Source separation,speech processing,Training,Wiener filters}
 }
 
