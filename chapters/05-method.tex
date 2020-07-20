@@ -15,7 +15,7 @@ Our stated task in \sref{ch:question} is to retreive the sources \(\{\s_1,\…,\
 
 \begin{figure}[t]
     \input{figures/method.tex}
-    \caption{The method visualized}%
+    \caption{The method visualized, {\color{orange}not finished yet}}%
     \label{fig:method}%
     \setfloatalignment{b}%
 \end{figure}
@@ -88,7 +88,7 @@ The flow network, at the highest level, consists of \(n_b\) context blocks, each
 
 \begin{figure}
     \hspace*{-25pt}\input{figures/squeeze}%
-    \caption{Flip and squeeze operation for the coupling layers. The squeeze operation doubles the channels and halves the length while the flip operation inverts the tensor along the channel dimension.}%
+    \caption{Flip and squeeze operation for the coupling layers. The squeeze operation doubles the channels and halves the length while the flip operation inverts the tensor along the channel dimension. {\color{orange}figure not finished yet}}%
     \label{fig:squeeze}%
 \end{figure}
 
@@ -189,9 +189,9 @@ Note that the final formulation of the update step is simply a constrained greed
     \setfloatalignment{t}
 \end{algorithm}
 
-The idea of using SGLD in combination with deep parametrized priors was, concurrently to this work, introduced in \textcite{jayaramSource2020}. The authors empirically show that
+The idea of using SGLD in combination with deep parametrized priors for source separation was, concurrently to this work, introduced in \textcite{jayaramSource2020}. The authors empirically show that
 \[\E\left[{\|\∇_{\s}\log{p_{\σ}(\s)}\|}^2\right] \propto \nf{1}{\σ^2}\]
-They argue that this surprising proportionality is stemming from the severe non-smoothness of the prior model. If the prior model, in the extreme case, exhibits a Dirac delta peak as the probability mass, then the estimation of the gradient with added Gaussian noise will it-self be proportional to the Gaussian. From there the authors argue, that the prior models have to be trained with noised samples, where the added noised is proportional to later used estimator noise.
+They argue that this surprising proportionality is stemming from the severe non-smoothness of the prior model. If the prior model, in the extreme case, exhibits a Dirac delta peak as the probability mass, then the estimation of the gradient with added Gaussian noise will it-self be proportional to the Gaussian. From there the authors argue, that the prior models have to be trained with noised samples, where the added noised is proportional to later used estimator noise. {\color{orange}Will add more discussion of their results}
 
 \section{Modeling the posteriors}
 Instead of formulating a sampling regime for approaching \(\s_k\) we can also use the prior models to variationally train a model to estimate the parameters of an approximate posterior \(\aprxpost\). While estimating the true posterior \(p(\s_k|\m)\) is intractable, we choose a certain parametrized distribution as an approximation of the posterior and optimize the parameters to align with the true one.
@@ -250,7 +250,7 @@ With the optimization regime set up, we have to choose a fitting posterior distr
     \caption{The logits of different classes of the different outputs}%
     \label{fig:toy_dist}
 \end{marginfigure}%
-In the case of the \B{Toy data}, the waveforms are regular, simple patterns. If we plot the histograms of an example wave for each source class (\cref{fig:toy_dist}), the probability distribution induced by those sources is again simply formulated. Both the \I{triangle} and \I{sawtooth} waves induce a uniform distribution, the \I{square} wave collapses on the only two values contained in the signal (the maxima) and the sine wave also gives a symmetrical distribution with the values around the maxima greatly more likely. We propose modelling these posteriors with a \B{Beta distribution} scaled onto the inerval \([-1,1]\).
+In the case of the \B{Toy data}, the waveforms are regular, simple patterns. If we plot the histograms of an example wave for each source class (\cref{fig:toy_dist}), the probability distribution induced by those sources is again simply formulated. Both the \I{triangle} and \I{sawtooth} waves induce a uniform distribution, the \I{square} wave collapses on the only two values contained in the signal (the maxima) and the sine wave also gives a symmetrical distribution with the values around the maxima greatly more likely. We propose modelling these posteriors with a \B{Beta distribution} scaled onto the interval \([-1,1]\).
 \begin{marginfigure}
     \includegraphics{beta}%
     \caption{Beta distributions with different concentrations \(\α\) and \(\β\)}%
@@ -278,7 +278,8 @@ As we have \(N\) different sources with each a trained prior network we will als
 We want to make the difficulties with this method clear and list them in the following explicitly:
 
 \begin{enumerate}
+    \item \I{All sources known and trained with prior}
     \item The separation capabilities in both approaches completely rely on the quality of the learned priors. The priors are learned unsupervised and unconditional from random cuts of the instruments stems. The learned manifolds are extremely complex and hard to train. There is little prior work on successfully building generative models for sound, without further conditional information.
     \item We have to train a prior model for each source. In the sampling case, we concurrently sample from each of these models, in the case of the inference model we have to train an additional model for all sources. Because the separation happens under the mixing condition, at the time of training, inference or sampling all parts are used.
-    \item Unstable sampling / training
+    \item \I{Unstable sampling / training because of many objectives}
 \end{enumerate}

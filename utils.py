@@ -25,7 +25,8 @@ def adapt_colors(target, dicti):
 
 
 def savefig(name):
-    plt.savefig(f"figures/{name}.eps", transparent=False)
+    # plt.gca().patch.set_alpha(0.)
+    plt.savefig(f"figures/{name}.pdf", transparent=True, bbox_inches=0, facecolor='none', edgecolor='none')
 
 
 def hex2rgb(hex):

@@ -194,22 +194,20 @@ def plot_waveforms(signals):
         plt.close()
 
 
-def plot_prior_dists():
+def plot_prior_dists(signals):
     def _plot(pks=None):
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111, projection="3d")
         make_a_rand_dist(ax, N=pks, cmap=CMAP_DIV)
         ax.view_init(25, 45)
 
-    N = 4
-
-    for i in range(N):
+    for k in signals:
         _plot()
-        savefig(f"dist_{i}")
+        savefig(f"dist_{k}")
         plt.close()
 
         _plot(2)
-        savefig(f"dist_{i}_post")
+        savefig(f"dist_{k}_post")
         plt.close()
 
 
@@ -271,7 +269,7 @@ def main(args):
         (print_color_latex, ()),
         # (plot_beta, ()),
         # (plot_toy_dist, (TOY_SIGNALS,)),
-        # (plot_prior_dists, ()),
+        (plot_prior_dists, (MUSDB_SIGNALS,)),
         # (plot_waveforms, (MUSDB_SIGNALS + ["mix"],)),
         # (plot_squeeze_and_flip, ()),
         # (plot_cross_entropy, ("heatmap_musdb_classifier", MUSDB_SIGNALS)),
