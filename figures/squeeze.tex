@@ -1,7 +1,42 @@
 \begin{tikzpicture}
-    \node                   (s0) {\includegraphics[width=1.2in]{squeeze_0}};
-    \node[right=50pt of s0] (s1) {\includegraphics[width=0.9in]{squeeze_1}};
-    \node[right=50pt of s1] (s2) {\includegraphics[width=0.9in]{squeeze_2}};
+    \tikzstyle{tensor} = [matrix of math nodes, inner sep=2pt, nodes={text width=0.4em, font=\tiny, align=center}]
+    \tikzstyle{top} = [fill=orange!20]
+    \tikzstyle{bottom} = [fill=blue!20]
 
-    \graph {(s0) ->["squeeze"] (s1) ->["flip"] (s2)};
+    \matrix (lt) [tensor, top]
+    {
+        1 & 3 & 5 & 7 & 9 & 11 & 13 & 15 & 17 & 19 & 21 & 23\\
+    };
+
+    \matrix (lb) [tensor, bottom, below=0pt of lt]
+    {
+        2 & 4 & 6 & 8 & 10 & 12 & 14 & 16 & 18 & 20 & 22 & 24\\
+    };
+
+    \matrix (mt) [tensor, top, right=45pt of lt.south east, anchor=south west]
+    {
+        1 & 5 & 9 & 13 & 17 & 21\\
+        3 & 7 & 11 & 15 & 19 & 23\\
+    };
+
+    \matrix (mb) [tensor, bottom, below=0pt of mt]
+    {
+        2 & 6 & 10 & 14 & 18 & 22\\
+        4 & 8 & 12 & 16 & 20 & 24\\
+    };
+
+    \matrix (rt) [tensor, top, right=45pt of mt]
+    {
+        2 & 6 & 10 & 14 & 18 & 22\\
+        4 & 8 & 12 & 16 & 20 & 24\\
+    };
+
+    \matrix (rb) [tensor, bottom, below=0pt of rt]
+    {
+        1 & 5 & 9 & 13 & 17 & 21\\
+        3 & 7 & 11 & 15 & 19 & 23\\
+    };
+
+    \graph {(lt.south east) ->["squeeze"] (mt.south west)};
+    \graph {(mt.south east) ->["flip"] (rt.south west)};
 \end{tikzpicture}

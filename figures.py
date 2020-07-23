@@ -2,6 +2,7 @@
 
 from argparse import ArgumentParser
 from itertools import chain
+from math import tau as τ
 
 from scipy import stats
 import librosa
@@ -211,24 +212,6 @@ def plot_prior_dists(signals):
         plt.close()
 
 
-def plot_squeeze_and_flip():
-    N = 24
-
-    def hm(dat, i, w=1):
-        plt.figure(figsize=(w*1,1))
-        sns.heatmap(dat, vmin=1, vmax=N, cmap=CMAP_DIV, annot=True, cbar=False, square=True, xticklabels=False, yticklabels=False)
-        plt.tight_layout()
-        savefig(f'squeeze_{i}')
-
-    x = np.array(range(1,N+1))[None, ...]
-    x = squeeze(x)
-    hm(x, 0, 2)
-    x = squeeze(x)
-    hm(x, 1)
-    x = flip(x)
-    hm(x, 2)
-
-
 def plot_toy_dist(signals):
     _, axs = plt.subplots(
         2,
@@ -260,6 +243,22 @@ def plot_beta():
 
 
 
+def plot_posterior_example():
+    x = np.linspace(.5, (.8*τ)+.5, 100)
+
+    _, ax = plt.subplots(figsize=(1, 2))
+    plt.plot(x[:49], np.sin(x[:49]), 'k:', markersize=0.2)
+    plt.plot(x[52:], np.sin(x[52:]), 'k:', markersize=0.2)
+
+    iax = ax.inset_axes([0.5, 0.43, 0.1, 0.2])
+
+    x = np.linspace(stats.norm.ppf(0.01), stats.norm.ppf(0.99), 100)
+    iax.fill_between(stats.norm.pdf(x), x, alpha=0.8)
+    iax.axison = False
+    plt.show()
+
+
+
 def main(args):
     if args.verbose:
         cprint("Palette example plot:")
@@ -267,11 +266,11 @@ def main(args):
 
     processes = [
         (print_color_latex, ()),
+        (plot_posterior_example, ()),
         # (plot_beta, ()),
         # (plot_toy_dist, (TOY_SIGNALS,)),
-        (plot_prior_dists, (MUSDB_SIGNALS,)),
+        # (plot_prior_dists, (MUSDB_SIGNALS,)),
         # (plot_waveforms, (MUSDB_SIGNALS + ["mix"],)),
-        # (plot_squeeze_and_flip, ()),
         # (plot_cross_entropy, ("heatmap_musdb_classifier", MUSDB_SIGNALS)),
         # (plot_cross_likelihood, ("heatmap_musdb", MUSDB_SIGNALS)),
         # (plot_cross_likelihood, ("heatmap_toy", TOY_SIGNALS)),
