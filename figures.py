@@ -11,12 +11,15 @@ import matplotlib as mpl
 import pandas as pd
 import seaborn as sns
 from matplotlib import colors
+import ipdb
 
 
 from utils import *
 
+
 # geometry lengths from LaTeX
 MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
+BODY_LENGTH = 4.21342 # Maximum inner body line widht in inches
 
 # choosen colors
 # CMAP_DIV = "viridis"
@@ -76,6 +79,28 @@ def plot_palette():
     _rplot(axs, ["red", "green", "yellow", "orange", "blue", "purple", "aqua"])
 
     plt.show()
+
+
+def plot_signals(*signals, sharey: bool = True, ylim=None, legend=True):
+    arguments = get_func_arguments()
+    colores = ["k", "n", "y", "g", "r"]
+    N = max(s.shape[0] for s in signals)
+    C = max(s.shape[1] for s in signals)
+    if not ylim:
+        ylim = (min(map(np.min, signals)), max(map(np.max, signals)))
+
+    fig, axs = plt.subplots(C, N, sharex="all", sharey="none", squeeze=False, figsize=(BODY_LENGTH, MARGIN_LENGTH))
+    for k, (signal, name) in enumerate(zip(signals, arguments)):
+        for n in range(signal.shape[0]):
+            c = colores[k % len(colores)]
+            for i in range(C):
+                axs[i, n].plot(signal[n, i, :], f"{c}-", label=name, linewidth=0.5)
+                if sharey:
+                    axs[i, n].set_ylim(ylim)
+    if legend:
+        for ax in axs.flatten().tolist():
+            ax.legend()
+    return fig
 
 
 def plot_heatmap(data, name, signals):
@@ -258,6 +283,34 @@ def plot_posterior_example():
     plt.show()
 
 
+def plot_toy_training_curves():
+    df = get_wandb("guo159rh")
+
+
+    var = ("log_p/{}/train", "log_p_0/{}/train", "log_p_1/{}/train")
+    sign = (-1, 1, 1)
+    ylims = ((0, 3.8), (0, 10), (-1.1, -0.9))
+    fig, axs = plt.subplots(1, 3, figsize=[BODY_LENGTH, MARGIN_LENGTH])
+
+    for vf, ax, s, ylim in zip(var, axs, sign, ylims):
+        log_p = df[[vf.format(k) for k in TOY_SIGNALS]].melt(ignore_index=False).reset_index()
+        log_p["variable"] = log_p["variable"].apply(lambda x: x.split('/')[1])
+        log_p["value"] = log_p["value"].apply(lambda x: x * s)
+        sns.lineplot(x='index', y='value', hue="variable", data=log_p, ax=ax, legend=False, linewidth=0.5)
+        ax.set_ylim(ylim)
+
+    savefig("toy_training_curves")
+
+
+def plot_toy_interpolation():
+    data = np.load("data/prior_toy_interpolate.npy")
+
+    data = data[:, :, 1500:2000]
+
+    plot_signals(data, legend=False)
+
+    savefig("toy_interpolate_time")
+
 
 def main(args):
     if args.verbose:
@@ -265,8 +318,10 @@ def main(args):
         plot_palette()
 
     processes = [
-        (print_color_latex, ()),
-        (plot_posterior_example, ()),
+        # (print_color_latex, ()),
+        # (plot_posterior_example, ()),
+        # (plot_toy_training_curves, ()),
+        (plot_toy_interpolation, ()),
         # (plot_beta, ()),
         # (plot_toy_dist, (TOY_SIGNALS,)),
         # (plot_prior_dists, (MUSDB_SIGNALS,)),

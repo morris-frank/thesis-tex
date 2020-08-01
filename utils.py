@@ -1,9 +1,12 @@
+import re
+import inspect
 import colorsys
 from itertools import product
 from math import sin, cos
 from math import tau as τ
 from random import random, randint
 from typing import Tuple
+import wandb
 
 import numpy as np
 from colorama import Fore
@@ -173,8 +176,10 @@ def rand_period_phase(high: int = 88, low: int = 1, sr: int = 16000) -> Tuple[in
     φ = randint(0, ν)
     return ν, φ
 
+
 def clip_noise(wave, amount=1.):
     return np.clip(wave + (amount * np.random.randn(*wave.shape)), -1, 1)
+
 
 def flip(x):
     return np.vstack(list(reversed(np.split(x, 2))))
@@ -183,3 +188,23 @@ def flip(x):
 def squeeze(x):
     N, L = x.shape
     return x.reshape(N, L//2, 2).transpose(0,2,1).reshape(N*2, L//2)
+
+
+def get_wandb(run_id):
+    api = wandb.Api()
+    run = api.run(f"/morris-frank/thesis/runs/{run_id}")
+    df = run.history()
+    return df
+
+
+def get_func_arguments():
+    func_name = inspect.stack()[1].function.strip()
+    code_line = inspect.stack()[2].code_context[0].strip()
+    try:
+        argument_string = re.search(rf"{func_name}\((.*)\)", code_line)[1]
+    except TypeError:
+        import ipdb
+
+        ipdb.set_trace()
+    arguments = re.split(r",\s*(?![^()]*\))", argument_string)
+    return arguments
