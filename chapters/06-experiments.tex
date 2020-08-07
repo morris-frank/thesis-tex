@@ -52,47 +52,59 @@ We construct four distinct prior models for the two datasets and input data repr
 \section{Training the priors}
 Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(γ=0.6\) and a fixed five step decrease schedule.
 
-\begin{figure}
-    \includegraphics{toy_training_curves.pdf}
-    \caption{The training curves of the toy data curves}
-\end{figure}
+% \begin{figure}
+%     \includegraphics{toy_training_curves.pdf}
+%     \caption{The training curves of the toy data curves}
+% \end{figure}
+
+We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-conditioned model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We find that fine-tuning converges quickly at ----. We
 
 \section{Testing the priors}
-Training of the normalizing flow model combines the two objectives: First, we maximize the log-determinant of the \I{non-volume preserving} affine coupling and the activation normalization layers. This guarantees us the invertibility of these transformations. Second, we maximize the likelihood of the projected samples under the chosen target distribution~\footnote{The target distribution is the prior to our prior model. It is set to a factorized Gaussian.}. For the evaluation, we are interested in the mean average likelihood under the target distribution for different in- and out-of-distribution inputs. Remember that the flow gives a bijective mapping between the input and target space~\footnote{necessitated by the invertibility}. For an input of size \(\x \∈ \ℝ^{1\×L}\) the flow returns a latent \(\z \∈ \ℝ^{1\×L}\) of the same size. Each time-point latent \(\z_t\) depends on the  inputs from the receptive field of the flow before and after the respective input \(\x_t\) but is evaluated under the independent margin \(\z_t \sim \N(0,1)\). Because therefore the factorized multivariate Gaussian prior is equivalent to a set of one-dimensional Gaussians, the flow is also not size restricted. All transformations in the network are convolutional and use appropriate padding. \(L\) can be any chosen length. We want to set the input length larger than the receptive field of the network. The latents on either end side of the sample will be based on the larger amount of padded input, while the center values from the sample receive the full receptive field. The size of the receptive field is regimented by the depth and kernel sizes used in the WaveNet modules of the coupling layers and the number of squeeze operations in the blocks (see \cref{fig:squeeze}). For an exact derivation of the receptive field size see {\color{red}Appendix recp size}.
+Training of the normalizing flow model combines the two objectives: First, we maximize the log-determinant of the \I{non-volume preserving} affine coupling and the activation normalization layers. This guarantees us the invertibility of these transformations. Second, we maximize the likelihood of the projected samples under the chosen target distribution~\footnote{The target distribution is the prior to our prior model. It is set to a factorized Gaussian.}. For the evaluation, we are interested in the mean average likelihood under the target distribution for different in- and out-of-distribution inputs. Remember that the flow gives a bijective mapping between the input and target space~\footnote{necessitated by the invertibility}. For an input of size \(\x \∈ \ℝ^{1\×L}\) the flow returns a latent \(\z \∈ \ℝ^{1\×L}\) of the same size. Each time-point latent \(\z_t\) depends on the  inputs from the receptive field of the flow before and after the respective input \(\x_t\) but is evaluated under the independent margin \(\z_t \sim \N(0,1)\). Because therefore the factorized multivariate Gaussian prior is equivalent to a set of one-dimensional Gaussians, the flow is also not size restricted. All transformations in the network are convolutional and use appropriate padding. \(L\) can be any chosen length. We want to set the input length larger than the receptive field of the network. The latents on either end side of the sample will be based on the larger amount of padded input, while the center values from the sample receive the full receptive field. The size of the receptive field is regimented by the depth and kernel sizes used in the convolutions of the coupling layers and the number of squeeze operations in the blocks (see \cref{fig:squeeze}). For an exact derivation of the receptive field size see {\color{red}Appendix recp size}.
 
-\subsection{Adding noise}
-\begin{marginfigure}
-    \includegraphics{noise_likelihood_with_noise}%
-    \caption{noise likelihood with noise}%
-    \label{fig:noise_ll_with_noise}
-\end{marginfigure}
+We show an example of sampling from the toy data priors in time-domain in \cref{fig:toy_time_sample}. It should be unsuprising that the drawn samples are not returning a consistent curve. Each independent latent is connected to a local output defined by the recpetive field. As all latents are i.i.d. the generative process, generates locally consistent curves.
+
+% \begin{figure}
+%     \includegraphics{toy_samples_time.pdf}%
+%     \label{fig:toy_time_sample}%
+%     \caption{Samples from the time-domain prior trained on the toy data.}
+% \end{figure}
+
+\subsection{De-noising}
+% \begin{marginfigure}
+%     \includegraphics{noise_likelihood_with_noise}%
+%     \caption{noise likelihood with noise}%
+%     \label{fig:noise_ll_with_noise}
+% \end{marginfigure}
+
+De-noising is the
 
 In this ablation study we want to check how resilient the generative prior models are to noisy samples. It is hypothesized that the latent space of the model consists of, intuitively, singular peaks at mappings of in-distribution samples~\cite{jayaramSource2020}. For the separation to be able to optimize under the prior density, we need likelihood to slowly decrease when moving away from positive samples. If the distribution is too peaked only noiseless inputs would be highly likely and adding noise quickly makes samples too unlikely. We propose adding Gaussian noise with a random variance to the positive samples during training. This should smooth out the modeled density.
 
-\begin{marginfigure}
-    \includegraphics{noise_likelihood_without_noise}%
-    \caption{noise likelihood without noise}%
-    \label{fig:noise_ll_without_noise}
-\end{marginfigure}
+% \begin{marginfigure}
+%     \includegraphics{noise_likelihood_without_noise}%
+%     \caption{noise likelihood without noise}%
+%     \label{fig:noise_ll_without_noise}
+% \end{marginfigure}
 
 \subsection{Testing cross-likelihood}
 In the full model each prior is used to extract its source channel separately. Through their training they explicitly contract the density for the positive, in-class examples. During separation the priors therefore encounter negative, out-of-distribution samples for the first time. To be useful for separation, it is important that the priors give a low likelihood to samples from the other classes of the dataset.
 
-\begin{marginfigure}
-    \includegraphics{heatmap_toy}%
-    \caption{We display the mean average log likelihood of the test data under the different priors and the different signal sources.}%
-    \label{fig:heatmap_toy}
-\end{marginfigure}
+% \begin{marginfigure}
+%     \includegraphics{heatmap_toy}%
+%     \caption{We display the mean average log likelihood of the test data under the different priors and the different signal sources.}%
+%     \label{fig:heatmap_toy}
+% \end{marginfigure}
 
 We test for this by calculating the mean log likelihood of the the test data set under each prior, for each source channel separately. What we anticipate is that the samples from the priors training source are of high likelihood while all other sources are low likelihood. In \cref{fig:heatmap_toy} we show the source dependent likelihoods for the Toy Data. The in-distribution samples are all of high likelihood while all out-of distribution samples are highly un-likely. The Flow model therefore was able to detect out-of-distribution samples while only being trained on in-distribution samples~\footnote{Something psychological research has shown, humans being able to do.}. The estimated densities are discriminative.
 
 When running the same experiment for the musdb18 the discriminative power does not hold up, see~\cref{fig:heatmap_musdb}. All signal sources are about equally likely under each prior density. We hypothesize this stems from the fact that the real musical data is severely more complicated compared to the Toy Data. The Flows model the appearance of sound in general, as the in-class variability of sounds is already high, without knowing anything about the \I{discriminative} differences between the instruments and does not infer the distribution from those features.
 
-\begin{marginfigure}
-    \includegraphics{heatmap_musdb}%
-    \caption{We display the mean average likelihood of the test data under the different priors and the different signal sources.}%
-    \label{fig:heatmap_musdb}
-\end{marginfigure}
+% \begin{marginfigure}
+%     \includegraphics{heatmap_musdb}%
+%     \caption{We display the mean average likelihood of the test data under the different priors and the different signal sources.}%
+%     \label{fig:heatmap_musdb}
+% \end{marginfigure}
 
 Even above that the results exhibit an additional failing for the musdb18 dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Because of this the results show the unintuitive result that the test samples from the \I{other} class are \I{less likely} under its own prior model compared to the out-of-distribution samples. While this makes it rather final that the at hand dataset is not completely suitable to out trainings regime, it is a data-dependent restriction that would not correspond to our hypothesized application.
 
@@ -105,14 +117,13 @@ With the prior models being not discriminative, it is not possible to train the 
 
 As layed out in~\ref{ch:background} the bad out-of-distribution detection of generative models is not a surprising result and multiple recent works go about solving this. We want to increase the
 
-\begin{marginfigure}
-    \includegraphics{heatmap_musdb_classifier}
-    \caption{The logits of different classes of the different outputs}%
-    \label{fig:heatmap_musdb_classifier}
-\end{marginfigure}
+% \begin{marginfigure}
+%     \includegraphics{heatmap_musdb_classifier}
+%     \caption{The logits of different classes of the different outputs}%
+%     \label{fig:heatmap_musdb_classifier}
+% \end{marginfigure}
 
 \section{Testing the posteriors}
-\subsection{Denoising autoencoder}
 
 \subsection{TODO EXPERIMENTS}
 \begin{enumerate}

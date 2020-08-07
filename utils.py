@@ -1,14 +1,15 @@
-import re
-import inspect
 import colorsys
+import inspect
+import os
+import re
 from itertools import product
 from math import sin, cos
 from math import tau as τ
 from random import random, randint
 from typing import Tuple
-import wandb
 
 import numpy as np
+import wandb
 from colorama import Fore
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
@@ -29,7 +30,14 @@ def adapt_colors(target, dicti):
 
 def savefig(name):
     # plt.gca().patch.set_alpha(0.)
-    plt.savefig(f"figures/{name}.pdf", transparent=True, bbox_inches=0, facecolor='none', edgecolor='none')
+    os.makedirs(os.path.dirname(f"./figures/{name}.pdf"), exist_ok=True)
+    plt.savefig(
+        f"./figures/{name}.pdf",
+        transparent=True,
+        bbox_inches=0,
+        facecolor="none",
+        edgecolor="none",
+    )
 
 
 def hex2rgb(hex):
@@ -82,7 +90,7 @@ def add_plot_tick(
         y = square(x)
         _ax.plot(x, y, linewidth=linewidth, c="k")
     elif symbol in ["drums", "bass", "voice", "other"]:
-        icon = plt.imread(f"figures/mixing/{symbol}.png")
+        icon = plt.imread(f"./figures/musdb/{symbol}.png")
         _ax.imshow(np.repeat(icon[..., None], 3, 2))
     else:
         raise ValueError("unknown symbol")
@@ -177,7 +185,7 @@ def rand_period_phase(high: int = 88, low: int = 1, sr: int = 16000) -> Tuple[in
     return ν, φ
 
 
-def clip_noise(wave, amount=1.):
+def clip_noise(wave, amount=1.0):
     return np.clip(wave + (amount * np.random.randn(*wave.shape)), -1, 1)
 
 
@@ -187,7 +195,7 @@ def flip(x):
 
 def squeeze(x):
     N, L = x.shape
-    return x.reshape(N, L//2, 2).transpose(0,2,1).reshape(N*2, L//2)
+    return x.reshape(N, L // 2, 2).transpose(0, 2, 1).reshape(N * 2, L // 2)
 
 
 def get_wandb(run_id):
@@ -208,3 +216,30 @@ def get_func_arguments():
         ipdb.set_trace()
     arguments = re.split(r",\s*(?![^()]*\))", argument_string)
     return arguments
+
+
+CUR_LOG_LEVEL = 0
+
+
+def log_func(level=0):
+    def wrapper(func):
+        def wrapped(*args, **kwargs):
+            global CUR_LOG_LEVEL
+            indent = "\t" * level
+            code_line = inspect.stack()[1].code_context[0].strip()
+            mess = f"{indent}- {code_line[:60]}"
+            if level != CUR_LOG_LEVEL:
+                print("\n")
+            cprint(f"{mess}", Fore.WHITE, end="")
+            result = func(*args, **kwargs)
+            if CUR_LOG_LEVEL > level:
+                cprint('\r' + "👍".center(10, '-'), Fore.GREEN)
+            else:
+                cprint(f"\r{mess}", Fore.WHITE, end="")
+                cprint(" 👍", Fore.GREEN)
+            CUR_LOG_LEVEL = level
+            return result
+
+        return wrapped
+
+    return wrapper

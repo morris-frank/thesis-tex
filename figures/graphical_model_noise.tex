@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+    \node[obs]                (m) {\(\B{\hat{s}}\)};
+    \node[latent, above left=of m]  (s) {\(\B{s}\)};
+    \node[latent, below left=of m]  (e) {\(\B{\ε}\)};
+
+    \edge {s} {m} ; %
+    \edge {e} {m} ; %
+
+    \plate {ms} {(m)(s)(e)} {\(N\)} ;
+\end{tikzpicture}

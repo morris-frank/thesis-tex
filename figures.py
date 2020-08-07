@@ -1,25 +1,27 @@
 #!/usr/bin/env python
 
-from argparse import ArgumentParser
+import os
+from functools import partial
 from itertools import chain
-from math import tau as τ
+from math import floor, log10, ceil
 
-from scipy import stats
+import ipdb
 import librosa
 import librosa.display
 import matplotlib as mpl
 import pandas as pd
 import seaborn as sns
 from matplotlib import colors
-import ipdb
-
+from scipy import stats
+from tqdm import tqdm
 
 from utils import *
 
+FIGDIR = "./figures"
 
 # geometry lengths from LaTeX
 MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
-BODY_LENGTH = 4.21342 # Maximum inner body line widht in inches
+BODY_LENGTH = 4.21342  # Maximum inner body line widht in inches
 
 # choosen colors
 # CMAP_DIV = "viridis"
@@ -43,21 +45,28 @@ COLORS = {
 # data configs
 TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
 MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
+N = 4
 
 
 # Update matplotlib config
 mpl.style.use("./mpl.style")
-for k, c in [
-    ("r", "red"),
-    ("g", "green"),
-    ("b", "blue"),
-    ("c", "aqua"),
-    ("m", "purple"),
-    ("y", "yellow"),
-    ("n", "orange"),
-]:
-    mpl.colors._colors_full_map[k] = hex2rgb(CMAP_CAT[c])
-sns.set_palette(sns.color_palette(list(CMAP_CAT.values())))
+
+
+def set_palettes():
+    for k, c in [
+        ("r", "red"),
+        ("g", "green"),
+        ("b", "blue"),
+        ("c", "aqua"),
+        ("m", "purple"),
+        ("y", "yellow"),
+        ("n", "orange"),
+    ]:
+        mpl.colors._colors_full_map[k] = hex2rgb(CMAP_CAT[c])
+    sns.set_palette(sns.color_palette(list(CMAP_CAT.values())))
+
+
+set_palettes()
 
 
 def print_color_latex():
@@ -68,20 +77,24 @@ def print_color_latex():
 
 
 def plot_palette():
-    def _rplot(ax, colors):
-        x = np.linspace(-τ, τ, 200)
-        for color in colors:
-            y = np.random.rand() * np.sin(x * np.random.rand()) + np.random.rand()
-            ax.plot(x, y, c=CMAP_CAT[color])
+    fig, ax = plt.subplots()
 
-    fig, axs = plt.subplots(1, 1)
+    x = np.linspace(-τ, τ, 200)
+    for color in CMAP_CAT.keys():
+        y = np.random.rand() * np.sin(x * np.random.rand()) + np.random.rand()
+        ax.plot(x, y, c=CMAP_CAT[color])
 
-    _rplot(axs, ["red", "green", "yellow", "orange", "blue", "purple", "aqua"])
-
-    plt.show()
+    savefig("palette")
 
 
-def plot_signals(*signals, sharey: bool = True, ylim=None, legend=True):
+def plot_signals(
+    *signals,
+    sharey: bool = True,
+    ylim=None,
+    legend=True,
+    height: float = MARGIN_LENGTH,
+    x_labels=True,
+):
     arguments = get_func_arguments()
     colores = ["k", "n", "y", "g", "r"]
     N = max(s.shape[0] for s in signals)
@@ -89,12 +102,21 @@ def plot_signals(*signals, sharey: bool = True, ylim=None, legend=True):
     if not ylim:
         ylim = (min(map(np.min, signals)), max(map(np.max, signals)))
 
-    fig, axs = plt.subplots(C, N, sharex="all", sharey="none", squeeze=False, figsize=(BODY_LENGTH, MARGIN_LENGTH))
+    fig, axs = plt.subplots(
+        C,
+        N,
+        sharex="all",
+        sharey="all" if sharey else "none",
+        squeeze=False,
+        figsize=(BODY_LENGTH, height),
+        gridspec_kw=dict(left=0.05, right=1.0, top=0.95, bottom=0.1),
+    )
     for k, (signal, name) in enumerate(zip(signals, arguments)):
         for n in range(signal.shape[0]):
             c = colores[k % len(colores)]
             for i in range(C):
                 axs[i, n].plot(signal[n, i, :], f"{c}-", label=name, linewidth=0.5)
+                axs[i, n].tick_params(labelbottom=x_labels)
                 if sharey:
                     axs[i, n].set_ylim(ylim)
     if legend:
@@ -103,30 +125,31 @@ def plot_signals(*signals, sharey: bool = True, ylim=None, legend=True):
     return fig
 
 
-def plot_heatmap(data, name, signals):
-    n = len(signals)
-    fig, ax = plt.subplots(
-        1,
-        1,
-        gridspec_kw=dict(left=0.1, right=1, top=0.86, bottom=0.2),
+def plot_heatmap(data, name, signals, ticks="both", minimum="auto"):
+    if ticks == "both":
+        ticks = "xy"
+    fig, (ax, cbar_ax) = plt.subplots(
+        2,
+        gridspec_kw=dict(
+            left=0.2,
+            right=0.95,
+            top=0.86,
+            bottom=0.1,
+            hspace=0.05,
+            height_ratios=(0.9, 0.05),
+        ),
         figsize=(MARGIN_LENGTH, 1.15 * MARGIN_LENGTH),
     )
 
-    if data.max() - data.min() > 10 ** 2:
-        norm = colors.SymLogNorm(linthresh=0.03, base=100)
-        ticks = [-100, 0, 7]
+    norm = colors.SymLogNorm(linthresh=0.03, base=10)
+    if minimum == "auto":
+        _min = data.min().min()
+        data_min = np.sign(_min) * 10 ** min(10, floor(log10(np.abs(_min))))
     else:
-        ticks = None
-        norm = None
+        data_min = minimum
+    data_max = 10 ** max(1, ceil(log10(data.max().max())))
+    _ticks = [data_min, 0, data_max]
 
-    cbar_ax = inset_axes(
-        ax,
-        width=1.49,
-        height=0.1,
-        bbox_transform=ax.transAxes,
-        bbox_to_anchor=(0.5, -0.15),
-        loc=8,
-    )
     sns.heatmap(
         data,
         ax=ax,
@@ -134,92 +157,102 @@ def plot_heatmap(data, name, signals):
         linewidths=2,
         cbar=True,
         cbar_ax=cbar_ax,
-        cbar_kws={"orientation": "horizontal", "ticks": ticks},
+        cbar_kws={"orientation": "horizontal", "ticks": _ticks},
         square=True,
         norm=norm,
         cmap=CMAP_DIV,
     )
 
-    ax.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
+    ax.tick_params(
+        bottom=False,
+        left=False,
+        labelbottom=False,
+        labeltop="x" not in ticks,
+        labelleft="y" not in ticks,
+    )
 
-    pos_tick = np.linspace(0, 1, 2 * n + 1)[1::2]
-    size = 1 / n * 0.9
+    pos_tick = np.linspace(0, 1, 2 * N + 1)[1::2]
+    size = 1 / N * 0.9
 
-    for i in range(n):
-        add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
-        add_plot_tick(ax, signals[i], pos=pos_tick[-i - 1], where="y", size=size)
+    for i in range(N):
+        if "x" in ticks:
+            add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
+        if "y" in ticks:
+            add_plot_tick(ax, signals[i], pos=pos_tick[-i - 1], where="y", size=size)
 
-    savefig(name)
+    savefig(name + "_hm")
 
 
 def plot_cross_entropy(name, signals):
     data = np.load(f"data/{name}.npy", allow_pickle=True).item()
     y, logits, logp = np.array(data["y"]), np.array(data["ŷ"]), np.array(data["logp"])
 
-    data = np.zeros((4, 4))
-    for k in range(4):
+    data = np.zeros((N, N))
+    for k in range(N):
         data[k, :] = logits[y == k].mean(0)
 
     plot_heatmap(data, name, signals)
 
 
-def plot_cross_likelihood(name, signals):
-    log_p = np.load(f"data/{name}.npy")
+def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
+    name += "channels"
     log_p[log_p == -np.inf] = -1e3
     log_p = np.maximum(log_p, -1e3)
     log_p = log_p.swapaxes(0, 1)
-    log_p = log_p.mean(-1)
 
-    plot_heatmap(log_p, name, signals)
-
-
-def plot_noise_box(name):
-    df = np.load(f"data/{name}.npy", allow_pickle=True,).item()
-
-    l = []
-    for σ, (i, k) in product(df.keys(), enumerate(TOY_SIGNALS)):
-        l.extend([(σ, k, v) for v in df[σ][i].tolist()])
-
-    df = pd.DataFrame(l, columns=["Noise-Level", "Source", "Log-Likelihood"])
-    df = df[df["Log-Likelihood"] != 0]
-    df = df[~df["Noise-Level"].isin((0.001, 0.01, 0.05))]
-
-    _, axs = plt.subplots(
-        2,
-        2,
-        figsize=(MARGIN_LENGTH, 1.3 * MARGIN_LENGTH),
-        gridspec_kw=dict(left=0.17, right=0.99, hspace=0.5, wspace=0.5),
-    )
-    for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
-        add_plot_tick(ax, symbol=signal, size=0.1, linewidth=0.5)
-        sns.boxplot(
-            x="Noise-Level",
-            y="Log-Likelihood",
-            data=df[df["Source"] == signal],
-            ax=ax,
-            fliersize=1,
-            linewidth=0.5,
-            showfliers=False,
-        )
-        ax.set_ylabel("")
-        ax.set_xlabel("")
-    savefig(name)
+    if how == "heatmap":
+        log_p = log_p.mean(-1)
+        plot_heatmap(log_p, name, signals)
+    elif how == "histogram":
+        fig, axs = plt.subplots(N, figsize=(BODY_LENGTH, MARGIN_LENGTH), dpi=80)
+        for k in range(N):
+            p = [np.squeeze(_log_p) for _log_p in log_p[k]]
+            for j, (_p, lab) in enumerate(zip(p, signals)):
+                axs[k].hist(
+                    _p,
+                    label=lab,
+                    range=(-100, 15),
+                    bins=np.linspace(-100, 15, 100),
+                    alpha=0.7,
+                )
+                # sns.distplot(_p, ax=axs[k, j], label=lab)
+            # axs[k].set_xlim(-100, 15)
+            # axs[k].set_xscale('log')
+            # axs[k].legend()
+        plt.show()
+        ipdb.set_trace()
+    else:
+        raise ValueError("HAHAHA")
 
 
+@log_func(1)
+def plot_log_levels(log_p, levels, name, signals, exclude=None, minimum="auto"):
+    log_p = log_p.swapaxes(1, 0)
+    levels = np.array(levels).round(3)
+    if log_p.ndim > 2:
+        log_p = log_p.mean(-1)
+    df = pd.DataFrame(log_p, columns=levels, index=signals)
+    if exclude is not None:
+        df = df.drop(exclude, axis=1)
+    plot_heatmap(df, name, signals, ticks="y", minimum=minimum)
+    df.to_latex(f"{FIGDIR}/{name}.tex", float_format="%.2e")
+
+
+@log_func()
 def plot_waveforms(signals):
-    for signal in signals:
+    for signal in tqdm(signals, leave=False):
         wave, _ = librosa.load(f"data/{signal}.wav")
-        # stft = librosa.stft(wave)
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111)
         librosa.display.waveplot(
             wave, max_points=500, max_sr=50, ax=ax, color=CMAP_DIV.colors[-70]
         )
         plt.axis("off")
-        savefig(f"wave_{signal}")
+        savefig(f"wave/{signal}")
         plt.close()
 
 
+@log_func()
 def plot_prior_dists(signals):
     def _plot(pks=None):
         fig = plt.figure(tight_layout=True)
@@ -227,53 +260,39 @@ def plot_prior_dists(signals):
         make_a_rand_dist(ax, N=pks, cmap=CMAP_DIV)
         ax.view_init(25, 45)
 
-    for k in signals:
+    for signal in tqdm(signals, leave=False):
         _plot()
-        savefig(f"dist_{k}")
+        savefig(f"dist/{signal}")
         plt.close()
 
         _plot(2)
-        savefig(f"dist_{k}_post")
+        savefig(f"dist/{signal}_post")
         plt.close()
 
 
 def plot_toy_dist(signals):
     _, axs = plt.subplots(
-        2,
-        2,
+        N // 2,
+        N // 2,
         figsize=(MARGIN_LENGTH, 1.3 * MARGIN_LENGTH),
         gridspec_kw=dict(left=0.17, right=0.99, hspace=0.5, wspace=0.5),
     )
     for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
         add_plot_tick(ax, symbol=signal, size=0.1, linewidth=0.5)
         wave = clip_noise(oscillator(15000, signal, 200), 0.02)
-        sns.distplot(wave, ax=ax, kde=False, bins=20, hist_kws={'alpha': 1})
+        sns.distplot(wave, ax=ax, kde=False, bins=20, hist_kws={"alpha": 1})
         ax.tick_params(bottom=True, left=False, labelbottom=True, labelleft=False)
         # hist, _ = np.histogram(wave, np.linspace(-1, 1, 100 + 1))
         # ax.plot(hist)
     savefig(f"toy_dist")
 
 
-def plot_beta():
-    _, ax = plt.subplots()
-
-    ε = 0.00001
-    N = 400
-
-    for a,b in zip([0.5, 1.01, 2, 2, 6], [0.5, 1, 2, 5, 1]):
-        x = np.linspace(stats.beta.ppf(ε, a, b), stats.beta.ppf(1-ε, a, b), N)
-        ax.plot(x * 2 - 1, stats.beta.pdf(x, a, b))
-    ax.set_ylim(0, 3)
-    savefig("beta")
-
-
-
 def plot_posterior_example():
-    x = np.linspace(.5, (.8*τ)+.5, 100)
+    x = np.linspace(0.5, (0.8 * τ) + 0.5, 100)
 
     _, ax = plt.subplots(figsize=(1, 2))
-    plt.plot(x[:49], np.sin(x[:49]), 'k:', markersize=0.2)
-    plt.plot(x[52:], np.sin(x[52:]), 'k:', markersize=0.2)
+    plt.plot(x[:49], np.sin(x[:49]), "k:", markersize=0.2)
+    plt.plot(x[52:], np.sin(x[52:]), "k:", markersize=0.2)
 
     iax = ax.inset_axes([0.5, 0.43, 0.1, 0.2])
 
@@ -286,20 +305,57 @@ def plot_posterior_example():
 def plot_toy_training_curves():
     df = get_wandb("guo159rh")
 
-
     var = ("log_p/{}/train", "log_p_0/{}/train", "log_p_1/{}/train")
     sign = (-1, 1, 1)
     ylims = ((0, 3.8), (0, 10), (-1.1, -0.9))
     fig, axs = plt.subplots(1, 3, figsize=[BODY_LENGTH, MARGIN_LENGTH])
 
     for vf, ax, s, ylim in zip(var, axs, sign, ylims):
-        log_p = df[[vf.format(k) for k in TOY_SIGNALS]].melt(ignore_index=False).reset_index()
-        log_p["variable"] = log_p["variable"].apply(lambda x: x.split('/')[1])
+        log_p = (
+            df[[vf.format(k) for k in TOY_SIGNALS]]
+            .melt(ignore_index=False)
+            .reset_index()
+        )
+        log_p["variable"] = log_p["variable"].apply(lambda x: x.split("/")[1])
         log_p["value"] = log_p["value"].apply(lambda x: x * s)
-        sns.lineplot(x='index', y='value', hue="variable", data=log_p, ax=ax, legend=False, linewidth=0.5)
+        sns.lineplot(
+            x="index",
+            y="value",
+            hue="variable",
+            data=log_p,
+            ax=ax,
+            legend=False,
+            linewidth=0.5,
+        )
         ax.set_ylim(ylim)
 
     savefig("toy_training_curves")
+
+
+def plot_toy_noise_condtioned_training_curves():
+    noises = {
+        "Aug03-1911_Flowavenet_toy_time_noise_rand_ampl": 0.1,
+        "Aug03-1157_Flowavenet_toy_time_noise_rand_ampl": 0.3,
+    }
+    df = pd.read_csv("./data/train_noise_conditioned_toy.csv")
+    df = df.apply(partial(pd.to_numeric, errors="coerce"))
+    df = df.rolling(10, min_periods=1).mean()
+    del df["Step"]
+    df = df.melt(value_name="log(p)", ignore_index=False).reset_index()
+    df.rename(columns={"index": "Step"}, inplace=True)
+    df["source"] = df.variable.apply(lambda x: x.split(" - ")[1].split("/")[1])
+    df["noise"] = df.variable.apply(lambda x: noises[x.split(" - ")[0]])
+    del df["variable"]
+
+    _, ax = plt.subplots()
+
+    sns.lineplot(
+        x="Step", y="log(p)", hue="source", data=df, style="noise", ax=ax, linewidth=0.5
+    )
+    # ax.set_yscale('log')
+    ax.set_ylim([-1, -6])
+    plt.show()
+    ipdb.set_trace()
 
 
 def plot_toy_interpolation():
@@ -312,36 +368,48 @@ def plot_toy_interpolation():
     savefig("toy_interpolate_time")
 
 
-def main(args):
-    if args.verbose:
-        cprint("Palette example plot:")
-        plot_palette()
+def plot_toy_samples():
+    data = np.load("data/prior_toy_sample.npy")
+    data = data[:, None, :]
+    data[1, ...] = data[1, ...].clip(-0.15, 0.15) / 0.15
+    # ipdb.set_trace()
+    plot_signals(data, legend=False, height=0.4 * MARGIN_LENGTH, x_labels=False)
+    savefig("toy_samples_time")
 
-    processes = [
-        # (print_color_latex, ()),
-        # (plot_posterior_example, ()),
-        # (plot_toy_training_curves, ()),
-        (plot_toy_interpolation, ()),
-        # (plot_beta, ()),
-        # (plot_toy_dist, (TOY_SIGNALS,)),
-        # (plot_prior_dists, (MUSDB_SIGNALS,)),
-        # (plot_waveforms, (MUSDB_SIGNALS + ["mix"],)),
-        # (plot_cross_entropy, ("heatmap_musdb_classifier", MUSDB_SIGNALS)),
-        # (plot_cross_likelihood, ("heatmap_musdb", MUSDB_SIGNALS)),
-        # (plot_cross_likelihood, ("heatmap_toy", TOY_SIGNALS)),
-        # (plot_noise_box, ('noise_likelihood_with_noise',)),
-        # (plot_noise_box, ('noise_likelihood_without_noise',)),
-    ]
 
+@log_func()
+def plot_prior(name, filename, signals):
+    # dict_keys(['noised', 'channels', 'noise_levels', 'noise_logp', 'const_levels', 'const_logp', 'samples'])
+    data = dict(np.load(f"./data/{filename}.npz"))
+    name += "/"
+    plot_cross_likelihood(data["channels"], name, signals)
+    plot_log_levels(data["noise_logp"], data["noise_levels"], name + "noise", signals)
+    plot_log_levels(
+        data["const_logp"][5:],
+        data["const_levels"][5:],
+        name + "const",
+        signals,
+        exclude=[0.2, 0.6],
+    )
+    noised_levels = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3]
+    plot_log_levels(
+        data["noised"], noised_levels, name + "noised", signals, exclude=[0.01, 0.2]
+    )
+
+
+def main():
     cprint("Will process all data figures:", Fore.CYAN)
-    for f, arg in processes:
-        cprint(f"- {f.__name__}", Fore.YELLOW, end="")
-        f(*arg)
-        cprint("\t👍", Fore.GREEN)
 
+    plot_prior("toy_noiseless", "Jul31-1847_Flowavenet_toy_time_rand_ampl", TOY_SIGNALS)
+    plot_prior(
+        "toy_noise_low", "Aug03-1157_Flowavenet_toy_time_noise_rand_ampl", TOY_SIGNALS
+    )
+    plot_prior(
+        "toy_noise_med", "Aug03-1911_Flowavenet_toy_time_noise_rand_ampl", TOY_SIGNALS
+    )
+    plot_waveforms(MUSDB_SIGNALS + ["mix"])
+    plot_prior_dists(MUSDB_SIGNALS)
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument("-v", action="store_true", dest="verbose")
-    main(parser.parse_args())
+    main()
