@@ -401,14 +401,10 @@ def main():
     cprint("Will process all data figures:", Fore.CYAN)
 
     plot_prior("toy_noiseless", "Jul31-1847_Flowavenet_toy_time_rand_ampl", TOY_SIGNALS)
-    plot_prior(
-        "toy_noise_low", "Aug03-1157_Flowavenet_toy_time_noise_rand_ampl", TOY_SIGNALS
-    )
-    plot_prior(
-        "toy_noise_med", "Aug03-1911_Flowavenet_toy_time_noise_rand_ampl", TOY_SIGNALS
-    )
-    plot_waveforms(MUSDB_SIGNALS + ["mix"])
-    plot_prior_dists(MUSDB_SIGNALS)
+    for level in ['0-01', '0-027', '0-077', '0-129', '0-359']:
+        plot_prior(f"toy_noise_{level}", f"Aug07-1757_Flowavenet_toy_time_noise_{level}_rand_ampl", TOY_SIGNALS)
+    # plot_waveforms(MUSDB_SIGNALS + ["mix"])
+    # plot_prior_dists(MUSDB_SIGNALS)
 
 
 if __name__ == "__main__":

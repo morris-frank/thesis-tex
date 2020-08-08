@@ -28,7 +28,7 @@ def adapt_colors(target, dicti):
         dicti[k] = rgb2hex(*colorsys.hsv_to_rgb(h, _s, _v))
 
 
-def savefig(name):
+def savefig(name, dont_close=False):
     # plt.gca().patch.set_alpha(0.)
     os.makedirs(os.path.dirname(f"./figures/{name}.pdf"), exist_ok=True)
     plt.savefig(
@@ -38,6 +38,8 @@ def savefig(name):
         facecolor="none",
         edgecolor="none",
     )
+    if not dont_close:
+        plt.close()
 
 
 def hex2rgb(hex):
