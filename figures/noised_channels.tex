@@ -1,5 +1,12 @@
-\foreach \level in {0-01,0-027,0-077,0-129,0-359}{
-    \subfloat[][]{
-        \includegraphics[width=0.7in]{toy_noise_\level/channels_hm.pdf}
-    }
-}
+\begin{subfigure}{0.13\textwidth}
+    \includegraphics[width=\textwidth]{toy_noiseless/channels_hm.pdf}%
+    \caption{0.0}%
+    \label{fig:noised_channels_0}%
+\end{subfigure}
+\foreach\level in {01,027,077,129,359}{
+    \begin{subfigure}{0.13\textwidth}
+        \includegraphics[width=\textwidth]{toy_noise_0-\level/channels_hm.pdf}%
+        \caption{0.\level}%
+        \label{fig:noised_channels_\level}%
+    \end{subfigure}
+}%

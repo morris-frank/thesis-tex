@@ -530,6 +530,22 @@
   langid = {english}
 }
 
+@article{heDelving2015,
+  title = {Delving {{Deep}} into {{Rectifiers}}: {{Surpassing Human}}-{{Level Performance}} on {{ImageNet Classification}}},
+  shorttitle = {Delving {{Deep}} into {{Rectifiers}}},
+  author = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  date = {2015-02-06},
+  url = {http://arxiv.org/abs/1502.01852},
+  urldate = {2020-08-08},
+  abstract = {Rectified activation units (rectifiers) are essential for state-of-the-art neural networks. In this work, we study rectifier neural networks for image classification from two aspects. First, we propose a Parametric Rectified Linear Unit (PReLU) that generalizes the traditional rectified unit. PReLU improves model fitting with nearly zero extra computational cost and little overfitting risk. Second, we derive a robust initialization method that particularly considers the rectifier nonlinearities. This method enables us to train extremely deep rectified models directly from scratch and to investigate deeper or wider network architectures. Based on our PReLU networks (PReLU-nets), we achieve 4.94\% top-5 test error on the ImageNet 2012 classification dataset. This is a 26\% relative improvement over the ILSVRC 2014 winner (GoogLeNet, 6.66\%). To our knowledge, our result is the first to surpass human-level performance (5.1\%, Russakovsky et al.) on this visual recognition challenge.},
+  archivePrefix = {arXiv},
+  eprint = {1502.01852},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/6D2UCGRD/He et al. - 2015 - Delving Deep into Rectifiers Surpassing Human-Lev.pdf},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning},
+  primaryClass = {cs}
+}
+
 @article{higginsBetaVAE2016,
   title = {Beta-{{VAE}}: {{Learning Basic Visual Concepts}} with a {{Constrained Variational Framework}}},
   shorttitle = {Beta-{{VAE}}},
@@ -997,6 +1013,21 @@
   number = {5}
 }
 
+@article{nalisnickDeep2019,
+  title = {Do {{Deep Generative Models Know What They Don}}'t {{Know}}?},
+  author = {Nalisnick, Eric and Matsukawa, Akihiro and Teh, Yee Whye and Gorur, Dilan and Lakshminarayanan, Balaji},
+  date = {2019-02-24},
+  url = {http://arxiv.org/abs/1810.09136},
+  urldate = {2020-08-09},
+  abstract = {A neural network deployed in the wild may be asked to make predictions for inputs that were drawn from a different distribution than that of the training data. A plethora of work has demonstrated that it is easy to find or synthesize inputs for which a neural network is highly confident yet wrong. Generative models are widely viewed to be robust to such mistaken confidence as modeling the density of the input features can be used to detect novel, out-of-distribution inputs. In this paper we challenge this assumption. We find that the density learned by flow-based models, VAEs, and PixelCNNs cannot distinguish images of common objects such as dogs, trucks, and horses (i.e. CIFAR-10) from those of house numbers (i.e. SVHN), assigning a higher likelihood to the latter when the model is trained on the former. Moreover, we find evidence of this phenomenon when pairing several popular image data sets: FashionMNIST vs MNIST, CelebA vs SVHN, ImageNet vs CIFAR-10 / CIFAR-100 / SVHN. To investigate this curious behavior, we focus analysis on flow-based generative models in particular since they are trained and evaluated via the exact marginal likelihood. We find such behavior persists even when we restrict the flows to constant-volume transformations. These transformations admit some theoretical analysis, and we show that the difference in likelihoods can be explained by the location and variances of the data and the model curvature. Our results caution against using the density estimates from deep generative models to identify inputs similar to the training distribution until their behavior for out-of-distribution inputs is better understood.},
+  archivePrefix = {arXiv},
+  eprint = {1810.09136},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/A4ETL564/Nalisnick et al. - 2019 - Do Deep Generative Models Know What They Don't Kno.pdf},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @article{narayanaswamyAudio2019,
   title = {Audio {{Source Separation}} via {{Multi}}-{{Scale Learning}} with {{Dilated Dense U}}-{{Nets}}},
   author = {Narayanaswamy, Vivek Sivaraman and Katoch, Sameeksha and Thiagarajan, Jayaraman J. and Song, Huan and Spanias, Andreas},
@@ -1313,6 +1344,21 @@
   version = {2}
 }
 
+@article{sonderbyAmortised2017,
+  title = {Amortised {{MAP Inference}} for {{Image Super}}-Resolution},
+  author = {Sønderby, Casper Kaae and Caballero, Jose and Theis, Lucas and Shi, Wenzhe and Huszár, Ferenc},
+  date = {2017-02-21},
+  url = {http://arxiv.org/abs/1610.04490},
+  urldate = {2020-08-09},
+  abstract = {Image super-resolution (SR) is an underdetermined inverse problem, where a large number of plausible high-resolution images can explain the same downsampled image. Most current single image SR methods use empirical risk minimisation, often with a pixel-wise mean squared error (MSE) loss. However, the outputs from such methods tend to be blurry, over-smoothed and generally appear implausible. A more desirable approach would employ Maximum a Posteriori (MAP) inference, preferring solutions that always have a high probability under the image prior, and thus appear more plausible. Direct MAP estimation for SR is non-trivial, as it requires us to build a model for the image prior from samples. Furthermore, MAP inference is often performed via optimisation-based iterative algorithms which don't compare well with the efficiency of neural-network-based alternatives. Here we introduce new methods for amortised MAP inference whereby we calculate the MAP estimate directly using a convolutional neural network. We first introduce a novel neural network architecture that performs a projection to the affine subspace of valid SR solutions ensuring that the high resolution output of the network is always consistent with the low resolution input. We show that, using this architecture, the amortised MAP inference problem reduces to minimising the cross-entropy between two distributions, similar to training generative models. We propose three methods to solve this optimisation problem: (1) Generative Adversarial Networks (GAN) (2) denoiser-guided SR which backpropagates gradient-estimates from denoising to train the network, and (3) a baseline method using a maximum-likelihood-trained image prior. Our experiments show that the GAN based approach performs best on real image data. Lastly, we establish a connection between GANs and amortised variational inference as in e.g. variational autoencoders.},
+  archivePrefix = {arXiv},
+  eprint = {1610.04490},
+  eprinttype = {arxiv},
+  file = {/home/morris/docs/lib/Zotero/storage/7SIJHVKN/Sønderby et al. - 2017 - Amortised MAP Inference for Image Super-resolution.pdf},
+  keywords = {Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @unpublished{stollerWaveUNet2018,
   title = {Wave-{{U}}-{{Net}}: {{A Multi}}-{{Scale Neural Network}} for {{End}}-to-{{End Audio Source Separation}}},
   shorttitle = {Wave-{{U}}-{{Net}}},
@@ -1396,21 +1442,6 @@
   eprint = {1511.01844},
   eprinttype = {arxiv},
   file = {/home/morris/docs/lib/Zotero/storage/VWE48B8R/Theis et al. - 2016 - A note on the evaluation of generative models.pdf},
-  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
-  primaryClass = {cs, stat}
-}
-
-@article{theisNote2016a,
-  title = {A Note on the Evaluation of Generative Models},
-  author = {Theis, Lucas and van den Oord, Aäron and Bethge, Matthias},
-  date = {2016-04-24},
-  url = {http://arxiv.org/abs/1511.01844},
-  urldate = {2020-08-08},
-  abstract = {Probabilistic generative models can be used for compression, denoising, inpainting, texture synthesis, semi-supervised learning, unsupervised feature learning, and other tasks. Given this wide range of applications, it is not surprising that a lot of heterogeneity exists in the way these models are formulated, trained, and evaluated. As a consequence, direct comparison between models is often difficult. This article reviews mostly known but often underappreciated properties relating to the evaluation and interpretation of generative models with a focus on image models. In particular, we show that three of the currently most commonly used criteria---average log-likelihood, Parzen window estimates, and visual fidelity of samples---are largely independent of each other when the data is high-dimensional. Good performance with respect to one criterion therefore need not imply good performance with respect to the other criteria. Our results show that extrapolation from one criterion to another is not warranted and generative models need to be evaluated directly with respect to the application(s) they were intended for. In addition, we provide examples demonstrating that Parzen window estimates should generally be avoided.},
-  archivePrefix = {arXiv},
-  eprint = {1511.01844},
-  eprinttype = {arxiv},
-  file = {/home/morris/docs/lib/Zotero/storage/SNNBIKWF/Theis et al. - 2016 - A note on the evaluation of generative models.pdf},
   keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
   primaryClass = {cs, stat}
 }

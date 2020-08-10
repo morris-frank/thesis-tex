@@ -60,7 +60,10 @@
 
 \newbibmacro*{cite:longtitle}{%
   \printtext[bibhyperref]{%
-    \printfield[title]{title}}}%
+    \iffieldundef{shorttitle}%
+      {\printfield[title]{title}}%
+      {\printfield[title]{shorttitle}}%
+    }}%
 
 \newbibmacro*{longcite}{%
   \printnames{labelname}%
@@ -133,7 +136,6 @@
 
 \input{macros.def}
 
+\usepackage{xstring}
 
-\usepackage{pagecolor}
-\definecolor{white}{rgb}{0.97, 0.97, 0.97}
-\pagecolor{white}
+\usepackage{subcaption}

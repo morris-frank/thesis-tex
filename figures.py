@@ -1,72 +1,24 @@
 #!/usr/bin/env python
 
-import os
 from functools import partial
 from itertools import chain
-from math import floor, log10, ceil
+from math import tau as τ
 
 import ipdb
 import librosa
 import librosa.display
-import matplotlib as mpl
+import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib import colors
+from colorama import Fore
+from matplotlib import pyplot as plt
 from scipy import stats
 from tqdm import tqdm
 
-from utils import *
-
-FIGDIR = "./figures"
-
-# geometry lengths from LaTeX
-MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches
-BODY_LENGTH = 4.21342  # Maximum inner body line widht in inches
-
-# choosen colors
-# CMAP_DIV = "viridis"
-CMAP_DIV = sns.cubehelix_palette(
-    n_colors=12, start=2.4, rot=0.8, reverse=True, hue=0.5, dark=0.3, as_cmap=True
-)  # mh is ok, but thats it
-CMAP_CAT = {
-    "purple": "#b16286",
-    "orange": "#d65d0e",
-    "blue": "#458588",
-    "green": "#98971a",
-    "red": "#cc241d",
-    "yellow": "#d79921",
-    "aqua": "#689d6a",
-}
-COLORS = {
-    "extlinkcolor": "#076678",  # external links
-    "intlinkcolor": "#af3a03",  # internal links
-}
-
-# data configs
-TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
-MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
-N = 4
-
-
-# Update matplotlib config
-mpl.style.use("./mpl.style")
-
-
-def set_palettes():
-    for k, c in [
-        ("r", "red"),
-        ("g", "green"),
-        ("b", "blue"),
-        ("c", "aqua"),
-        ("m", "purple"),
-        ("y", "yellow"),
-        ("n", "orange"),
-    ]:
-        mpl.colors._colors_full_map[k] = hex2rgb(CMAP_CAT[c])
-    sns.set_palette(sns.color_palette(list(CMAP_CAT.values())))
-
-
-set_palettes()
+from plot.plot import savefig, plot_heatmap, plot_signals, make_a_rand_dist
+from plot.settings import TOY_SIGNALS, MUSDB_SIGNALS, MARGIN_LENGTH, \
+    BODY_LENGTH, CMAP_CAT, CMAP_DIV, COLORS, FIGDIR
+from plot.utils import hex2rgb, cprint, log_func, get_wandb
 
 
 def print_color_latex():
@@ -87,103 +39,8 @@ def plot_palette():
     savefig("palette")
 
 
-def plot_signals(
-    *signals,
-    sharey: bool = True,
-    ylim=None,
-    legend=True,
-    height: float = MARGIN_LENGTH,
-    x_labels=True,
-):
-    arguments = get_func_arguments()
-    colores = ["k", "n", "y", "g", "r"]
-    N = max(s.shape[0] for s in signals)
-    C = max(s.shape[1] for s in signals)
-    if not ylim:
-        ylim = (min(map(np.min, signals)), max(map(np.max, signals)))
-
-    fig, axs = plt.subplots(
-        C,
-        N,
-        sharex="all",
-        sharey="all" if sharey else "none",
-        squeeze=False,
-        figsize=(BODY_LENGTH, height),
-        gridspec_kw=dict(left=0.05, right=1.0, top=0.95, bottom=0.1),
-    )
-    for k, (signal, name) in enumerate(zip(signals, arguments)):
-        for n in range(signal.shape[0]):
-            c = colores[k % len(colores)]
-            for i in range(C):
-                axs[i, n].plot(signal[n, i, :], f"{c}-", label=name, linewidth=0.5)
-                axs[i, n].tick_params(labelbottom=x_labels)
-                if sharey:
-                    axs[i, n].set_ylim(ylim)
-    if legend:
-        for ax in axs.flatten().tolist():
-            ax.legend()
-    return fig
-
-
-def plot_heatmap(data, name, signals, ticks="both", minimum="auto"):
-    if ticks == "both":
-        ticks = "xy"
-    fig, (ax, cbar_ax) = plt.subplots(
-        2,
-        gridspec_kw=dict(
-            left=0.2,
-            right=0.95,
-            top=0.86,
-            bottom=0.1,
-            hspace=0.05,
-            height_ratios=(0.9, 0.05),
-        ),
-        figsize=(MARGIN_LENGTH, 1.15 * MARGIN_LENGTH),
-    )
-
-    norm = colors.SymLogNorm(linthresh=0.03, base=10)
-    if minimum == "auto":
-        _min = data.min().min()
-        data_min = np.sign(_min) * 10 ** min(10, floor(log10(np.abs(_min))))
-    else:
-        data_min = minimum
-    data_max = 10 ** max(1, ceil(log10(data.max().max())))
-    _ticks = [data_min, 0, data_max]
-
-    sns.heatmap(
-        data,
-        ax=ax,
-        annot=False,
-        linewidths=2,
-        cbar=True,
-        cbar_ax=cbar_ax,
-        cbar_kws={"orientation": "horizontal", "ticks": _ticks},
-        square=True,
-        norm=norm,
-        cmap=CMAP_DIV,
-    )
-
-    ax.tick_params(
-        bottom=False,
-        left=False,
-        labelbottom=False,
-        labeltop="x" not in ticks,
-        labelleft="y" not in ticks,
-    )
-
-    pos_tick = np.linspace(0, 1, 2 * N + 1)[1::2]
-    size = 1 / N * 0.9
-
-    for i in range(N):
-        if "x" in ticks:
-            add_plot_tick(ax, signals[i], pos=pos_tick[i], where="x", size=size)
-        if "y" in ticks:
-            add_plot_tick(ax, signals[i], pos=pos_tick[-i - 1], where="y", size=size)
-
-    savefig(name + "_hm")
-
-
 def plot_cross_entropy(name, signals):
+    N = len(signals)
     data = np.load(f"data/{name}.npy", allow_pickle=True).item()
     y, logits, logp = np.array(data["y"]), np.array(data["ŷ"]), np.array(data["logp"])
 
@@ -199,6 +56,7 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
     log_p[log_p == -np.inf] = -1e3
     log_p = np.maximum(log_p, -1e3)
     log_p = log_p.swapaxes(0, 1)
+    N = len(signals)
 
     if how == "heatmap":
         log_p = log_p.mean(-1)
@@ -223,19 +81,6 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
         ipdb.set_trace()
     else:
         raise ValueError("HAHAHA")
-
-
-@log_func(1)
-def plot_log_levels(log_p, levels, name, signals, exclude=None, minimum="auto"):
-    log_p = log_p.swapaxes(1, 0)
-    levels = np.array(levels).round(3)
-    if log_p.ndim > 2:
-        log_p = log_p.mean(-1)
-    df = pd.DataFrame(log_p, columns=levels, index=signals)
-    if exclude is not None:
-        df = df.drop(exclude, axis=1)
-    plot_heatmap(df, name, signals, ticks="y", minimum=minimum)
-    df.to_latex(f"{FIGDIR}/{name}.tex", float_format="%.2e")
 
 
 @log_func()
@@ -268,23 +113,6 @@ def plot_prior_dists(signals):
         _plot(2)
         savefig(f"dist/{signal}_post")
         plt.close()
-
-
-def plot_toy_dist(signals):
-    _, axs = plt.subplots(
-        N // 2,
-        N // 2,
-        figsize=(MARGIN_LENGTH, 1.3 * MARGIN_LENGTH),
-        gridspec_kw=dict(left=0.17, right=0.99, hspace=0.5, wspace=0.5),
-    )
-    for signal, ax in zip(TOY_SIGNALS, axs.flatten()):
-        add_plot_tick(ax, symbol=signal, size=0.1, linewidth=0.5)
-        wave = clip_noise(oscillator(15000, signal, 200), 0.02)
-        sns.distplot(wave, ax=ax, kde=False, bins=20, hist_kws={"alpha": 1})
-        ax.tick_params(bottom=True, left=False, labelbottom=True, labelleft=False)
-        # hist, _ = np.histogram(wave, np.linspace(-1, 1, 100 + 1))
-        # ax.plot(hist)
-    savefig(f"toy_dist")
 
 
 def plot_posterior_example():
@@ -358,23 +186,14 @@ def plot_toy_noise_condtioned_training_curves():
     ipdb.set_trace()
 
 
-def plot_toy_interpolation():
-    data = np.load("data/prior_toy_interpolate.npy")
-
-    data = data[:, :, 1500:2000]
-
-    plot_signals(data, legend=False)
-
-    savefig("toy_interpolate_time")
-
-
-def plot_toy_samples():
-    data = np.load("data/prior_toy_sample.npy")
-    data = data[:, None, :]
+def plot_toy_samples(data, name):
+    print(data.shape)
+    data = data[0, :, None, 500:1000]
     data[1, ...] = data[1, ...].clip(-0.15, 0.15) / 0.15
-    # ipdb.set_trace()
+    for i in range(4):
+        data[i, ...] -= data[i, ...].mean()
     plot_signals(data, legend=False, height=0.4 * MARGIN_LENGTH, x_labels=False)
-    savefig("toy_samples_time")
+    savefig(name + '_samples')
 
 
 @log_func()
@@ -382,29 +201,68 @@ def plot_prior(name, filename, signals):
     # dict_keys(['noised', 'channels', 'noise_levels', 'noise_logp', 'const_levels', 'const_logp', 'samples'])
     data = dict(np.load(f"./data/{filename}.npz"))
     name += "/"
+    plot_toy_samples(data['samples'], name)
     plot_cross_likelihood(data["channels"], name, signals)
-    plot_log_levels(data["noise_logp"], data["noise_levels"], name + "noise", signals)
-    plot_log_levels(
-        data["const_logp"][5:],
-        data["const_levels"][5:],
-        name + "const",
-        signals,
-        exclude=[0.2, 0.6],
-    )
-    noised_levels = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3]
-    plot_log_levels(
-        data["noised"], noised_levels, name + "noised", signals, exclude=[0.01, 0.2]
-    )
+
+
+def plot_noised_noised():
+    fn_noiseless = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
+    fn_noised = "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl"
+    cond_levels = ['01', '027', '077', '129', '359']
+    noised_levels = [.0, .001, .01, .05, .1, .2, .3]
+    data = {'0.0': dict(np.load(f"./data/{fn_noiseless}.npz"))["noised"]}
+    for level in cond_levels:
+        _data = dict(np.load(f"./data/{fn_noised.format(level)}.npz"))
+        data['0.' + level] = _data["noised"]
+
+    cond_labels = list(data.keys())
+    data = np.stack(list(data.values()))
+    data = data.swapaxes(0, 2).mean(-1)
+
+    for _data, signal in zip(data, TOY_SIGNALS):
+        df = pd.DataFrame(_data, index=noised_levels, columns=cond_labels)
+        df = df.drop([0.01, 0.2], axis=0)
+        plot_heatmap(df, f"noised_noised/{signal}", ticks="")
+        df.to_latex(f"{FIGDIR}/noised_noised/{signal}.tex", float_format="%.1e")
+
+
+def plot_levels(data, x, y, index, ax):
+    data = data[[x[0], y[0]]]
+    data = data.flatmap().reset_index()
+    data.rename(columns={x[0]: x[1], y[0]: y[1], 'index': index}, inplace=True)
+    data.cond = data.cond.astype('category')
+    data.logp = data.logp.map(np.mean)
+    sns.lineplot(x=x[1], y=y[1], hue=index, data=data, ax=ax)
+    ax.set_yscale('symlog')
+    ax.locator_params(axis='y', numticks=5)
+
+
+def plot_const_noise(data):
+    fig, axs = plt.subplots(1, 2, figsize=(BODY_LENGTH, BODY_LENGTH/2))
+    plot_levels(data, ('noise_levels', 'noise'), ('noise_logp', 'logp'), 'cond', axs[0])
+    axs[0].legend_.remove()
+    plot_levels(data, ('const_levels', 'value'), ('const_logp', 'logp'), 'cond', axs[1])
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+
+    savefig('const_noise_ll')
 
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
 
+    toy_prior_data = {'0.' + n: "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl".format(n) for n in ['01', '027', '077', '129', '359']}
+    toy_prior_data['0.0'] = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
+    for k, v in toy_prior_data.items():
+        toy_prior_data[k] = dict(np.load(f"./data/{v}.npz"))
+    toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
+
+    plot_const_noise(toy_prior_data)
     plot_prior("toy_noiseless", "Jul31-1847_Flowavenet_toy_time_rand_ampl", TOY_SIGNALS)
     for level in ['0-01', '0-027', '0-077', '0-129', '0-359']:
         plot_prior(f"toy_noise_{level}", f"Aug07-1757_Flowavenet_toy_time_noise_{level}_rand_ampl", TOY_SIGNALS)
-    # plot_waveforms(MUSDB_SIGNALS + ["mix"])
-    # plot_prior_dists(MUSDB_SIGNALS)
+    plot_noised_noised()
+    plot_waveforms(MUSDB_SIGNALS + ["mix"])
+    plot_prior_dists(MUSDB_SIGNALS)
 
 
 if __name__ == "__main__":

@@ -8,3 +8,5 @@
 \newcommand\s{\ensuremath{\B{s}}}
 \newcommand\z{\ensuremath{\B{z}}}
 \newcommand\x{\ensuremath{\B{x}}}
+
+\newcommand{\decrvalue}[2]{\the\numexpr\value{#1}-#2\relax}

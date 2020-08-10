@@ -4,10 +4,14 @@ figure.dpi: 300
 lines.linewidth: 1
 
 text.usetex: True
-text.latex.preamble: \usepackage{mathpazo}
+text.latex.preamble: \usepackage{mathpazo}\usepackage{amsmath}
 mathtext.fontset: stix
 font.family: STIXGeneral
 font.size: 7
 pgf.texsystem: xelatex
 legend.fontsize: 6
 legend.title_fontsize: 6
+text.color: black
+axes.labelcolor: black
+xtick.color: black
+ytick.color: black
