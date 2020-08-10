@@ -187,13 +187,13 @@ def plot_toy_noise_condtioned_training_curves():
 
 
 def plot_toy_samples(data, name):
-    print(data.shape)
-    data = data[0, :, None, 500:1000]
-    data[1, ...] = data[1, ...].clip(-0.15, 0.15) / 0.15
-    for i in range(4):
-        data[i, ...] -= data[i, ...].mean()
-    plot_signals(data, legend=False, height=0.4 * MARGIN_LENGTH, x_labels=False)
-    savefig(name + '_samples')
+    for i, sample in enumerate(data):
+        sample = sample[:, None, 500:1000]
+        sample[1, ...] = sample[1, ...].clip(-0.15, 0.15) / 0.15
+        for j in range(4):
+            sample[j, ...] -= sample[j, ...].mean()
+        plot_signals(sample, legend=False, height=0.4 * MARGIN_LENGTH, x_labels=False)
+        savefig(name + f'{i}_samples')
 
 
 @log_func()
@@ -205,22 +205,19 @@ def plot_prior(name, filename, signals):
     plot_cross_likelihood(data["channels"], name, signals)
 
 
-def plot_noised_noised():
-    fn_noiseless = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
-    fn_noised = "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl"
-    cond_levels = ['01', '027', '077', '129', '359']
+def plot_noised_noised(data):
     noised_levels = [.0, .001, .01, .05, .1, .2, .3]
-    data = {'0.0': dict(np.load(f"./data/{fn_noiseless}.npz"))["noised"]}
-    for level in cond_levels:
-        _data = dict(np.load(f"./data/{fn_noised.format(level)}.npz"))
-        data['0.' + level] = _data["noised"]
+    noise_levels = data.index
+    data = data['noised']
 
-    cond_labels = list(data.keys())
-    data = np.stack(list(data.values()))
-    data = data.swapaxes(0, 2).mean(-1)
+    rows = {s: [] for s in TOY_SIGNALS}
+    for cond, val in data.items():
+        val = val.mean(-1).T
+        for _val, signal in zip(val, TOY_SIGNALS):
+            rows[signal].append(_val)
 
-    for _data, signal in zip(data, TOY_SIGNALS):
-        df = pd.DataFrame(_data, index=noised_levels, columns=cond_labels)
+    for signal, mat in rows.items():
+        df = pd.DataFrame(mat, index=noise_levels, columns=noised_levels).T
         df = df.drop([0.01, 0.2], axis=0)
         plot_heatmap(df, f"noised_noised/{signal}", ticks="")
         df.to_latex(f"{FIGDIR}/noised_noised/{signal}.tex", float_format="%.1e")
@@ -230,37 +227,58 @@ def plot_levels(data, x, y, index, ax):
     data = data[[x[0], y[0]]]
     data = data.flatmap().reset_index()
     data.rename(columns={x[0]: x[1], y[0]: y[1], 'index': index}, inplace=True)
-    data.cond = data.cond.astype('category')
-    data.logp = data.logp.map(np.mean)
+    data[index] = data[index].astype('category')
+    data[y[1]] = data[y[1]].map(np.mean)
     sns.lineplot(x=x[1], y=y[1], hue=index, data=data, ax=ax)
     ax.set_yscale('symlog')
     ax.locator_params(axis='y', numticks=5)
 
 
-def plot_const_noise(data):
-    fig, axs = plt.subplots(1, 2, figsize=(BODY_LENGTH, BODY_LENGTH/2))
-    plot_levels(data, ('noise_levels', 'noise'), ('noise_logp', 'logp'), 'cond', axs[0])
-    axs[0].legend_.remove()
-    plot_levels(data, ('const_levels', 'value'), ('const_logp', 'logp'), 'cond', axs[1])
-    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+@log_func()
+def plot_noise(data):
+    fig, axs = plt.subplots(1, 1, figsize=(BODY_LENGTH, BODY_LENGTH*5/12), gridspec_kw=dict(
+            left=0.2,
+            right=0.72,
+            top=0.95,
+            bottom=0.25,
+        ))
 
+    plot_levels(data, ('noise_levels', '$\sigma$ Noise input'), ('noise_logp', '$log(p)$'), 'Training\nnoise', axs)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
     savefig('const_noise_ll')
+
+
+@log_func()
+def plot_const(data):
+    data = data[['const_levels', 'const_logp']].flatmap().reset_index()
+    data = data[data.const_levels.isin([0., 1.])]
+    data = data[data['index'].isin(['0.0', '0.359'])]
+    data = data.set_index(['index', 'const_levels'])
+    data = pd.DataFrame(data.const_logp.tolist(), index=data.index, columns=TOY_SIGNALS)
+    data.index.rename(('model', 'value'), inplace=True)
+    data = data.swaplevel()
+    data.sort_index(axis=0, level=0, inplace=True)
+    data.to_latex(f"{FIGDIR}/toy_const.tex", float_format="%.1e")
 
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
+    fn_noiseless = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
+    fn_noised = "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl"
+    conds = ['01', '027', '077', '129', '359']
 
-    toy_prior_data = {'0.' + n: "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl".format(n) for n in ['01', '027', '077', '129', '359']}
-    toy_prior_data['0.0'] = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
+    toy_prior_data = {'0.' + n: fn_noised.format(n) for n in conds}
+    toy_prior_data['0.0'] = fn_noiseless
     for k, v in toy_prior_data.items():
         toy_prior_data[k] = dict(np.load(f"./data/{v}.npz"))
     toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
 
-    plot_const_noise(toy_prior_data)
-    plot_prior("toy_noiseless", "Jul31-1847_Flowavenet_toy_time_rand_ampl", TOY_SIGNALS)
-    for level in ['0-01', '0-027', '0-077', '0-129', '0-359']:
-        plot_prior(f"toy_noise_{level}", f"Aug07-1757_Flowavenet_toy_time_noise_{level}_rand_ampl", TOY_SIGNALS)
-    plot_noised_noised()
+    plot_const(toy_prior_data)
+    plot_noise(toy_prior_data)
+    plot_noised_noised(toy_prior_data)
+    plot_prior("toy_noiseless", fn_noiseless, TOY_SIGNALS)
+    for level in conds:
+        plot_prior(f"toy_noise_{level}", fn_noised.format(level), TOY_SIGNALS)
     plot_waveforms(MUSDB_SIGNALS + ["mix"])
     plot_prior_dists(MUSDB_SIGNALS)
 

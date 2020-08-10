@@ -1,17 +1,46 @@
 figure.figsize: 2.0, 2.0
+figure.facecolor: white
 figure.dpi: 300
+savefig.dpi: 300
+
+axes.labelcolor: black
+axes.linewidth: 0.8
+axes.edgecolor: black
+xtick.color: black
+ytick.color: black
+axes.facecolor: white
+axes.axisbelow: True
+axes.grid: True
+grid.color: .7
+grid.linewidth: .6
+
+legend.fontsize: 6
+legend.title_fontsize: 6
+legend.frameon: False
 
 lines.linewidth: 1
 
+font.family: TeX Gyre Pagella
+font.size: 7
 text.usetex: True
+text.color: black
 text.latex.preamble: \usepackage{mathpazo}\usepackage{amsmath}
 mathtext.fontset: stix
-font.family: STIXGeneral
-font.size: 7
 pgf.texsystem: xelatex
-legend.fontsize: 6
-legend.title_fontsize: 6
-text.color: black
-axes.labelcolor: black
-xtick.color: black
-ytick.color: black
+
+xtick.labelsize: 6
+ytick.labelsize: 6
+
+xtick.major.pad: 5.6
+xtick.major.size: 4
+xtick.major.width: 1
+xtick.minor.width: 0.8
+xtick.minor.size: 2
+
+ytick.major.pad: 5.6
+ytick.major.size: 4
+ytick.major.width: 1
+ytick.minor.width: 0.5
+ytick.minor.size: 2
+
+

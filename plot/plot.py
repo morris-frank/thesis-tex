@@ -123,44 +123,6 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
     savefig(name + "_hm")
 
 
-def plot_signals(
-    *signals,
-    sharey: bool = True,
-    ylim=None,
-    legend=True,
-    height: float = MARGIN_LENGTH,
-    x_labels=True,
-):
-    arguments = get_func_arguments()
-    colores = ["k", "n", "y", "g", "r"]
-    N = max(s.shape[0] for s in signals)
-    C = max(s.shape[1] for s in signals)
-    if not ylim:
-        ylim = (min(map(np.min, signals)), max(map(np.max, signals)))
-
-    fig, axs = plt.subplots(
-        C,
-        N,
-        sharex="all",
-        sharey="all" if sharey else "none",
-        squeeze=False,
-        figsize=(BODY_LENGTH, height),
-        gridspec_kw=dict(left=0.05, right=1.0, top=0.95, bottom=0.1),
-    )
-    for k, (signal, name) in enumerate(zip(signals, arguments)):
-        for n in range(signal.shape[0]):
-            c = colores[k % len(colores)]
-            for i in range(C):
-                axs[i, n].plot(signal[n, i, :], f"{c}-", label=name, linewidth=0.5)
-                axs[i, n].tick_params(labelbottom=x_labels)
-                if sharey:
-                    axs[i, n].set_ylim(ylim)
-    if legend:
-        for ax in axs.flatten().tolist():
-            ax.legend()
-    return fig
-
-
 def add_plot_tick(
     ax: plt.Axes,
     symbol: str,

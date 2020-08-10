@@ -1,5 +1,6 @@
 \chapter{Experiments}%
 \label{ch:experiments}
+\marginnote{All code can be found under: \url{github.com/morris-frank/unnamed-source-separation/} (MIT)}
 As we have laid out in the previous chapter our method mainly depends on the quality of the learned source priors. The generative prior models have to provide an exhaustive and exclusive approximation of the data manifold or its data source. Therefore our experiments strongly focus on analyzing the prior densities under different training regimes and inputs. In general, we have two separate datasets with which we run the experiment, as described in the following section. TODO
 
 
@@ -92,10 +93,6 @@ When running the same experiment for the \texttt{musdb18} the discriminative pow
 
 Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Because of this, the results show the unintuitive result that the test samples from the \I{other} class are \I{less likely} under its own prior model compared to the out-of-distribution samples. While this makes it rather final that the at hand dataset is not completely suitable to out trainings regime, it is a data-dependent restriction that would not correspond to our hypothesized application.
 
-Similar results were shown before in~\itodo{cite some OOD VAE stuff}.
-
-The results for both datasets are similar for all tested model architectures and input domains. See Appendix~\itodo{add results} for the full results.
-
 \subsection{Noise-conditioning}
 We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noised are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
 
@@ -108,7 +105,7 @@ Conditioning the prior distributions on noised samples is supposed to reduce loc
     \input{figures/noised_noised}%
     \vspace{\baselineskip}%
     \caption{
-        The log likelihood of the test data set with different levels of noise \(\N(0, \σ)\) for the prior models fine-tuned on pertubated data with increasing levels of Gaussian noise.
+        The log likelihood of the test data set with different levels of noise \(\N(0, \σ)\) for the prior models fine-tuned on pertubated data with increasing levels of Gaussian noise. For the numerical data see~\cref{fig:noised_noised_data_sin,fig:noised_noised_data_square,fig:noised_noised_data_saw,fig:noised_noised_data_triangle}.
     }%
     \label{fig:noised_noised}%
 \end{figure*}
@@ -127,23 +124,22 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
     \label{fig:noised_channels}%
 \end{figure*}
 
-With the noiseless model~\ref{fig:noised_channels_0} the distribution is discriminative against the samples from the other sources. With increasing noise-conditioning the discriminative power is lost going to \subref{fig:noised_channels_359}. The noising of the input data results in the latent distribution to flatten out to the point of not being able to differ between any of the signal channels.
+With the noiseless model \cref{fig:noised_channels} (a) the distribution is discriminative against the samples from the other sources. With increasing noise-conditioning the discriminative power is lost going to (f). The noising of the input data results in the latent distribution to flatten out to the point of not being able to differ between any of the signal channels.
 
 \subsection{Random and constant inputs}
-\cite{nalisnickDeep2019}\cite{sonderbyAmortised2017} \cite{vandenoordParallel2017}
+Previous works for generative models~\cite{sonderbyAmortised2017}\cite{vandenoordParallel2017}\cite{nalisnickDeep2019} have pointed out that constant inputs tend to have high likelihood assigned. While there is no
+
+\begin{table}
+    \input{figures/toy_const}%
+    \caption{Const inputs}%
+    \label{tab:toy_const}%
+\end{table}
+
+On the other hand purely random inputs should be unlikely
 
 \begin{figure}
     \centering
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics{noise_ll.pdf}%
-        \caption{Noise}%
-        \label{fig:noise_const_noise}%
-    \end{subfigure}%
-    \begin{subfigure}{0.49\textwidth}
-        \includegraphics{const_ll.pdf}%
-        \caption{Const}%
-        \label{fig:noise_const_const}%
-    \end{subfigure}%
+    \includegraphics{const_noise_ll.pdf}%
     \caption{Noise Const}%
     \label{fig:noise_const}%
 \end{figure}
