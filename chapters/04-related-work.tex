@@ -1,37 +1,55 @@
 \chapter{Related work}%
 \label{ch:related_work}
+
+\newthought{In this chapter}, we give an overview of recent approaches to sound source separation which are related to our approach either in the chosen model choices or implicit ideas. We will introduce source separation models based on deep models in time and frequency domain. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work. Many practical approaches to musical source separation work with handcrafted features and algorithms informed by musicilogical and perceptional research. To the opposite most of the methods presented here assume very little about the behaviour of the sound sources, enabling a end-to-end learning from ground data.
+
+\section{Source separation}
+All here presented model maximize \(p(\s|\m)\) for one source (e.g.\ extracting only the singing voice out of a mix) or \(p(\s_1,\…,\s_N|\m)\) for multiple sources. Note that in the second case the conditional likelihood is not factorized,  a shared model for all sources.
+
+As such these methods employ a reconstruction loss that boils down to:
+
+\begin{align}
+    \argmin_{\B{\θ}} &\Σ_k^N {\|\s_k - f_{\B{\θ}}(\m)_k\|}^l\\
+    l&\∈\{1,2\}
+\end{align}
+
+Where the parameters \(\B{\θ}\) of the model \(f\) are optimized with either the L1 or L2 loss to the true signals \(\{\s_k\}\).
+
+\subsection{Deep clustering}
+One explored approach to musical source separation is called Deep clustering introduced by \textcite{hersheyDeep2015}. In their work the authors train two BiLSTM modules to predict a embedding vector per time-frequency bin of the spectrogram. Then a clustering step is applied to these embeddings, clustering them into as many clusters as sources. This results in a mapping of the spectrogram bins to the differnt sources. The signals are reconstructed by applying the maps to the original input spectrogram which then is reversed. The authors use k-means clustering. \textcite{isikSingleChannel2016} changes that by learning the clustering step through a deep neural network and adding some additional architectural changes and \textcite{liDeep2018} improves the model further by replacing the LSTM modules with Gated Linear Units~\cite{dauphinLanguage2017}.
+
+\textcite{huangSingingVoice2014} builds an recurrent deep neural network for source separation on spectrograms. The input to the network is a magnitude spectrogram and the network predicts a frequency filter map which together with the phase information from the spectrogram of the mix is used to recover the sources. The model is used for singing voice separation with an L2 loss on both the separated voice and music.
+
+\subsection{U-Net based}
 \begin{marginfigure}
     \input{figures/unet}%
     \caption{High level idea of a U-Net: the input gets projected into an (informational) bottleneck through some form of convolutional architecture. From this bottleneck the predictions are from an mirrored array of upsampling convolutional layer (either tuples of upsampling and convolutions or through dilated convolutions). The intermediate filter activations of the encoding are used as conditional inputs at the respective output scaling.}%
     \label{fig:unet}
 \end{marginfigure}
-In this section we give an overview of recent approaches to (sound) source separation which are related to our own approach either in the chosen model choices or implicit ideas. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work.
+\textcite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for musical source separation. They use a convolutional U-Net that takes magnitude spectrograms as the input and predicts a filter map of the singing voice in frequency space. The voice signal is reconstructed by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
 
-
-\section{Source separation}
-
-All here presented model maximize \(p(\B{s}|\B{m})\) for one source (e.g. extracting only the singing voice out of a mix) or \(p(\B{s}_1,\…,\B{s}_N|\B{m})\) for multiple sources. Note that in the second case the conditional likelihood is not factorized, meaning we build a shared model for all sources.
-
-\subsection{WaveNet based}
-\textcite{rethageWavenet2018} use a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors made the WaveNet non-causal by making the padding symmetrical. Further they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for their case the real valued predictions behave better.
-
-\textcite{lluisEndtoend2019} adapted a time-domain WaveNet for musical source separation. The non-causal~\footnote{In this setting the WaveNet can be non-causal because the prediction happens from the given mix and is not autoregressive.} WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
-
-\subsection{U-Net based}
-
-\textcite{janssonSinging2017} were the first to use an U-Net architecture (see~\cref{fig:unet}) for musical source separation. They used a convolutional U-Net on spectrograms of musical data to extract the singing voice. Input to the network is the spectral magnitude and the output prediction is an equally-sized masked. The voice signal reconstruction is then done by multiplying the input magnitude with the predicted mask and using the original phase information from the mix, unaltered. The training objective is the \(L_1\) loss between the masked input spectrogram and the target signal.
-
-The Wave-U-Net\cite{stollerWaveUNet2018} brings this idea into the time-domain. The downstreaming and upstreaming layers are replaced with WaveNet style 1D convolutional layers. Further here the model is predicting multiple source signals.
+The Wave-U-Net~\cite{stollerWaveUNet2018} brings this architecture into the time-domain. The downstreaming and upstreaming layers are replaced with 1D convolutional layers. The upstreaming convolutions are not implemented as deconvolutional layers~\cite{dumoulinGuide2018} but by upsampling the features with a bicubic kernel and then applying a normal convolution. Further here the model is predicting multiple source signals instead of only extracting the voice. In the singing voice separation task the model achieves similar results compared to the above introduced spectrogram based U-Net.
 
 \textcite{slizovskaiaEndtoEnd2019} extends the Wave-U-Net by conditioning the filter activations at the bottleneck with the instrument class label. The additional information is improving the separation quality.
 
 \textcite{cohen-hadriaImproving2019} show improvements of training a Wave-U-Net when using additional data augmentation. They apply a hand-crafted set of auditory transformations (pitch-shifting, time-stretching, transforming the spectral envelope of the singing voice) to the training set of the musdb18 dataset.
 
-\textcite{kaspersenHydraNet2019} adds an bidirectional LSTM at the bottleneck of the Wave-U-Net. The BiLSTM is capable of select and keep information at the bottleneck over time and combine this memory with the new encoded information. This makes it possible for the network to keep information about the source signal at scales larger than the actual receptive field of the U-Net. The research shows an significant improvement over previous U-Net based approaches.
+The Hydranet~\cite{kaspersenHydraNet2019} adds an bidirectional LSTM at the bottleneck of the Wave-U-Net. The BiLSTM is capable of select and keep information at the bottleneck over time and combine this memory with the new encoded information. This makes it possible for the network to keep information about the source signal at scales larger than the actual receptive field of the U-Net. The research shows an significant improvement over previous U-Net based approaches.
 
-\cite{narayanaswamyAudio2019}
+\textcite{narayanaswamyAudio2019} adapts the Wave-U-Net by exchanging the 1D convolutional layers with dilated convolutions as in the WaveNet. By doing so the context of the predcitions can be increased. They also propose a modified architecture with in which the up- and downstream feature blocks become residuals, making optimization easier. Compared to the original Wave-U-Net they show significant increase in performance.
 
 Demucs~\cite{defossezDemucs2019} also introduces a BiLSTM at the bottleneck~\cite{defossezSING2018}. Additionally to the ideas from the HydraNet Demucs also adds data augmentation and makes additional internal changes to the network architecture. They simplify the layer blocks by using the simpler Gated Linear Units~\cite{dauphinLanguage2017} and while the Wave-U-Net is using upsampling followed by a convolutional layer in the decoder, here the others directly use transposed convolutions to achieve the upsampling. Demucs is the first time-domain based end-to-end model that is achieving similar or better results compared to spectrogram based models.
 
+\subsection{WaveNet based}
+\textcite{rethageWavenet2018} uses a WaveNet for speech denoising. Speech denoising is a special case of source separation as the observed mix is separated into true signal and noise. The authors make the WaveNet non-causal by making the padding symmetrical. Further, they used \(L_1\)-loss, instead of the multi-class \μ-law objective. They show that for their case the real-valued predictions behave better.
+
+In the setting of source separation or de-noising, the WaveNet can be non-causal because we are modeling a one-to-one translation from mixed or noised signal to the true source. Therefore the WaveNet is no longer autoregressive but also the receptive field of a  prediction contains inputs from the past and future. For some practical use-cases that might be disadvantageous.
+
+\textcite{lluisEndtoend2019} adapts a time-domain WaveNet for musical source separation. The non-causal WaveNet directly outputs the separated sources and is trained fully supervised. They show this simple setup performing well against spectrogram based baselines. Also, the experiments show a higher performance with a network that is deeper but less wide~\footnote{Deepness of a network refers to the number of hidden layers. Wideness refers to the number of kernels/features of each of these hidden layers. Making the WaveNet deeper significantly increases its receptive field.}.
+
 \subsection{Auto-encoder based}
-\textcite{graisRaw2018} present the first work using an auto-encoder for multi-channel sound source separation. Their auto-encoder takes raw audio as the input is using multi-scale convolutional layers (transposed in the decoder) in the encoder and decoder, combining the activations of the different scales before the activation. (Similar to Inception networks~\cite{szegedyGoing2014}).
+\textcite{graisRaw2018} present the first work using an auto-encoder for multi-channel sound source separation. Their auto-encoder takes raw audio as the input is using multi-scale convolutional layers (transposed in the decoder) in the encoder and decoder, combining the activations of the different scales before the activation. (Similar to Inception networks~\cite{szegedyGoing2014}). While the network does generate multi-scaled features it only takes in a very shore context frame from the mixed signal. The many artifacts in the results might be explained by that.
+
+The SEGAN\cite{pascualSEGAN2017} proposes a Generative Adversarial network~\cite{goodfellowGenerative2014} for Speech Enhancement. The network works non-causal and directly on the waveform. The Generator is has a auto-encoder structure. The input, the noisy speech, gets reduced to a smaller representation by an convolutional encoder. At the bottleneck a noise sample is added and a convolutional decoder outputs the denoised frame. The Discriminator is optimized to distingiush noiseless from noised samples. Training is done with the standard mini-max objective.
+
+The TasNet~\cite{luoTasNet2018} proposes another distinct approach to source separation in the time-domain. The mixed signal is decomposed into a set of basis signals and weights. An LSTM predicts the weights for each source channel and basis signal in each frame. The original source signals can then be reconstructed by summing up the weighted basis signals for each source. The model is shown to work well for the task of voice separation but is specifically build with conceptual tradeoffs to increase computationally inexpensive.

@@ -16,7 +16,7 @@ We will be working on two datasets. First, a simplified Toy dataset which reduce
     \label{fig:toy_data}
 \end{marginfigure}
 
-We simplify the problem domain to create a toy-like dataset. We randomly generate waves from four simple oscillations: a sine wave, a sawtooth wave, a square wave and a triangle wave; see \cref{fig:toy_data}.  We select the period and phase of each signal in each sample independently and randomly, but fixed for the sample. The frequency is a uniformly picked form the frequency bounds of the 88 keys of an equal-temperament tuned piano. The period is also uniformly picked. Given a wave from each source, the mix is computed by simply taking the mean. In our experiments we are gonna model these sources with probability densities, looking especially at the square that will pose a problem, as those only consist of two unique values (\(-1\) and \(1\)). This distribution would simplify the problem too much, therefore we also vary the amplitude of the sampled signals in the uniform range \([0.8, 1.0]\). The signals are sampled with a sampling rate of \(14.700 \si{\Hz}\).
+We simplify the problem domain to create a toy-like dataset. We randomly generate waves from four simple oscillations: a sine wave, a sawtooth wave, a square wave and a triangle wave; see \cref{fig:toy_data}.  We select the period and phase of each signal in each sample independently and randomly, but fixed for the sample. The frequency is a uniformly picked form the frequency bounds of the 88 keys of an equal-temperament tuned piano (see~\sref{subsec:audio}). The period is also uniformly picked. Given a wave from each source, the mix is computed by simply taking the mean. In our experiments we are gonna model these sources with probability densities, looking especially at the square that will pose a problem, as those only consist of two unique values (\(-1\) and \(1\)). This distribution would simplify the problem too much, therefore we also vary the amplitude of the sampled signals in the uniform range \([0.8, 1.0]\). The signals are sampled with a sampling rate of \(14.700 \si{\Hz}\).
 
 \subsection{musdb18}
 Further we use the \texttt{musdb18}~\cite{rafiiMUSDB182017} dataset published for the 2018 Signal Separation Evaluation Campaign~\cite{stoter20182018}. The dataset consists of 150 full songs covering various artists and genres, split into train and test sets sized 100 and 50, respectively. Each track is separated into the four sources \emph{drums}, \emph{bass}, \emph{vocals} and \emph{others}. The \emph{others} source channel contains any remaining set of instruments not categorized under the first three ones. The song files are provided in the Stem audio file format~\cite{nativeinstrumentsStem} and encoded at 44.1kHz. Stem here is terming the provided source channels, we use the terms interchangeably.
@@ -93,7 +93,7 @@ When running the same experiment for the \texttt{musdb18} the discriminative pow
 
 Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Because of this, the results show the unintuitive result that the test samples from the \I{other} class are \I{less likely} under its own prior model compared to the out-of-distribution samples. While this makes it rather final that the at hand dataset is not completely suitable to out trainings regime, it is a data-dependent restriction that would not correspond to our hypothesized application.
 
-\subsection{Noise-conditioning}
+\section{Noise-conditioning}
 We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noised are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
 
 We find that fine-tuning converges quickly at ----.
@@ -126,7 +126,7 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
 
 With the noiseless model \cref{fig:noised_channels} (a) the distribution is discriminative against the samples from the other sources. With increasing noise-conditioning the discriminative power is lost going to (f). The noising of the input data results in the latent distribution to flatten out to the point of not being able to differ between any of the signal channels.
 
-\subsection{Random and constant inputs}
+\section{Random and constant inputs}
 Previous works for generative models~\cite{sonderbyAmortised2017}\cite{vandenoordParallel2017}\cite{nalisnickDeep2019} have pointed out that constant inputs tend to have high likelihood assigned. While there is no
 
 \begin{table}
