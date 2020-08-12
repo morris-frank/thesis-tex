@@ -1,141 +1,137 @@
 \usepackage{morris}
-% \input{morris.sty}
+% \input{morris.sty} Switch at the end of days
 
-% %Frontmatter
-% \renewcommand{\maketitlepage}[0]{%
-% \cleardoublepage%
-% {%
-% \begin{fullwidth}%
-%   \fontsize{18}{20}\selectfont\par\noindent\thanklessauthor%
-%   \vspace{11.5pc}%
-%   \fontsize{18}{40}\selectfont\par\noindent\thanklesstitle%
-%   \vfill%
-%   \fontsize{14}{16}\selectfont\par\noindent\allcaps{\thanklesspublisher}%
-% \end{fullwidth}%
-% }
-% \clearpage%
-% }
-
-% Typography
-\usepackage{bigints}
-
+% Some general extensions:
 \usepackage{ifxetex}
-\ifxetex%
-  \newcommand{\textls}[2][5]{%
-    \begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
-  }
-  \renewcommand{\allcapsspacing}[1]{\textls[15]{#1}}
-  \renewcommand{\smallcapsspacing}[1]{\textls[10]{#1}}
-  \renewcommand{\allcaps}[1]{\textls[15]{\MakeTextUppercase{#1}}}
-  \renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
-  \renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
-\fi
-
 \usepackage{xcolor}
+\usepackage{xstring}
+
+% Define my own colors:
 \input{colors.def}
 
-\hypersetup{
-    colorlinks,
-    linkcolor={intlinkcolor},
-    citecolor={intlinkcolor},
-    urlcolor={extlinkcolor}
-}
-\usepackage{tcolorbox}
-
-% Referencing
-\setcounter{tocdepth}{1} % Level in TOC
-\newcommand{\sref}[1]{\textit{\nameref{#1}}}
-
-\usepackage{hyphenat} % only with tufte
-\usepackage[
-    hyperref, backref,
-    sortcites,
-    date=year, sorting=nyt,
-    isbn=false, doi=false, url=false,
-    maxcitenames=2, mincitenames=1,
-    maxbibnames=10, minbibnames=10,
-    style=authoryear,
-    dashed=false
-  ]{biblatex}
-
-\newbibmacro*{cite:longtitle}{%
-  \printtext[bibhyperref]{%
-    \iffieldundef{shorttitle}%
-      {\printfield[title]{title}}%
-      {\printfield[title]{shorttitle}}%
-    }}%
-
-\newbibmacro*{longcite}{%
-  \printnames{labelname}%
-  \setunit*{\printdelim{nametitledelim}}%
-  \usebibmacro{cite:longtitle}%
-  \setunit{\printdelim{nametitledelim}}%
-  \printlabeldateextra}%
-
-\DeclareCiteCommand{\cite}[\mkbibfootnote]
-  {\usebibmacro{prenote}}%
-  {\usebibmacro{citeindex}%
-    \scriptsize\usebibmacro{longcite}}% notice the scriptsize which sizes the margin cite text
-  {\multicitedelim}%
-  {\usebibmacro{postnote}}%
-
-% This removes printing the year from textcite, this is ugly af but hell biblatex is difficult af
-\newbibmacro*{cite:labeldate+extradate}{%
-  \iffieldundef{labelyear}
-  {}
-  {}}
-
-\def\bibfont{\small}
-
-\addbibresource{References.bib}
-
-\usepackage[capitalise, noabbrev]{cleveref}
-
-% Even more ugly hacks
-\makeatletter
-\let\@textcite\textcite%
-\renewcommand*{\textcite}[1]{\@textcite{#1}\cite{#1}}
-\makeatother
-
-\usepackage{multicol}
-\usepackage{environ}
-
-% Graphics and Figures
-\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
-\graphicspath{{figures/}} % set of paths to search for images
-
-\usepackage{tikz}
-\usepackage{tikz-bayesnet}
-\usetikzlibrary{
-  3d,
-  arrows,
-  arrows.meta,
-  backgrounds,
-  bending,
-  calc,
-  chains,
-  decorations.pathmorphing,
-  decorations.pathreplacing,
-  graphs,
-  quotes,
-  positioning,
-  shapes.geometric,
-  shapes.misc,
-  matrix,
-}
-\tikzset{>=latex}
-
-\usepackage{pgfplots}
-% \DeclareUnicodeCharacter{2212}{−}
-\usepgfplotslibrary{groupplots,dateplot}
-\usetikzlibrary{patterns,shapes.arrows}
-\pgfplotsset{compat=newest}
-
-\usepackage{todonotes}
-\newcommand\itodo[1]{\todo[inline]{#1}}
-
+% And some macros:
 \input{macros.def}
 
-\usepackage{xstring}
-\usepackage{subcaption}
+% And various stuff not elsewhere:
 \usepackage{appendix}
+
+% Typography
+% ----------------------------------------------------------------------------------------------------------------------------------------
+    % Redefine some macros used in tufte if used with XeLaTeX
+    \ifxetex%
+        \newcommand{\textls}[2][5]{%
+            \begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
+        }
+        \renewcommand{\allcapsspacing}[1]{\textls[15]{#1}}
+        \renewcommand{\smallcapsspacing}[1]{\textls[10]{#1}}
+        \renewcommand{\allcaps}[1]{\textls[15]{\MakeTextUppercase{#1}}}
+        \renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
+        \renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
+    \fi
+
+
+    \hypersetup{
+        colorlinks,
+        linkcolor={intlinkcolor},
+        citecolor={intlinkcolor},
+        urlcolor={extlinkcolor}
+    }
+
+    \usepackage{tcolorbox}
+    % \usepackage{hyphenat} % only with tufte
+
+    % Only DEV of course:
+    \usepackage{todonotes}
+    \newcommand\itodo[1]{\todo[inline]{#1}}
+
+    \usepackage[size=footnotesize]{subcaption}
+    \usepackage[font=footnotesize]{caption}
+% ----------------------------------------------------------------------------------------------------------------------------------------
+
+% Citing referencing
+% ----------------------------------------------------------------------------------------------------------------------------------------
+    \usepackage[
+        hyperref, backref, sortcites,
+        date=year, sorting=nyt,
+        isbn=false, doi=false, url=false,
+        maxcitenames=2, mincitenames=1,
+        maxbibnames=10, minbibnames=10,
+        style=authoryear,
+        dashed=false
+    ]{biblatex}%
+
+    \newbibmacro*{longcite}{% Definition of how a citations looks like
+        \printnames{labelname}%
+        \setunit*{\printdelim{nametitledelim}}%
+        \printtext[bibhyperref]{%
+            \iffieldundef{shorttitle}% Use shortitle is exists else use long
+            {\printfield[title]{title}}%
+            {\printfield[title]{shorttitle}}%
+        }
+    \setunit{\printdelim{nametitledelim}}%
+    \printlabeldateextra}%
+
+    \DeclareCiteCommand{\cite}[\mkbibfootnote]
+        {\usebibmacro{prenote}}%
+        {\usebibmacro{citeindex}%
+          \scriptsize\usebibmacro{longcite}}% notice the scriptsize which sizes the margin cite text
+        {\multicitedelim}%
+        {\usebibmacro{postnote}}%
+
+    % This removes printing the year from textcite, this is ugly af but hell biblatex is difficult af
+    \newbibmacro*{cite:labeldate+extradate}{%
+        \iffieldundef{labelyear}
+        {}{}
+    }
+
+    \def\bibfont{\small} % Set the font in the bibliography smaller
+
+    \addbibresource{References.bib}
+
+    \setcounter{tocdepth}{1} % Make the tOC one level deeper
+    \newcommand{\sref}[1]{\textit{\nameref{#1}}} % Used to reference chapters'n'shit
+
+    % Textcite becomes author names with full cite in the margin
+    \makeatletter
+        \let\@textcite\textcite%
+        \renewcommand*{\textcite}[1]{\@textcite{#1}\cite{#1}}
+    \makeatother
+
+    \usepackage[capitalise, noabbrev]{cleveref}
+% ----------------------------------------------------------------------------------------------------------------------------------------
+
+% Graphics
+% ----------------------------------------------------------------------------------------------------------------------------------------
+    % \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+    \graphicspath{{figures/}} % set of paths to search for images
+
+    \usepackage{tikz}
+    \usepackage{tikz-bayesnet}
+    \usetikzlibrary{
+        3d,
+        arrows,
+        arrows.meta,
+        backgrounds,
+        bending,
+        calc,
+        chains,
+        decorations.pathmorphing,
+        decorations.pathreplacing,
+        graphs,
+        matrix,
+        patterns,
+        positioning,
+        quotes,
+        shapes.arrows,
+        shapes.geometric,
+        shapes.misc,
+    }
+    \tikzset{>=latex}
+
+    \usepackage{pgfplots}
+    \usepgfplotslibrary{
+        groupplots,
+        dateplot,
+    }
+    \pgfplotsset{compat=newest}
+% ----------------------------------------------------------------------------------------------------------------------------------------
