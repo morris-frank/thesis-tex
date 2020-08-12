@@ -1,19 +1,20 @@
 \begin{tikzpicture}
-    \matrix[column sep=1.25mm, row sep=2mm]
+    \tikzstyle{operation}=[draw,minimum width=12mm,fill=orange!20]
+    \matrix[column sep=2.5mm, row sep=2mm]
     {
-        & & \node[draw] (g)  {g}; &
-        \node[draw] (gs) {\(\σ\)}; & & & & &\\
+        & & \node[operation] (g)  {\(g^*\)}; &
+        \node[operation, fill=blue!20] (gs) {\(\σ\)}; & & & & &\\
 
         \node (featold) {}; &
-        \node (dilate) {dilate}; & & &
+        \node (dilate) {residual}; & & &
         \node (times)  {\(\odot\)}; & &
-        \node[draw] (chfeat) {\(1\× 1\)}; &
+        \node[operation] (chfeat) {\(1\× 1\)}; &
         \node (plfeat) {+}; &
         \node (featnew) {};\\
 
-        & & \node[draw] (f) {f}; &
-        \node[draw] (ft)  {\(\tanh\)}; & &
-        \node[draw] (chskip) {\(1\× 1\)}; & & &\\
+        & & \node[operation] (f) {\(f^*\)}; &
+        \node[operation, fill=blue!20] (ft)  {\(\tanh\)}; & &
+        \node[operation] (chskip) {\(1\× 1\)}; & & &\\
 
         \node (skipold) {}; & \node (skip) {skip}; & & & &
         \node (plskip) {+}; & & &
@@ -32,7 +33,7 @@
         \path (times) -| (chskip);
         \path (chskip) -- (plskip);
 
-        \path (dilate) |- (1,1.4) -| (plfeat);
+        \path (dilate) |- (1,1.7) -| (plfeat);
 
         \path (skipold) -- (skip) -- (plskip) -- (skipnew);
     \end{scope}

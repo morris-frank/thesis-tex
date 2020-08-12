@@ -281,7 +281,7 @@ Deep learning models as used for image applications are unsuitable for raw audio
 
 \begin{figure}
     \input{figures/wavenet.tex}
-    \caption{An example of how dilated convolutions are used in the WaveNet. We see three hidden layers with each a kernel size of two. By using the dilations the prediction of the new output element has a receptive field of 18. This convolution is \I{causal} as the prediction depends only on previous input values. Causality is enforced through asymmetric padding.}
+    \caption[][-2em]{An example of how dilated convolutions are used in the WaveNet. We see three hidden layers with each a kernel size of two. By using the dilations the prediction of the new output element has a receptive field of 18. This convolution is \I{causal} as the prediction depends only on previous input values. Causality is enforced through asymmetric padding.}%
     \label{fig:wavenet}
 \end{figure}
 
@@ -290,7 +290,7 @@ Using a stack of dilated convolutions increases the receptive field of the deep 
 \begin{figure}
     \centering
     \input{figures/wavenet_layer.tex}%
-    \caption{Hidden layer as in the WaveNet. Information flows from left, gets dilated and through the gate and filter. The result gets added to the skip flow and the hidden feature, each with a channel mixer before.}%
+    \caption[][-2em]{A hidden layer as in the WaveNet. We have the four convolutions, with the filter \(f^*\) and gate \(g^*\) being dialted and the two channel mixing filters. Information flows along the skip connection that gets added up and the residual which receives the original input.}%
     \label{fig:wavenet_layer}%
 \end{figure}
 The output of the WaveNet is the sum of outflowing skip connections added after each (gated) hidden convolution. This helps fusing information from multiple time-scales (\I{low-level} to \I{high-level}) and makes training easier~\cite{szegedyGoing2014}. The original authors tested the model on multiple audio generation tasks. They used a \μ-law encoding~\cite{Pulse1972} which discretizes the range \([-1, 1]\) to allow a set of \μ targets and a multi-class cross-entropy training objective. While being quite unnatural this is done to avoid making any assumptions about the target distribution. Sound generation with a WaveNet is slow as the autoregressiveness requires the generation value by value. The original WaveNet setting is generating waveforms, by giving the previously generated values as the input and conditioning the process on target classes, \(p(x_t|x_{1:t},c_t)\). Therefore the generation has to happen value-by-value (autoregressive). This can be alleviated by keeping intermediate hidden activations cached~\cite{paineFast2016}. The WaveNet can be conditioned by adding the weighted conditionals in the gate and feature activations of the gated convolutions~\cite{vandenoordConditional2016}.
