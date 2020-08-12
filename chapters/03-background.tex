@@ -3,7 +3,7 @@
 
 \newthought{In this chapter}, we introduce the minimally necessary background concepts our work is building upon. Our work marries two fields of research: on the one side generative, graphical models. With those one tries to model the data distribution of an observed variable by inducing dependencies of latent (unobserved) variables generating the observed variables. Modeling those dependencies, the meaningful latent variables allow us to build an intuitive generative story for the probabilistic model of the observed data. On the other hand, we introduce the recent body of work on how to practically model sound signals, in particular how this compares differently to modeling images.
 
-First, we introduce the concept of deep latent-variable models, which important classes of models exist and how to train them. Second we will shortly draw up the difficulties of modeling sound and which recent solutions exist and how they differ.
+First, we introduce the concept of deep latent-variable models, which important classes of models exist and how to train them. Second, we will shortly draw up the difficulties of modeling sound and which recent solutions exist and how they differ.
 
 \section{Deep Latent-Variable Models}%
 \label{sec:dlvm}
@@ -139,7 +139,7 @@ For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as 
 
 \subsection{The VAE framework}
 
-The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeStochastic2014} presents a generative model using the above-introduced modeling of the joint distribution between an observed and latent variable to model to the latent variable. The model is split into two parts the encoder network and the decoder network. The encoder network parametrizes the approximate posterior \(\aprxpost\) by computing the parameters \(\B{\η}\) of the latent distribution. The decoder maps samples \(\z\sim q_{\B{\θ}}\) from back into the data space. The optimization of the parameters of the two networks \(\{\B{\φ}, \B{\θ}\}\) is done by maximizing the ELBO (\cref{eq:elbo_factorized}).
+The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeStochastic2014} presents a generative model using the above-introduced modeling of the joint distribution between an observed and latent variable to model to the latent variable. The model is split into two parts the encoder network and the decoder network. The encoder network parametrizes the approximate posterior \(\aprxpost\) by computing the parameters \(\B{\η}\) of the latent distribution. The decoder maps samples \(\z\sim q_{\B{\θ}}\) back into the data space. The optimization of the parameters of the two networks \(\{\B{\φ}, \B{\θ}\}\) is done by maximizing the ELBO (\cref{eq:elbo_factorized}).
 
 End-to-end learning is made possible with the reparameterization trick and the algorithm looks like:
 
@@ -236,7 +236,7 @@ Thus SGLD gives a computationally cheap method to do stochastic weight updates w
 
 \section{Modeling audio}%
 \label{sec:audio}
-Lastly we introduce the difficulties and approaches to modeling audio or sound signals.
+Lastly, we introduce the difficulties and approaches to modeling audio or sound signals.
 
 In the physical world, a sound signal is a density change of the carrier air over time. As such it is a one-dimensional temporal signal\footnote{Sound waves in gases are purely compressive, therefore they cannot be polarized which would introduce a higher complexity. In solids a sound signal can have polarization, think of an earthquake with shear and pressure components.}. Humans sound perception is \I{stereo} as we have two ears and sense the changes in pressure at two different points in space simultaneously.
 
@@ -301,4 +301,4 @@ One of the first latent generative models to employ a WaveNet is NSynth~\cite{ka
 
 Multiple works have combined the WaveNet architecture with the \sref{subsec:flows}. In WaveGlow~\cite{prengerWaveGlow2018} the authors parametrize the affine coupling layers of a Glow model with WaveNets and keeping the rest of the architecture similar to the original Glow with the \(1\× 1\)-convolutions. The authors apply this model to the task of speech synthesis where Mel-spectrograms are generated from the true audio. Then all WaveNets in the coupling layers are conditioned on the spectrogram. The model therefore learns the waveform generation task given spectral features (a vocoder). WaveGlow is outperforming similar approaches and the needlessness of autoregressiveness gives the model fast performance.
 
-The FloWaveNet~\textcite{kimFloWaveNet2019} is a similar model building a flow from WaveNets. As in WaveGlow the affine coupling layers are parametrized by WaveNets. The model is more similar to the RealNVP in that the flexiblity of the flows is achieved by flipping the channels of the data after a flow operation instead of learning a channel mixing convolution. Each coupling flow layer is preceded by an Activation Normalizing operation as in Glow.
+The FloWaveNet~\textcite{kimFloWaveNet2019} is a similar model building a flow from WaveNets. As in WaveGlow, the affine coupling layers are parametrized by WaveNets. The model is more similar to the RealNVP in that the flexibility of the flows is achieved by flipping the channels of the data after a flow operation instead of learning a channel mixing convolution. Each coupling flow layer is preceded by an Activation Normalizing operation as in Glow.
