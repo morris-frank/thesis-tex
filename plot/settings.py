@@ -3,7 +3,7 @@ import seaborn as sns
 
 from .utils import hex2rgb
 
-FIGDIR = "./figures"
+FIGDIR = "./graphics"
 
 # geometry lengths from LaTeX
 MARGIN_LENGTH = 2  # Maximum width for a figure in the margin, in inches

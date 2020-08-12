@@ -12,7 +12,7 @@ from scipy.signal import square, sawtooth
 from scipy.stats import multivariate_normal
 
 from .utils import get_func_arguments
-from .settings import MARGIN_LENGTH, BODY_LENGTH, CMAP_DIV
+from .settings import MARGIN_LENGTH, BODY_LENGTH, CMAP_DIV, FIGDIR
 
 
 def plot_signals(
@@ -162,7 +162,7 @@ def add_plot_tick(
         y = square(x)
         _ax.plot(x, y, linewidth=linewidth, c="k")
     elif symbol in ["drums", "bass", "voice", "other"]:
-        icon = plt.imread(f"./figures/musdb/{symbol}.png")
+        icon = plt.imread(f"{FIGDIR}/musdb/{symbol}.png")
         _ax.imshow(np.repeat(icon[..., None], 3, 2))
     else:
         raise ValueError("unknown symbol")
@@ -202,9 +202,9 @@ def make_a_rand_dist(ax, N=None, cmap=None):
 
 def savefig(name, dont_close=False):
     # plt.gca().patch.set_alpha(0.)
-    os.makedirs(os.path.dirname(f"./figures/{name}.pdf"), exist_ok=True)
+    os.makedirs(os.path.dirname(f"{FIGDIR}/{name}.pdf"), exist_ok=True)
     plt.savefig(
-        f"./figures/{name}.pdf",
+        f"{FIGDIR}/{name}.pdf",
         transparent=True,
         bbox_inches=0,
         facecolor="none",

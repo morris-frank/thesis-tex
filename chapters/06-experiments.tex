@@ -73,7 +73,7 @@ Training of the normalizing flow model combines two objectives: First, we maximi
 We show an example of sampling from the toy data priors in \cref{fig:toy_time_sample}. It should be unsurprising that the drawn samples are not returning a consistent curve. All the latents are from i.i.d.\ distributions that contribute to the generation of the data output in the bounds of its receptive field. The overlapping receptive fields generate locally consistent curves. This is not a hindrance as our method does not rely on sampling from the priors unconstrained.
 
 \begin{figure}
-    \includegraphics{toy_noiseless/_samples.pdf}%
+    \includegraphics{toy_noiseless/3_samples.pdf}%
     \label{fig:toy_time_sample}%
     \caption{Samples from the prior trained on the toy data.}
 \end{figure}
@@ -130,7 +130,7 @@ With the noiseless model \cref{fig:noised_channels} (a) the distribution is disc
 Previous works for generative models~\cite{sonderbyAmortised2017}\cite{vandenoordParallel2017}\cite{nalisnickDeep2019} have pointed out that constant inputs tend to have high likelihood assigned. While there is no
 
 \begin{table}
-    \input{figures/toy_const}%
+    \input{graphics/toy_const}%
     \caption{Const inputs}%
     \label{tab:toy_const}%
 \end{table}
