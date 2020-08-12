@@ -55,7 +55,7 @@ For more complicated models the data likelihood \(p_{\B{\θ}}(\x)\) as well as t
 
 To formalize the search for an intractable posterior into a tractable optimization problem we can follow the \I{variational principle}~\cite{jordanIntroduction1999} which introduces an approximate posterior distribution \(q_{\B{\φ}}(\z|\x)\), also called the \I{inference model}. Again the choice of the model here carries inductive biases, as such that even in asymptotic expectation we can not obtain the true posterior.
 
-Following the derivation in~\textcite[p.~20]{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
+Following the derivation in~\textcite{kingmaIntroduction2019} we introduce the inference model into the data likelihood~\footnote{The first step is valid as \(q_{\B{\θ}}\) is a valid density function and thus integrates to one.}:
 
 \begin{align}
     \log p_{\B{\θ}}(\x)
@@ -257,6 +257,12 @@ Commonly used alternative representations of signals in sound processing are spe
     \hat{f}(\ν) = \∫_{-\infty}^{\infty} f(x) e^{-2\π i x \ν}dx
 \end{equation}
 
+\begin{marginfigure}
+    \includegraphics[width=2in]{phase_spec.png}%
+    \label{fig:phase_spec}%
+    \caption{The STFT magnitude and the corresponding phases for each sinusoidal.}
+\end{marginfigure}
+
 Where \(f(x)\) is the original time-domain signal and \(\ν\) is a frequency of interest.
 
 The idea for signal/music processing is that with a transformation into frequency space we can handcraft a response feature similar to how the hairs in the cochleae of the human inner ear react to different frequencies of the pressure wave. A Fourier transform gives the frequency content of the whole signal but we are interested in the change of frequencies present in a given signal over time. For this, the most common transformation is the Discrete Short-time Fourier transform (STFT)~\cite{grochenigFoundations2001}. For the STFT the Fourier transformation is applied to overlapping windows sliding over the signal. As our signal is a discrete sample of the true signal, a discrete implementation is needed.
@@ -266,12 +272,6 @@ An unmodified Fourier transform is linear in frequency. Humans do not perceive c
 \begin{equation}
     \hat{\ν} = 2595 \· \log_{10}\left( 1 + \÷{\ν}{700} \right)
 \end{equation}
-
-\begin{marginfigure}
-    \includegraphics[width=2in]{phase_spec.png}%
-    \label{fig:phase_spec}%
-    \caption{The STFT magnitude and the corresponding phases for each sinusoidal.}
-\end{marginfigure}
 
 When using a spectrogram for signal processing we have to choose the form of the spectrogram being used. First, most commonly one would use the magnitude of the complex spectrogram to access the actual frequency contents. By that, we are disregarding the phase of these harmonics though. Trying to model the phase separately to the frequency is futile, see~\cref{fig:phase_spec}. Alternatively one can use an approximate vocoder to reverse the destructive reduction of the complex spectrogram (e.g.~\cite{chandnaVocoder2019a}) or directly model the complex spectrogram which has been used for some tasks with success~\cite{tanComplex2019,liuSupervised2019,lerouxPhasebook2019}. Many recent deep learning approaches to sound processing model a time-frequency map which is used to filter the original spectrogram~\cite{chandnaMonoaural2017,andreasjanssonSinging2017}. As such the phase from the input signal is used in the resulting output signal. While often these approximate approaches are successful in practice the usage of magnitude spectrograms introduces undefined limits into, which might inhibit performance~\cite{lluisEndtoend2019}.
 
