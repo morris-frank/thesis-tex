@@ -3,12 +3,12 @@
 
 \newthought{In this chapter}, we introduce the theoretical idea of our probability modelling of musical source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
 
-We propose the graphical model as shown in \cref{fig:graphical_model} as the generative story of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
+We propose the graphical model as shown in \cref{fig:graphical_model_separation} as the generative story of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
 
 \begin{marginfigure}[-15em]
-    \input{figures/graphical_model}%
+    \input{figures/graphical_model_separation}%
     \caption{The used graphical model for the source separation task. We have the latent source channel variables \(\s_k\). Exemplary here, as in our data, we have four sources. The mix \(\m\) is observed.}%
-    \label{fig:graphical_model}
+    \label{fig:graphical_model_separation}
 \end{marginfigure}
 
 Our stated task in \sref{ch:question} is to retreive the sources \(\{\s_1,\…,\s_N\}\) from a given mix \(\m\). Our model is trained without using sample tuples \[(\m, \{\s_1,\…,\s_N\}): f(\{\s_1,\…,\s_N\}) = \m\] which would show the relation between separate sources and mixes. The general idea is visualized in \cref{fig:method}.
@@ -20,7 +20,7 @@ Our stated task in \sref{ch:question} is to retreive the sources \(\{\s_1,\…,\
     \setfloatalignment{b}%
 \end{figure}
 
-Looking back at the graphical model in \cref{fig:graphical_model}, it implies the following factorization:
+Looking back at the graphical model in \cref{fig:graphical_model_separation}, it implies the following factorization:
 
 \begin{align}
     p(\m)

@@ -1,14 +1,8 @@
 \begin{tikzpicture}
-    \node[obs]                (m) {\(\B{m}\)};
-    \node[latent, above=of m]  (s1) {\(\B{s}_1\)};
-    \node[latent, above left=of m]  (s2) {\(\B{s}_2\)};
-    \node[latent, below left=of m]  (s3) {\(\B{s}_3\)};
-    \node[latent, below=of m]  (s4) {\(\B{s}_4\)};
+    \node[obs]                (x) {\(\x\)};
+    \node[latent, left=of x]  (z) {\(\z\)};
 
-    \edge {s1} {m} ; %
-    \edge {s2} {m} ; %
-    \edge {s3} {m} ; %
-    \edge {s4} {m} ; %
+    \edge {z} {x} ; %
 
-    \plate {ms} {(m)(s1)(s2)(s3)(s4)} {\(N\)} ;
+    \plate {xz} {(x)(z)} {\(N\)} ;
 \end{tikzpicture}

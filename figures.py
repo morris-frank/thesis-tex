@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from functools import partial
 from itertools import chain
 from math import tau as τ
@@ -18,7 +19,7 @@ from tqdm import tqdm
 from plot.plot import savefig, plot_heatmap, plot_signals, make_a_rand_dist
 from plot.settings import TOY_SIGNALS, MUSDB_SIGNALS, MARGIN_LENGTH, \
     BODY_LENGTH, CMAP_CAT, CMAP_DIV, COLORS, FIGDIR
-from plot.utils import hex2rgb, cprint, log_func, get_wandb
+from plot.utils import hex2rgb, cprint, log_func, get_wandb, npzload
 
 
 def print_color_latex():
@@ -51,6 +52,7 @@ def plot_cross_entropy(name, signals):
     plot_heatmap(data, name, signals)
 
 
+@log_func()
 def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
     name += "channels"
     log_p[log_p == -np.inf] = -1e3
@@ -60,9 +62,10 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
 
     if how == "heatmap":
         log_p = log_p.mean(-1)
-        plot_heatmap(log_p, name, signals)
+        minimum = -10  if  'musdb' in name else 'auto'
+        plot_heatmap(log_p, name, signals, minimum=minimum)
     elif how == "histogram":
-        fig, axs = plt.subplots(N, figsize=(BODY_LENGTH, MARGIN_LENGTH), dpi=80)
+        fig, axs = plt.subplots(N, figsize=(BODY_LENGTH, MARGIN_LENGTH))
         for k in range(N):
             p = [np.squeeze(_log_p) for _log_p in log_p[k]]
             for j, (_p, lab) in enumerate(zip(p, signals)):
@@ -186,6 +189,7 @@ def plot_toy_noise_condtioned_training_curves():
     ipdb.set_trace()
 
 
+@log_func()
 def plot_toy_samples(data, name):
     for i, sample in enumerate(data):
         sample = sample[:, None, 500:1000]
@@ -194,15 +198,6 @@ def plot_toy_samples(data, name):
             sample[j, ...] -= sample[j, ...].mean()
         plot_signals(sample, legend=False, height=0.4 * MARGIN_LENGTH, x_labels=False)
         savefig(name + f'{i}_samples')
-
-
-@log_func()
-def plot_prior(name, filename, signals):
-    # dict_keys(['noised', 'channels', 'noise_levels', 'noise_logp', 'const_levels', 'const_logp', 'samples'])
-    data = dict(np.load(f"./data/{filename}.npz"))
-    name += "/"
-    plot_toy_samples(data['samples'], name)
-    plot_cross_likelihood(data["channels"], name, signals)
 
 
 def plot_noised_noised(data):
@@ -263,22 +258,30 @@ def plot_const(data):
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
-    fn_noiseless = 'Jul31-1847_Flowavenet_toy_time_rand_ampl'
-    fn_noised = "Aug07-1757_Flowavenet_toy_time_noise_0-{}_rand_ampl"
-    conds = ['01', '027', '077', '129', '359']
+    noise_levels = ['01', '027', '077',  '129', '359']
 
-    toy_prior_data = {'0.' + n: fn_noised.format(n) for n in conds}
-    toy_prior_data['0.0'] = fn_noiseless
-    for k, v in toy_prior_data.items():
-        toy_prior_data[k] = dict(np.load(f"./data/{v}.npz"))
+    musdb_prior = npzload('Aug10-')
+    plot_cross_likelihood(musdb_prior['channels'], 'musdb_noiseless/', MUSDB_SIGNALS)
+
+    # for level in conds:
+    #     plot_prior(f"toy_discr_noise_{level}", os.path.basename(get_newest_file(f"./data/Aug11-*{level}*"))[:-4], TOY_SIGNALS)
+
+
+    toy_prior_data = {'0.0': npzload('Jul31-1847')}
+    for level in noise_levels:
+        toy_prior_data[f'0.{level}'] = npzload(f'Aug07-1757*{level}')
     toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
 
+    for level in ['0'] + noise_levels:
+        name = f"toy_noise_{level}/"
+        _data = toy_prior_data.T['0.'+level]
+        plot_toy_samples(_data.samples, name)
+        plot_cross_likelihood(_data.channels, name, TOY_SIGNALS)
+
+    exit()
     plot_const(toy_prior_data)
     plot_noise(toy_prior_data)
     plot_noised_noised(toy_prior_data)
-    plot_prior("toy_noiseless", fn_noiseless, TOY_SIGNALS)
-    for level in conds:
-        plot_prior(f"toy_noise_{level}", fn_noised.format(level), TOY_SIGNALS)
     plot_waveforms(MUSDB_SIGNALS + ["mix"])
     plot_prior_dists(MUSDB_SIGNALS)
 

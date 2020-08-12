@@ -5,7 +5,7 @@ from random import randint, random
 
 import numpy as np
 import seaborn as sns
-from matplotlib import colors
+from matplotlib import colors, ticker
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from scipy.signal import square, sawtooth
@@ -69,14 +69,22 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
         figsize=(MARGIN_LENGTH, 1.15 * MARGIN_LENGTH),
     )
 
-    norm = colors.SymLogNorm(linthresh=0.001, base=10)
-    if minimum == "auto":
-        _min = data.min().min()
-        data_min = np.sign(_min) * 10 ** min(10, floor(log10(np.abs(_min))))
+    if data.max().max() - data.min().min() > 20:
+        norm = colors.SymLogNorm(linthresh=0.001, base=10)
+        locator = ticker.SymmetricalLogLocator(linthresh=0.0011, base=10)
+        locator.set_params(numticks=5)
     else:
-        data_min = minimum
-    data_max = 10 ** max(1, ceil(log10(data.max().max())))
-    _ticks = [data_min, 0, data_max]
+        norm = colors.Normalize()
+        locator = ticker.LinearLocator(numticks=5)
+
+    # if minimum == "auto":
+    #     _min = data.min().min()
+    #     data_min = np.sign(_min) * 10 ** min(10, floor(log10(np.abs(_min))))
+    # else:
+    #     data_min = minimum
+    # data_max = 10 ** max(1, ceil(log10(data.max().max())))
+    # _ticks = [data_min, 0, data_max]
+    # norm.autoscale(_ticks)
 
     sns.heatmap(
         data,
@@ -85,10 +93,12 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
         linewidths=1,
         cbar=True,
         cbar_ax=cbar_ax,
-        cbar_kws={"orientation": "horizontal", "ticks": _ticks},
+        cbar_kws={"orientation": "horizontal", "ticks": locator},
         square=True,
         norm=norm,
         cmap=CMAP_DIV,
+    # vmin=0,
+    # vmax=10,
     )
 
     if xlabel is not None:

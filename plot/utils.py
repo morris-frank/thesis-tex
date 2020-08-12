@@ -11,6 +11,23 @@ import pandas as pd
 import wandb
 from colorama import Fore
 from scipy.signal import square, sawtooth
+import os
+from glob import glob
+
+
+def get_newest_file(match: str = "*"):
+    try:
+        chosen = sorted(glob(match), key=lambda x: os.path.getmtime(x))[-1]
+    except IndexError:
+        print(
+            f"{Fore.RED}Could not load \n\t{Fore.YELLOW}{match}\n{Fore.GREEN}Give me something better{Fore.RESET}."
+        )
+        exit(1)
+    return chosen
+
+
+def npzload(match):
+    return dict(np.load(get_newest_file(f"./data/{match}*npz")))
 
 
 def cprint(string, color=Fore.YELLOW, end="\n"):

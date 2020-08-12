@@ -42,12 +42,12 @@ Typically we introduce a factorization of the joint. The most common one and als
 \end{equation}
 
 \begin{marginfigure}%
-    \input{figures/factorization_pgm}
+    \input{figures/graphical_model}
     \caption{The graphical model with a introduced latent variable \(\z\). Observed variables are shaded.}
-    \label{fig:factorization_pgm}
+    \label{fig:graphical_model}
 \end{marginfigure}
 
-This corresponds to the graphical model in which \(\z\) is generative parent node of the observed \(\x\), see~\cref{fig:factorization_pgm}. The density \(p(\z)\) is called the \I{prior distribution}.
+This corresponds to the graphical model in which \(\z\) is generative parent node of the observed \(\x\), see~\cref{fig:graphical_model}. The density \(p(\z)\) is called the \I{prior distribution}.
 
 If the latent is small, discrete, it might be possible to directly marginalize over it. If for example, \(\z\) is a discrete random variable and the conditional \(p_{\B{\θ}}(\x|\z)\) is a Gaussian distribution than the data model density \(p_{\B{\θ}}(\x)\) becomes a mixture-of-Gaussians, which we can directly estimate by maximum likelihood estimation of the data likelihood.
 

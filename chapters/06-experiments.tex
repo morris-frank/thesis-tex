@@ -57,7 +57,7 @@ We construct two distinct prior models for the two datasets. All models follow t
 \end{table}
 
 \section{Training the priors}
-Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. We take random fixed-length samples from the songs/signals in each mini-batch. Each sample is \(16384\) long with is around \(1.1 \si{\sec}\). As all models are fully convolutional the input size is in no way regimented by the architecture, only in so far that we are avoiding padding in the lower layers. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(γ=0.6\) and a fixed five-step decrease schedule. The toy model is trained with a batch size of 5 and the \texttt{musdb18} model with a batch size of 2. We train the two prior models first without any added noise for each 150.000. The training curves are shown in \cref{fig:toy_training}. As also observed by prior work, the training of deep normalizing flow models behaves unstable.
+Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. We take random fixed-length samples from the songs/signals in each mini-batch. Each sample is \(16384\) long with is around \(1.1 \si{\sec}\). As all models are fully convolutional the input size is in no way regimented by the architecture, only in so far that we are avoiding padding in the lower layers. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(\γ=0.6\) and a fixed five-step decrease schedule. The toy model is trained with a batch size of 5 and the \texttt{musdb18} model with a batch size of 2. We train the two prior models first without any added noise for each 150.000. The training curves are shown in \cref{fig:toy_training}. As also observed by prior work, the training of deep normalizing flow models behaves unstable.
 
 % \begin{figure}
 %     \includegraphics{toy_training_curves.pdf}
@@ -73,7 +73,7 @@ Training of the normalizing flow model combines two objectives: First, we maximi
 We show an example of sampling from the toy data priors in \cref{fig:toy_time_sample}. It should be unsurprising that the drawn samples are not returning a consistent curve. All the latents are from i.i.d.\ distributions that contribute to the generation of the data output in the bounds of its receptive field. The overlapping receptive fields generate locally consistent curves. This is not a hindrance as our method does not rely on sampling from the priors unconstrained.
 
 \begin{figure}
-    \includegraphics{toy_noiseless/3_samples.pdf}%
+    \includegraphics{toy_noise_0/1_samples.pdf}%
     \label{fig:toy_time_sample}%
     \caption{Samples from the prior trained on the toy data.}
 \end{figure}
@@ -81,11 +81,12 @@ We show an example of sampling from the toy data priors in \cref{fig:toy_time_sa
 \subsection{Testing cross-likelihood}
 In the full model, each prior is used to extract its source channel separately. Through their training, they explicitly contract the density for the positive, in-class examples. During separation, the priors therefore, encounter negative, out-of-distribution samples for the first time. To be useful for separation, the priors have to give a low likelihood to samples from the other classes of the dataset.
 
-% \begin{marginfigure}
-%     \includegraphics{heatmap_toy}%
-%     \caption{We display the mean average log likelihood of the test data under the different priors and the different signal sources.}%
-%     \label{fig:heatmap_toy}
-% \end{marginfigure}
+\begin{figure}
+    \centering
+    \input{figures/cross_likelihood}%
+    \caption{noiseless channels}%
+    \label{fig:noiseless_channels}%
+\end{figure}
 
 We test for this by calculating the mean log-likelihood of the test data set under each prior, for each source channel separately. What we anticipate is that the samples from the priors training source are of high likelihood while all other sources are of low likelihood. In \cref{fig:heatmap_toy} we show the source dependent likelihoods for the Toy Data. The in-distribution samples are all of high likelihood while all out-of distribution samples are highly un-likely. The Flow model therefore, was able to detect out-of-distribution samples while only being trained on in-distribution samples~\footnote{Something psychological research has shown, humans being able to do.}. The estimated densities are discriminative.
 
@@ -103,8 +104,7 @@ Conditioning the prior distributions on noised samples is supposed to reduce loc
 \begin{figure*}
     \centering
     \input{figures/noised_noised}%
-    \vspace{\baselineskip}%
-    \caption{
+    \caption[][\baselineskip]{
         The log likelihood of the test data set with different levels of noise \(\N(0, \σ)\) for the prior models fine-tuned on pertubated data with increasing levels of Gaussian noise. For the numerical data see~\cref{fig:noised_noised_data_sin,fig:noised_noised_data_square,fig:noised_noised_data_saw,fig:noised_noised_data_triangle}.
     }%
     \label{fig:noised_noised}%
@@ -117,8 +117,7 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
 \begin{figure*}
     \centering
     \input{figures/noised_channels}%
-    \vspace{\baselineskip}%
-    \caption{
+    \caption[][\baselineskip]{
         The cross-likelihood of the toy source channels under each prior model after conditioning the distribution on different levels of noise.
     }%
     \label{fig:noised_channels}%

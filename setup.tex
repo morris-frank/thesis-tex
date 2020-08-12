@@ -17,6 +17,12 @@
 
 % Typography
 % ----------------------------------------------------------------------------------------------------------------------------------------
+    \usepackage{fontspec}
+    \setmainfont{texgyrepagella-regular.otf}[
+        BoldFont=texgyrepagella-bold.otf,
+        ItalicFont=texgyrepagella-italic.otf,
+        BoldItalicFont=texgyrepagella-bolditalic.otf]
+
     % Redefine some macros used in tufte if used with XeLaTeX
     \ifxetex%
         \newcommand{\textls}[2][5]{%
