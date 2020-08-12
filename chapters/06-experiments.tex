@@ -57,13 +57,19 @@ We construct two distinct prior models for the two datasets. All models follow t
 \end{table}
 
 \section{Training the priors}
-Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. We take random fixed-length samples from the songs/signals in each mini-batch. Each sample is \(16384\) long with is around \(1.1 \si{\sec}\). As all models are fully convolutional the input size is in no way regimented by the architecture, only in so far that we are avoiding padding in the lower layers. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(\γ=0.6\) and a fixed five-step decrease schedule. The toy model is trained with a batch size of 5 and the \texttt{musdb18} model with a batch size of 2. We train the two prior models first without any added noise for each 150.000. The training curves are shown in \cref{fig:toy_training}. As also observed by prior work, the training of deep normalizing flow models behaves unstable.
+Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. We take random fixed-length samples from the songs/signals in each mini-batch. Each sample is \(16384\) long with is around \(1.1 \si{\sec}\). As all models are fully convolutional the input size is in no way regimented by the architecture, only in so far that we are avoiding padding in the lower layers. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(\γ=0.6\) and a fixed five-step decrease schedule. The toy model is trained with a batch size of 5 and the \texttt{musdb18} model with a batch size of 2. We train the two prior models first without any added noise for each 150.000. The training curves are shown in \cref{fig:toy_training} and \cref{fig:musdb_training}. As also observed by prior work, the training of deep normalizing flow models behaves unstable.
 
-% \begin{figure}
-%     \includegraphics{toy_training_curves.pdf}
-%     \caption{The training curves of the toy data curves}
-%     \label{fig:toy_training}
-% \end{figure}
+\begin{figure}
+    \includegraphics{train_toy_noiseless.pdf}
+    \caption{The negative mean log-likelihood during training of each ToyData prior. We plot the likelihood and not the loss which include the sum of log-determinant. The instability of the training at the half comes from a restart of training.}%
+    \label{fig:toy_training}
+\end{figure}
+
+\begin{figure}
+    \includegraphics{train_musdb_noiseless.pdf}
+    \caption{The negative mean log-likelhood during training of each \texttt{musdb18} prior.}%
+    \label{fig:musdb_training}
+\end{figure}
 
 For practicality, the priors for all source channels are contained in one model. The PyTorch framework allows for  convolutional layers to be blocked into separate groups. We are not using any operations that are dependent over the batch dimension~\footnote{That would e.g.\ be batch normalization}. We implement the complete flow model in such a grouped way so that the training can be done in parallel on a single GPU while the inference and the gradients for the optimizer updates are independent over the grouped blocks. For that, we also implement the utility functions, squeeze and flip in the same blocked manner.
 
@@ -84,15 +90,17 @@ In the full model, each prior is used to extract its source channel separately. 
 \begin{figure}
     \centering
     \input{figures/cross_likelihood}%
-    \caption{noiseless channels}%
+    \caption{The log likelihood of each source under each prior for both sets of priors. Notice how for the ToyData we get the diagonal that we are expecting while for the for the real music the likelihood for every field is high and in the same range. The \I{other} prior assigns the highest likelihoods.}%
     \label{fig:noiseless_channels}%
 \end{figure}
 
-We test for this by calculating the mean log-likelihood of the test data set under each prior, for each source channel separately. What we anticipate is that the samples from the priors training source are of high likelihood while all other sources are of low likelihood. In \cref{fig:heatmap_toy} we show the source dependent likelihoods for the Toy Data. The in-distribution samples are all of high likelihood while all out-of distribution samples are highly un-likely. The Flow model therefore, was able to detect out-of-distribution samples while only being trained on in-distribution samples~\footnote{Something psychological research has shown, humans being able to do.}. The estimated densities are discriminative.
+We test for this by calculating the mean log-likelihood of the test data set under each prior, for each source channel separately. What we anticipate is that the samples from the priors training source are of high likelihood while all other sources are of low likelihood. In \cref{fig:noiseless_channels} (a) we show the source dependent likelihoods for the Toy Data. The in-distribution samples are all of high likelihood while all out-of distribution samples are highly un-likely. The Flow model therefore, was able to detect out-of-distribution samples while only being trained on in-distribution samples. The estimated densities are discriminative.
 
-When running the same experiment for the \texttt{musdb18} the discriminative power does not hold up, see~\cref{fig:heatmap_musdb}. All signal sources are about equally likely under each prior density. We hypothesize this stems from the fact that the real musical data is severely more complicated compared to the Toy Data. The Flows model the appearance of sound in general, as the in-class variability of sounds is already high, without knowing anything about the \I{discriminative} differences between the instruments and does not infer the distribution from those features.
+When running the same experiment for the \texttt{musdb18} the discriminative power does not hold up, see~\cref{fig:noiseless_channels} (b). All signal sources are about equally likely under each prior density. We hypothesize this stems from the fact that the real musical data is severely more complicated compared to the Toy Data. The Flows model the appearance of sound in general, as the in-class variability of sounds is already high, without knowing anything about the \I{discriminative} differences between the instruments and does not infer the distribution from those features.
 
-Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Because of this, the results show the unintuitive result that the test samples from the \I{other} class are \I{less likely} under its own prior model compared to the out-of-distribution samples. While this makes it rather final that the at hand dataset is not completely suitable to out trainings regime, it is a data-dependent restriction that would not correspond to our hypothesized application.
+Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Ignoring this difficulty, the priors for\texttt{musdb18} still to fail to be discriminative in the remaining three classes.
+
+We therefore continue the investigation of the flow models with the Toy Data.
 
 \section{Noise-conditioning}
 We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noised are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
@@ -126,19 +134,24 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
 With the noiseless model \cref{fig:noised_channels} (a) the distribution is discriminative against the samples from the other sources. With increasing noise-conditioning the discriminative power is lost going to (f). The noising of the input data results in the latent distribution to flatten out to the point of not being able to differ between any of the signal channels.
 
 \section{Random and constant inputs}
-Previous works for generative models~\cite{sonderbyAmortised2017}\cite{vandenoordParallel2017}\cite{nalisnickDeep2019} have pointed out that constant inputs tend to have high likelihood assigned. While there is no
-
 \begin{table}
     \input{graphics/toy_const}%
-    \caption{Const inputs}%
+    \caption{The mean log likelihood of a full receptive field of contant inputs \(\{0,1\}\) for the noise-less and the widest noise-conditioned model.}%
     \label{tab:toy_const}%
-\end{table}
+\end{table}\vspace{\baselineskip}
 
-On the other hand purely random inputs should be unlikely
+Previous works~\cite{sonderbyAmortised2017}\cite{vandenoordParallel2017}\cite{nalisnickDeep2019} have pointed out that generative models tend to assign high likelihood to constant inputs. We examine the same on our Toy Data prior. \cref{tab:toy_const} shows that for the noiseless model the mean data value \(0\) is indeed highly likely, except for the square wave, which we hypothesize stems from the square wave never having that value. Note further that for the noiseless model the maximum input \(1\) is highly unlikely. Noise-conditioning the distribution reverses both values in that the mean value becomes less likely and the maximum value becomes more likely.
 
 \begin{figure}
     \centering
     \includegraphics{const_noise_ll.pdf}%
-    \caption{Noise Const}%
+    \caption{The likelihood of Gaussian noise under the Toy prior with increasing variance \(\σ\).}%
     \label{fig:noise_const}%
 \end{figure}
+
+On the other hand purely random inputs should be unlikely and decreasing so with higher variance. We plot the relationship between the log likelihood of Gaussian noise with varying variance under the noiseless and noise-conditioned priors in \cref{fig:noise_const}. We see that for the noiseless model, any amount of noise is highly unlikely. But with wider noise-conditioning this decreases until with a conditioning of \(0.359\) the effect even reverses.
+
+We read this results to support the previous interpretation that even a small amount of noise fine-tuning can have severe effects on the estimated density. The noiseless model has sharp likelihood peaks around true data, in which even small amounts of noised data are highly unlikely. The noise-conditioning of the flow models flattens these peaks in so far that noise and out-of-distribution samples become highly likely, even at small amounts of added noise.
+
+\section{Langevin sampling}
+We tried source separation using the Toy dataset with random mixes and the trained flow priors. As already anticipated with the previous experiments, this is not successfull. The noiseless model does not exhibit a smooth manifold which even with the noised gradients of SGLD is optimizable. The noised priors on the other hand, lost all the discriminative power and therefore it is not possible to modulate the out-of-distribution mix into a true signal by taking (noisy) steps on the prior.

@@ -31,7 +31,7 @@ COLORS = {
 
 # data configs
 TOY_SIGNALS = ["sin", "square", "saw", "triangle"]
-MUSDB_SIGNALS = ["drums", "bass", "other", "voice"]
+MUSDB_SIGNALS = ["drums", "bass", "other", "vocals"]
 
 # Update matplotlib config
 mpl.style.use("./plot/mpl.style")
