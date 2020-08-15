@@ -8,12 +8,12 @@ Source separation is the task of finding a set of latent sources \(\s = {[\s_1,\
     g(\m) \approxeq \s
 \end{align}
 
-In the case of musical source separation, the sources are different instruments~\footnote{Think of the classes being \{\I{guitar},\I{piano},\I{voice},\…\}} or their separate voices. The mix is mixed and mastered mono or stereo recording of the musical piece. The reversal of this operation is strongly unidentifiable. As instruments can make similar sounds extracting the instruments' voices is not always decidable. Therefore any approach to this problem is approximate in expectation.
+In the case of musical source separation, the sources are different instruments~\footnote{Think of the classes being \{\I{guitar},\I{piano},\I{voice},\…\}} or their separate voices. The mix is mixed and mastered mono or stereo recording of the musical piece {\color{red} something is missing here}. The reversal of this operation is strongly unidentifiable. As instruments can make similar sounds extracting the instruments' voices is not always decidable {\color{red} not very clear}. Therefore any approach to this problem is approximate in expectation.
 
-Learning this operator \(g(\·)\) can be a relieved with three sources of supervision: First, by supplying the number of sources \(N\) in a given mix. Second, by supplying the distinct source classes for each contained source. And lastly, by actually providing tuples \((\m, \s)\) of associated mixes and sources. The most costly supervision is the last one, as there exists no large source of such data. Therefore when we refer to our method as unsupervised we refer to the relaxation from this source of supervision.
+Learning this operator \(g(\·)\) can be a relieved {\color{red} don't know what can be a relieved means} with three sources of supervision: First, by supplying the number of sources \(N\) in a given mix. Second, by supplying the distinct source classes for each contained source. And lastly, by actually providing tuples \((\m, \s)\) of associated mixes and sources. {\color{red} examples like in footnote 1 for all three would be good. Maybe you start with an example and then explain the three options.}  The most costly supervision is the last one, as there exists no large source of such data. Therefore when we refer to our method as unsupervised we refer to the relaxation from this source of supervision. {\color{red}This sentence is unnecessary complex}
 
 Therefore our research question summarizes to:
 
 \begin{tcolorbox}
-    Can we learn a musical source separation model \(g(\·)\) without relying on examples of the mixing process but only using samples of unrelated sources \(\{\s_k\}\) and mixes \(\m\).
+    Can we learn a musical source separation model \(g(\·)\) without relying on examples of the mixing process but only using samples of unrelated sources \(\{\s_k\}\) and mixes \(\m\). {\color{red} I find that hard to understand. Can you not just say that you don't need tuples of all signals and the mix?}
 \end{tcolorbox}

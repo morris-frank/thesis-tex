@@ -1,11 +1,12 @@
 \chapter{Experiments}%
 \label{ch:experiments}
 \marginnote{All code can be found under: \url{github.com/morris-frank/unnamed-source-separation/} (MIT)}
-As we have laid out in the previous chapter our method mainly depends on the quality of the learned source priors. The generative prior models have to provide an exhaustive and exclusive approximation of the data manifold or its data source. Therefore our experiments strongly focus on analyzing the prior densities under different training regimes and inputs. In general, we have two separate datasets with which we run the experiment, as described in the following section. TODO
+As we have laid out in the previous chapter our method mainly depends on the quality of the learned source priors. The generative prior models have to provide an exhaustive and exclusive approximation of the data manifold or its data source. Therefore our experiments strongly focus on analyzing the prior densities under different training regimes and inputs. In general, we have two separate datasets with which we run the experiment, as described in the following section. TODO {\color{red} Do not forget to delete this}
+{\color{red}I would like to have a repetition of what we want the prior to do in rather plain words here. So the reader is kinda reminded of what the overall idea of the experiments are.}
 
 
 \section{Datasets}
-We will be working on two datasets. First, a simplified Toy dataset which reduces the problem to a minimal canonical one and second the \texttt{musdb18} dataset which is a widely-used test-set for musical source separation.
+We will be working on two datasets. First, a simplified Toy dataset which reduces the problem to a minimal canonical one {\color{red} why not just say, made of simple signals} and second the \texttt{musdb18} dataset which is a widely-used test-set for musical source separation.
 
 \subsection{ToyData}
 \begin{marginfigure}[5em]
@@ -71,11 +72,14 @@ Training of the priors is done in mini-batches with an Adam optimizer~\cite{king
     \label{fig:musdb_training}
 \end{figure}
 
+{\color{red}I was not aware how unstable the training can get}
+
 For practicality, the priors for all source channels are contained in one model. The PyTorch framework allows for  convolutional layers to be blocked into separate groups. We are not using any operations that are dependent over the batch dimension~\footnote{That would e.g.\ be batch normalization}. We implement the complete flow model in such a grouped way so that the training can be done in parallel on a single GPU while the inference and the gradients for the optimizer updates are independent over the grouped blocks. For that, we also implement the utility functions, squeeze and flip in the same blocked manner.
 
 \section{Testing the priors}
 Training of the normalizing flow model combines two objectives: First, we maximize the log-determinant of the \I{non-volume preserving} affine coupling and the activation normalization layers. This guarantees us the invertibility of these transformations. Second, we maximize the likelihood of the projected samples under the chosen target distribution~\footnote{The target distribution is the prior to our prior model. It is set to a factorized Gaussian.}. For the evaluation, we are interested in the mean average likelihood under the target distribution for different in- and out-of-distribution inputs. Remember that the flow gives a bijective mapping between the input and target space~\footnote{necessitated by the invertibility}. For an input of size \(\x \∈ \ℝ^{1\×L}\) the flow returns a latent \(\z \∈ \ℝ^{1\×L}\) of the same size. Each time-point latent \(\z_t\) depends on the  inputs from the receptive field of the flow before and after the respective input \(\x_t\) but is evaluated under the independent margin \(\z_t \sim \N(0,1)\). Because therefore the factorized multivariate Gaussian prior is equivalent to a set of one-dimensional Gaussians, the flow is also not size restricted. All transformations in the network are convolutional and use appropriate padding. \(L\) can be any chosen length. We want to set the input length larger than the receptive field of the network. The latents on either end side of the sample will be based on the larger amount of padded input, while the center values from the sample receive the full receptive field. The size of the receptive field is regimented by the depth and kernel sizes used in the convolutions of the coupling layers and the number of squeeze operations in the blocks (see \cref{fig:squeeze}). For an exact derivation of the receptive field size see {\color{red}Appendix recp size}.
 
+{\color{red}why not have a header here if testing the cross likelihood has one as well.}
 We show an example of sampling from the toy data priors in \cref{fig:toy_time_sample}. It should be unsurprising that the drawn samples are not returning a consistent curve. All the latents are from i.i.d.\ distributions that contribute to the generation of the data output in the bounds of its receptive field. The overlapping receptive fields generate locally consistent curves. This is not a hindrance as our method does not rely on sampling from the priors unconstrained.
 
 \begin{figure}
@@ -98,12 +102,12 @@ We test for this by calculating the mean log-likelihood of the test data set und
 
 When running the same experiment for the \texttt{musdb18} the discriminative power does not hold up, see~\cref{fig:noiseless_channels} (b). All signal sources are about equally likely under each prior density. We hypothesize this stems from the fact that the real musical data is severely more complicated compared to the Toy Data. The Flows model the appearance of sound in general, as the in-class variability of sounds is already high, without knowing anything about the \I{discriminative} differences between the instruments and does not infer the distribution from those features.
 
-Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Ignoring this difficulty, the priors for\texttt{musdb18} still to fail to be discriminative in the remaining three classes.
+Even above that, the results exhibit an additional failing for the \texttt{musdb18} dataset. The third stem in the dataset files \I{other} is filled with a smorgasbord {\color{red}tssssss, I give you that one} of different instruments. With our training regime, we are implying we can model the sound this set of unrelated instruments with only in-distribution samples with a resulting distribution which is discriminative against another set of unrelated instruments. Intuitively this already fails to be reasonable. Ignoring this difficulty, the priors for\texttt{musdb18} still to fail to be discriminative in the remaining three classes.
 
 We therefore continue the investigation of the flow models with the Toy Data.
 
 \section{Noise-conditioning}
-We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noised are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
+We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noised {\color{red}noise} are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
 
 We find that fine-tuning converges quickly at ----.
 

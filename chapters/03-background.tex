@@ -3,7 +3,7 @@
 
 \newthought{In this chapter}, we introduce the minimally necessary background concepts our work is building upon. Our work marries two fields of research: on the one side generative, graphical models. With those one tries to model the data distribution of an observed variable by inducing dependencies of latent (unobserved) variables generating the observed variables. Modeling those dependencies, the meaningful latent variables allow us to build an intuitive generative story for the probabilistic model of the observed data. On the other hand, we introduce the recent body of work on how to practically model sound signals, in particular how this compares differently to modeling images.
 
-First, we introduce the concept of deep latent-variable models, which important classes of models exist and how to train them. Second, we will shortly draw up the difficulties of modeling sound and which recent solutions exist and how they differ.
+First, we introduce the concept of deep latent-variable models, which important classes of models exist and how to train them. Second, we will shortly draw up the difficulties of modeling sound and which recent solutions exist and how they differ. {\color{red}Nice!}
 
 \section{Deep Latent-Variable Models}%
 \label{sec:dlvm}
@@ -26,7 +26,7 @@ In the following described models we assume the sampled data points \(\x\) to be
 
 The maximum likelihood estimation of our model parameters maximizes this objective.
 
-To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\D\). For example, if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. But we could also introduce the instrument as an underlying latent variable \(\z\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example.
+To form a latent-variable model we introduce a \I{latent variable}\footnote{Latent variables are part of the directed graphical model but not observed.}. This latent variable can be any random variable underlying the generation of a data sample in \(\D\). For example, if we look at the generative story of a sound sample, a latent variable could be the sound source (the \I{instrument}). One can directly model the distribution of all musical notes played by all possible instruments. {\color{red}I don't understand the difference between this sentence and the next one} But we could also introduce the instrument as an underlying latent variable \(\z\), which would then lead to one distribution over this categorical variable and separate conditional densities of the sounds of each instrument. One of them then modeling the distribution of sounds made by a harp, for example. {\color{red} This example needs to be clearer}
 
 Now the data likelihood is the marginal density of the joint latent density. With one latent variable we get:
 
@@ -139,7 +139,7 @@ For example for a Gaussian distribution we can express \(z\sim \N(\μ,\σ)\) as 
 
 \subsection{The VAE framework}
 
-The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeStochastic2014} presents a generative model using the above-introduced modeling of the joint distribution between an observed and latent variable to model to the latent variable. The model is split into two parts the encoder network and the decoder network. The encoder network parametrizes the approximate posterior \(\aprxpost\) by computing the parameters \(\B{\η}\) of the latent distribution. The decoder maps samples \(\z\sim q_{\B{\θ}}\) back into the data space. The optimization of the parameters of the two networks \(\{\B{\φ}, \B{\θ}\}\) is done by maximizing the ELBO (\cref{eq:elbo_factorized}).
+The variational autoencoder (VAE)~\footnotemark[\value{footnote}]~\cite{rezendeStochastic2014} presents a generative model using the above-introduced modeling of the joint distribution between an observed and latent variable to model to the latent variable. {\color{red} 'to model to the latent variable' is too much, no?} The model is split into two parts the encoder network and the decoder network. The encoder network parametrizes the approximate posterior \(\aprxpost\)  {\color{red} what is $s_k$?, you didn't introduce it yet} by computing the parameters \(\B{\η}\) of the latent distribution. The decoder maps samples \(\z\sim q_{\B{\θ}}\) {\color{red} I find it weird that $q_\theta$ has no arguments} back into the data space. The optimization of the parameters of the two networks \(\{\B{\φ}, \B{\θ}\}\) is done by maximizing the ELBO (\cref{eq:elbo_factorized}).
 
 End-to-end learning is made possible with the reparameterization trick and the algorithm looks like:
 
@@ -162,7 +162,7 @@ The \β-VAE~\cite{higginsBetaVAE2016} extends the VAE objective with an \(\β\) 
 \subsection{Flow based models}%
 \label{subsec:flows}
 
-The VAE and other related generative models, define the joint distribution between the latent and the observed variables. Another way of attacking the problem is a \I{change of variable} where we learn a function that changes the observed variable into the latent one, also known as  \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f: \mathcal{X}\to \mathcal{Z}\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\x))\), in that normalizing the density~\footnote{The extreme of this idea is an infinitesimal, continuous-time flow with a velocity field.}. With \(f(\·)\) we can then integrate over \x  and \z with the each other:
+The VAE and other related generative models, define the joint distribution between the latent and the observed variables. Another way of attacking the problem is a \I{change of variable} where we learn a function that changes the observed variable into the latent one, also known as  \I{normalizing} flows~\cite{tabakFamily2013}. A normalizing flow is a function \(f: \mathcal{X}\to \mathcal{Z}\) that maps the input density to a fixed, prescribed density \(p(\ε) = p(f(\x))\), in that normalizing the density~\footnote{The extreme of this idea is an infinitesimal, continuous-time flow with a velocity field.}. With \(f(\·)\) we can then integrate over \x  and \z {\color{red} spaces are missing} with the each other {\color{red} I would delete the "with the each other"}:
 
 \begin{align}
     &\∫_{\mathcal{Z}} p(\z) d\z = \∫_{\mathcal{X}} p(f(\x)) {\Big|\pf{f}{\x}\Big|} d\x\\
@@ -179,7 +179,7 @@ With this setup, we can choose a fixed distribution \(p_{\z}(\z)\) and can optim
 
 For a finite normalizing flow, we consider a chain of invertible, smooth mappings making the composite \(f\). The difficulty arises, from the condition, that we need to be able to compute the log-determinant of each flow function's Jacobian. Careful design of the flow functions is necessary to assure a cheap computation of the log-determinant while allowing for complex models to be learned.
 
-The first deep model to successfully do so is NICE~\cite{dinhNICE2015} which introduced coupling layers to parametrize the flow steps. In the coupling layer the input \x is split in two equally sized parts \(\x_a\) and \(\x_b\). Then the first split is transformed by translation factors computed from the second split:
+The first deep model to successfully do so is NICE~\cite{dinhNICE2015} which introduced coupling layers to parametrize the flow steps. In the coupling layer the input \x {\color{red} space again} is split in two equally sized parts \(\x_a\) and \(\x_b\). Then the first split is transformed by translation factors computed from the second split:
 
 \begin{align}
     \B{y}_a &= \x_a + t(\x_b)\\
@@ -207,7 +207,7 @@ Which means the efficiently compute the determinant with:
     \Big|\pf{f}{\x}\Big| = \exp{\left[\Σ_i {s(\x_b)}_i\right]}
 \end{equation}
 
-The authors provide multiple ideas on how to split an input tensor with spacial masking using repeating checkerboard patterns. Further, it is also important that the masking of the two splits is inverted/changed throughout a combination of multiple coupling layers so that the split into transformer and transformed part is not fixed.
+The authors provide multiple ideas on how to split an input tensor with spacial masking using repeating checkerboard patterns. Further, it is also important that the masking of the two splits is inverted/changed {\color{red} please decide on one} throughout a combination of multiple coupling layers so that the split into transformer and transformed part is not fixed.
 
 Glow~\cite{kingmaGlow2018} extended the RealNVP by introducing invertible 1\×1-convolutions. Instead of having fixed masks and permutations for the computations of the affine parameters in the coupling layer, Glow learns a rotation matrix which mixes the channels. After mixing the input can always be split into the same two parts for the affine transformation. Further, the authors showed that training can be helped by initializing the last layer of each affine parameter network with zeros. This ensures that at the beginning without weight update each coupling layer behaves as an identity.
 
@@ -248,7 +248,7 @@ As an example, if encoding a sound signal with \(\SI{8}{\kHz}\) \(\SI{16}{\bit}\
 
 A standard full piano with 88 keys tuned to \(\SI{440}{\Hz}\) at the \(\t{A}_4\)\cite{iso/tc43acousticsISO1975} has a frequency range of \([\SI{27.5}{\Hz}, \SI{4186}{\Hz}]\) from the \(\t{A}_0\) to the \(\t{C}_8\), respectively. Therefore just for the recording of a standard piano we need a sampling rate of more than \(\SI{8}{\kHz}\). Beyond the piano, many instruments exhibit even larger frequency content which leads to the conclusion that not just for recording but also for our goal of modeling musical sounds a reasonably high sampling rate is crucial.
 
-Looking at the temporal scales of musical information, on the small end we have the modeling of pitch as discussed before which happens at scales of \([10^{-1}\,\si{\ms}, 10^2\,\si{\ms}]\) over single notes happening at scales of \([10^2\,\si{\ms}, 10^3\,\si{\ms}]\) to the structure of melodies and full songs happening at \([10^4\,\si{ms}, 10^6\,\si{\ms}]\). The modeling of music happens over 7 magnitudes of time! In \cref{sec:raw_audio} we will present common solutions to this difficulty.
+Looking at the temporal scales of musical information, on the small end we have the modeling of pitch as discussed before which happens at scales of \([10^{-1}\,\si{\ms}, 10^2\,\si{\ms}]\) over single notes happening at scales of \([10^2\,\si{\ms}, 10^3\,\si{\ms}]\) to the structure of melodies and full songs happening at \([10^4\,\si{ms}, 10^6\,\si{\ms}]\). The modeling of music happens over 7 magnitudes of time! In \cref{sec:raw_audio} {\color{red} reference is broken} we will present common solutions to this difficulty.
 
 \subsection{Spectrograms}
 Commonly used alternative representations of signals in sound processing are spectrograms. A spectrogram is a mapping of the time-domain wave signal into a frequency domain. With a Fourier transform~\cite{fourierTheorie1822} it is possible to represent any function as an (at worst) infinite sum of harmonics, or trigonometrical signals. The Fourier transform is a complex-valued function where the absolute value gives the amount a given cosine with that frequency is present in the signal.
@@ -273,7 +273,7 @@ An unmodified Fourier transform is linear in frequency. Humans do not perceive c
     \hat{\ν} = 2595 \· \log_{10}\left( 1 + \÷{\ν}{700} \right)
 \end{equation}
 
-When using a spectrogram for signal processing we have to choose the form of the spectrogram being used. First, most commonly one would use the magnitude of the complex spectrogram to access the actual frequency contents. By that, we are disregarding the phase of these harmonics though. Trying to model the phase separately to the frequency is futile, see~\cref{fig:phase_spec}. Alternatively one can use an approximate vocoder to reverse the destructive reduction of the complex spectrogram (e.g.~\cite{chandnaVocoder2019a}) or directly model the complex spectrogram which has been used for some tasks with success~\cite{tanComplex2019,liuSupervised2019,lerouxPhasebook2019}. Many recent deep learning approaches to sound processing model a time-frequency map which is used to filter the original spectrogram~\cite{chandnaMonoaural2017,andreasjanssonSinging2017}. As such the phase from the input signal is used in the resulting output signal. While often these approximate approaches are successful in practice the usage of magnitude spectrograms introduces undefined limits into, which might inhibit performance~\cite{lluisEndtoend2019}.
+When using a spectrogram for signal processing we have to choose the form of the spectrogram being used. First, most commonly one would use the magnitude of the complex spectrogram to access the actual frequency contents. By that, we are disregarding the phase of these harmonics though. Trying to model the phase separately to the frequency is futile, see~\cref{fig:phase_spec} {\color{red} reference is broken}. Alternatively one can use an approximate vocoder to reverse the destructive reduction of the complex spectrogram (e.g.~\cite{chandnaVocoder2019a}) or directly model the complex spectrogram which has been used for some tasks with success~\cite{tanComplex2019,liuSupervised2019,lerouxPhasebook2019}. Many recent deep learning approaches to sound processing model a time-frequency map which is used to filter the original spectrogram~\cite{chandnaMonoaural2017,andreasjanssonSinging2017}. As such the phase from the input signal is used in the resulting output signal. While often these approximate approaches are successful in practice the usage of magnitude spectrograms introduces undefined limits into, which might inhibit performance~\cite{lluisEndtoend2019}.
 
 \subsection{Modeling raw audio}%
 \label{sec:raw_audio}
