@@ -61,13 +61,13 @@ We construct two distinct prior models for the two datasets. All models follow t
 Training of the priors is done in mini-batches with an Adam optimizer~\cite{kingmaAdam2017}. We take random fixed-length samples from the songs/signals in each mini-batch. Each sample is \(16384\) long with is around \(1.1 \si{\sec}\). As all models are fully convolutional the input size is in no way regimented by the architecture, only in so far that we are avoiding padding in the lower layers. The initial learning rate is set to \(1e-4\). The learning rate is decreased with \(\γ=0.6\) and a fixed five-step decrease schedule. The toy model is trained with a batch size of 5 and the \texttt{musdb18} model with a batch size of 2. We train the two prior models first without any added noise for each 150.000. The training curves are shown in \cref{fig:toy_training} and \cref{fig:musdb_training}. As also observed by prior work, the training of deep normalizing flow models behaves unstable.
 
 \begin{figure}
-    \includegraphics{train_toy_noiseless.pdf}
+    \includegraphics{toy_noise_0/train.pdf}
     \caption{The negative mean log-likelihood during training of each ToyData prior. We plot the likelihood and not the loss which include the sum of log-determinant. The instability of the training at the half comes from a restart of training.}%
     \label{fig:toy_training}
 \end{figure}
 
 \begin{figure}
-    \includegraphics{train_musdb_noiseless.pdf}
+    \includegraphics{musdb_noiseless/train.pdf}
     \caption{The negative mean log-likelhood during training of each \texttt{musdb18} prior.}%
     \label{fig:musdb_training}
 \end{figure}
@@ -94,7 +94,7 @@ In the full model, each prior is used to extract its source channel separately. 
 \begin{figure}
     \centering
     \input{figures/cross_likelihood}%
-    \caption{The log likelihood of each source under each prior for both sets of priors. Notice how for the ToyData we get the diagonal that we are expecting while for the for the real music the likelihood for every field is high and in the same range. The \I{other} prior assigns the highest likelihoods.}%
+    \caption{The log-likelihood of each source under each prior for both sets of priors. Notice how for the ToyData we get the diagonal that we are expecting while for the for the real music the likelihood for every field is high and in the same range. The \I{other} prior assigns the highest likelihoods.}%
     \label{fig:noiseless_channels}%
 \end{figure}
 

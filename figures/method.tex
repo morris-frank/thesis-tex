@@ -16,7 +16,7 @@
 
     \foreach \source/\offset in {other/0,drums/1,vocals/2,bass/3}{%
     \begin{scope}
-        \node    (stem) at (0, -0.75*\offset)   {\includegraphics[width=20pt]{musdb/\source.png}};
+        \node    (stem) at (0, -0.75*\offset)   {\includegraphics[width=20pt]{../data/images/\source.png}};
         \node[right=10pt of stem,draw] (flow)   {\(p(\s_k)\)};
         \node[right=10pt of flow]      (prior)  {\includegraphics[width=25pt]{dist/\source}};
         \draw[->] (stem) -- (flow);
