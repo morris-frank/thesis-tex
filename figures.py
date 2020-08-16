@@ -39,7 +39,7 @@ def print_color_latex():
 @log_func()
 def plot_waveforms(signals):
     for signal in tqdm(signals, leave=False):
-        wave, _ = librosa.load(f"data/{signal}.wav")
+        wave, _ = librosa.load(f"data/sounds/{signal}.wav")
         fig = plt.figure(tight_layout=True)
         ax = fig.add_subplot(111)
         librosa.display.waveplot(
@@ -115,7 +115,7 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
 
 @log_func()
 def plot_training_curves(filename, signals, ylim, bs):
-    df = pd.read_csv(filename)
+    df = pd.read_csv(f"./data/training/{filename}")
     df = df.apply(partial(pd.to_numeric, errors="coerce")).fillna(0)
     for signal in signals:
         cols = [c for c in df.columns if signal in c]
@@ -137,7 +137,7 @@ def plot_training_curves(filename, signals, ylim, bs):
     )
     sns.lineplot(x="Step", y="log(p)", hue="Source", data=df, ax=ax, linewidth=0.5)
     ax.set_ylim(ylim)
-    savefig(os.path.basename(filename)[:-4])
+    savefig(os.path.basename(filename)[:-4] + '/train')
 
 
 @log_func()
@@ -153,7 +153,7 @@ def plot_const(data):
     data.to_latex(f"{FIGDIR}/toy_const.tex", float_format="%.1e")
 
 
-@log_func
+@log_func()
 def plot_noised_noised(data):
     noised_levels = [0.0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.3]
     noise_levels = data.index
@@ -208,22 +208,14 @@ def plot_noise(data):
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
-    noise_levels = ["01", "027", "077", "129", "359"]
 
-    plot_training_curves(f"./data/train_musdb_noiseless.csv", MUSDB_SIGNALS, [-2, -8], 15)
-    plot_training_curves(f"./data/train_toy_noiseless.csv", TOY_SIGNALS, [-1, -5.5], 10)
-
-    exit()
-
-    musdb_prior = npzload("Aug10-")
+    musdb_prior = npzload("musdb/Aug10-")
     plot_cross_likelihood(musdb_prior["channels"], "musdb_noiseless/", MUSDB_SIGNALS)
 
-    # for level in conds:
-    #     plot_prior(f"toy_discr_noise_{level}", os.path.basename(get_newest_file(f"./data/Aug11-*{level}*"))[:-4], TOY_SIGNALS)
-
-    toy_prior_data = {"0.0": npzload("Jul31-1847")}
+    toy_prior_data = {"0.0": npzload("toy/Jul31-1847")}
+    noise_levels = ["01", "027", "077", "129", "359"]
     for level in noise_levels:
-        toy_prior_data[f"0.{level}"] = npzload(f"Aug07-1757*{level}")
+        toy_prior_data[f"0.{level}"] = npzload(f"toy/Aug07-1757*{level}")
     toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
 
     for level in ["0"] + noise_levels:
@@ -232,10 +224,11 @@ def main():
         plot_toy_samples(_data.samples, name)
         plot_cross_likelihood(_data.channels, name, TOY_SIGNALS)
 
-    exit()
+    plot_noised_noised(toy_prior_data)
+    plot_training_curves("musdb_noiseless.csv", MUSDB_SIGNALS, [-2, -8], 15)
+    plot_training_curves("toy_noise_0.csv", TOY_SIGNALS, [-1, -5.5], 10)
     plot_const(toy_prior_data)
     plot_noise(toy_prior_data)
-    plot_noised_noised(toy_prior_data)
     plot_waveforms(MUSDB_SIGNALS + ["mix"])
     plot_prior_dists(MUSDB_SIGNALS)
 

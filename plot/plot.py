@@ -97,8 +97,6 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
         square=True,
         norm=norm,
         cmap=CMAP_DIV,
-    # vmin=0,
-    # vmax=10,
     )
 
     if xlabel is not None:
@@ -123,6 +121,8 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
         N = len(signals)
         pos_tick = np.linspace(0, 1, 2 * N + 1)[1::2]
         size = 1 / N * 0.9
+        if 'vocals' in signals:
+            size *= 1.4
 
         for i in range(N):
             if "x" in ticks:
@@ -130,7 +130,7 @@ def plot_heatmap(data, name, signals=None, ticks="both", minimum="auto", xlabel=
             if "y" in ticks:
                 add_plot_tick(ax, signals[i], pos=pos_tick[-i - 1], where="y", size=size)
 
-    savefig(name + "_hm")
+    savefig(name + "_hm", eps=True)
 
 
 def add_plot_tick(
@@ -171,9 +171,9 @@ def add_plot_tick(
     elif "sq" in symbol:
         y = square(x)
         _ax.plot(x, y, linewidth=linewidth, c="k")
-    elif symbol in ["drums", "bass", "voice", "other"]:
-        icon = plt.imread(f"{FIGDIR}/musdb/{symbol}.png")
-        _ax.imshow(np.repeat(icon[..., None], 3, 2))
+    elif symbol in ["drums", "bass", "voice", "other", "vocals"]:
+        icon = plt.imread(f"./data/images/{symbol}.png")
+        _ax.imshow(np.repeat(icon[..., None], 3, 2), interpolation="none")
     else:
         raise ValueError("unknown symbol")
 
@@ -210,11 +210,10 @@ def make_a_rand_dist(ax, N=None, cmap=None):
     plt.axis("off")
 
 
-def savefig(name, dont_close=False):
-    # plt.gca().patch.set_alpha(0.)
+def savefig(name, dont_close=False, eps=False):
     os.makedirs(os.path.dirname(f"{FIGDIR}/{name}.pdf"), exist_ok=True)
     plt.savefig(
-        f"{FIGDIR}/{name}.pdf",
+        f"{FIGDIR}/{name}.{'eps' if eps else 'pdf'}",
         transparent=True,
         bbox_inches=0,
         facecolor="none",

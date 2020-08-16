@@ -14,7 +14,7 @@
     \draw[->] (lstart) .. controls ([yshift=-1cm, xshift=1cm,] lstart) and ([xshift=-1cm, yshift=-1cm] lend) .. node[below] {sampling} node[above] {Langevin} (lend);
     %\draw[->, bend angle=90, bend right=100]  (lstart) -- node[below] {sampling} node[above] {Langevin} (lend);
 
-    \foreach \source/\offset in {other/0,drums/1,voice/2,bass/3}{%
+    \foreach \source/\offset in {other/0,drums/1,vocals/2,bass/3}{%
     \begin{scope}
         \node    (stem) at (0, -0.75*\offset)   {\includegraphics[width=20pt]{musdb/\source.png}};
         \node[right=10pt of stem,draw] (flow)   {\(p(\s_k)\)};
@@ -39,7 +39,7 @@
 %     % Data column
 %     \node                  (s0) {\includegraphics[width=25pt]{mixing/bass.png}};
 %     \node[below=0pt of s0] (s1) {\includegraphics[width=25pt]{mixing/drums.png}};
-%     \node[below=0pt of s1] (s2) {\includegraphics[width=25pt]{mixing/voice.png}};
+%     \node[below=0pt of s1] (s2) {\includegraphics[width=25pt]{mixing/vocals.png}};
 %     \node[below=0pt of s2] (s3) {\includegraphics[width=25pt]{mixing/other.png}};
 
 %     % Prior column

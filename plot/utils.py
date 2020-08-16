@@ -27,7 +27,7 @@ def get_newest_file(match: str = "*"):
 
 
 def npzload(match):
-    return dict(np.load(get_newest_file(f"./data/{match}*npz")))
+    return dict(np.load(get_newest_file(f"./data/results/{match}*npz")))
 
 
 def cprint(string, color=Fore.YELLOW, end="\n"):
