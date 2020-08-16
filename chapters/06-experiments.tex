@@ -105,7 +105,14 @@ We, therefore, continue the investigation of the flow models with the Toy Data.
 \section{Noise-conditioning}
 We fine-tune the noise-less flow models by continuing the training with added Gaussian noise on the input samples. Fine-tuning~\cite{yosinskiHow2014} the noise-less model instead of retraining the model is considerably cheaper and the noised distribution we want to approximate is close to the noise-free distribution of the initial training. We follow \textcite{jayaramSource2020} in evaluating the noised distribution at variances in 5 steps from 0 to 1, geometrically increasing. The signals with added noise are not capped to the range \([0,1]\) as to not bias the signals towards the bounds of the interval.
 
-We find that fine-tuning converges quickly at ----.
+We find that fine-tuning converges quickly at between 20.000 and 40.000 steps, see~\cref{fig:toy_noise_conditioned}.
+
+\begin{figure}
+    \includegraphics{toy_noise_conditioned/train.pdf}
+    \caption{The negative mean log-likelhood during fine-tuning each toy prior with the different levels of noised inputs.}%
+    \label{fig:toy_noise_conditioned}
+\end{figure}
+
 
 Conditioning the prior distributions on noised samples is supposed to reduce local peaks in the latent space. \textcite{nalisnickDeep2019} points to the general problem that maximizing the Jacobian of the determinant in the objective of normalizing flows encourages the learned distribution to be sensitive to perturbations of inputs. They warn precisely of assuming anything about the density of a generative model outside of its training data-distribution. Jayaram and Thickstun\footnotemark[\decrvalue{footnote}{1}] experimentally shows that for their source separation method the same problem can be alleviated by fine-tuning on noised samples. Figuratively speaking the Gaussian noise in data space translates to Gaussian smoothing of the peaks in the probability distribution. For our comparatively more complicated models, we want to assess the success of this step.
 
@@ -132,7 +139,7 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
 \end{figure*}
 
 With the noiseless model \cref{fig:noised_channels} (a) the distribution is discriminative against the samples from the other sources. With increasing noise-conditioning the discriminative power is lost going to (f). The noising of the input data results in the latent distribution to flatten out to the point of not being able to differ between any of the signal channels.
-
+\clearpage%
 \section{Random and constant inputs}
 \begin{table}
     \input{graphics/toy_const}%

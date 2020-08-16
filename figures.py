@@ -2,7 +2,7 @@
 
 import os
 from functools import partial
-from itertools import chain
+from itertools import chain, product
 
 import ipdb
 import librosa
@@ -103,7 +103,6 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
                     bins=np.linspace(-100, 15, 100),
                     alpha=0.7,
                 )
-                # sns.distplot(_p, ax=axs[k, j], label=lab)
             # axs[k].set_xlim(-100, 15)
             # axs[k].set_xscale('log')
             # axs[k].legend()
@@ -114,29 +113,44 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
 
 
 @log_func()
-def plot_training_curves(filename, signals, ylim, bs):
+def plot_training_curves(filename, signals, ylim, bs, shapes=None, xlim=None):
     df = pd.read_csv(f"./data/training/{filename}")
     df = df.apply(partial(pd.to_numeric, errors="coerce")).fillna(0)
     for signal in signals:
         cols = [c for c in df.columns if signal in c]
-        df[signal] = df[cols[0]]
-        if len(cols) > 0:
-            df[signal] += df[cols[1]]
+        if shapes is not None:
+            for shape in shapes:
+                col = [c for c in cols if shape in c][0]
+                df[signal + '_' + shape] = df[col]
+        else:
+            df[signal] = df[cols[0]]
+            if len(cols) > 1:
+                df[signal] += df[cols[1]]
     df.index.rename("Step", inplace=True)
+    cols = signals
+    if shapes is not None:
+        cols = [s + '_' + sh for s, sh in product(signals, shapes)]
     df = (
-        df[signals]
+        df[cols]
         .rolling(30, min_periods=1)
         .mean()
         .melt(value_name="log(p)", var_name="Source", ignore_index=False)
         .reset_index()
     )
+
+    if shapes is not None:
+        df[['Source', 'Noise']] = df.Source.str.split('_', expand=True)
     df["Step"] *= bs
 
     _, ax = plt.subplots(
-        figsize=(BODY_LENGTH, 0.9 * MARGIN_LENGTH), gridspec_kw=dict(bottom=.25,top=.95),
+        figsize=(BODY_LENGTH, 0.9 * MARGIN_LENGTH), gridspec_kw=dict(bottom=.25, top=.95, right=0.8 if shapes is not None else 0.95),
     )
-    sns.lineplot(x="Step", y="log(p)", hue="Source", data=df, ax=ax, linewidth=0.5)
+    sns.lineplot(x="Step", y="log(p)", hue="Source", data=df, ax=ax, linewidth=0.5, style='Noise' if shapes is not None else None)
     ax.set_ylim(ylim)
+    if xlim is not None:
+        ax.set_xlim(xlim)
+    if shapes is not None:
+        plt.legend(bbox_to_anchor=(1.04, 0.4), loc="center left")
     savefig(os.path.basename(filename)[:-4] + '/train')
 
 
@@ -228,12 +242,15 @@ def plot_magphase():
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
+    noise_levels = ["01", "027", "077", "129", "359"]
+
+    plot_training_curves("toy_noise_conditioned.csv", TOY_SIGNALS, [-3, -5.7], 15, shapes=noise_levels, xlim=[0, 60_000])
+    exit()
 
     musdb_prior = npzload("musdb/Aug10-")
     plot_cross_likelihood(musdb_prior["channels"], "musdb_noiseless/", MUSDB_SIGNALS)
 
     toy_prior_data = {"0.0": npzload("toy/Jul31-1847")}
-    noise_levels = ["01", "027", "077", "129", "359"]
     for level in noise_levels:
         toy_prior_data[f"0.{level}"] = npzload(f"toy/Aug07-1757*{level}")
     toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
