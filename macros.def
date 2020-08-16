@@ -1,4 +1,5 @@
 \DeclareMathOperator{\elbo}{ELBO}
+\DeclareMathOperator*{\erf}{erf}
 
 \newcommand{\aprxpost}{{q_{\B{\φ}_k}(\s_k|\m)}}
 

@@ -89,8 +89,8 @@ def plot_cross_likelihood(log_p, name, signals, how="heatmap"):
 
     if how == "heatmap":
         log_p = log_p.mean(-1)
-        minimum = -10 if "musdb" in name else "auto"
-        plot_heatmap(log_p, name, signals, minimum=minimum)
+        pd.DataFrame(log_p, columns=signals, index=signals).to_latex(f"{FIGDIR}/{name}_hm.tex", float_format="%.1e")
+        plot_heatmap(log_p, name, signals)
     elif how == "histogram":
         fig, axs = plt.subplots(N, figsize=(BODY_LENGTH, MARGIN_LENGTH))
         for k in range(N):
@@ -206,6 +206,26 @@ def plot_noise(data):
     savefig("const_noise_ll")
 
 
+@log_func()
+def plot_magphase():
+    wav, sr = librosa.load('./data/sounds/mix.wav')
+    D = librosa.stft(wav)
+    ν, φ = librosa.magphase(D)
+
+    _, axs = plt.subplots(2, 1, figsize=(MARGIN_LENGTH, MARGIN_LENGTH),
+        gridspec_kw=dict(
+            left=0.,
+            right=1.,
+            top=1.,
+            bottom=0.,
+            hspace=0.05,
+        ),)
+    for ax, m in zip(axs, [ν, np.angle(φ)]):
+        ax.imshow(m[:170], cmap=CMAP_DIV)
+        ax.axison = False
+    plt.savefig('./graphics/magphase.png', dpi=300)
+
+
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
 
@@ -231,6 +251,7 @@ def main():
     plot_noise(toy_prior_data)
     plot_waveforms(MUSDB_SIGNALS + ["mix"])
     plot_prior_dists(MUSDB_SIGNALS)
+    plot_magphase()
 
 
 if __name__ == "__main__":

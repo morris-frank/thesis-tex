@@ -1,10 +1,60 @@
 \begin{appendices}
+    \section{Reparametrization of a truncated Gaussian}%
+    \label{sec:appendix_truncated_gaussian}
+
+    We propose to model the approximate posterior distribution with a truncated Gaussian. To optimize the parameters of the encoder we need to take gradient of the samples with respect to the parameters of the distribution \(\η = \{\μ, \σ\}\). For the normal distribution this can be cheaply done with the reparametrization trick. We do the same for the truncated distribution.
+
+    We can take samples from the normal distribution \(\N(\μ,\σ)\) truncated to the bounds \([a,b]\) with a inverse transform sampler~\cite{murphyMachine2012}. We give an algorithm to take a sample from the truncated distribution and return its log-likelihood:
+
+    \begin{algorithm}
+        \begin{algorithmic}[1]
+            \Procedure{SampleTruncatedNormal}{$ \μ,\σ,a,b $}
+                \State\(a_{\t{cdf}} \gets \Φ(\÷{a - \μ}{\σ})\)
+                \State\(b_{\t{cdf}} \gets \Φ(\÷{b - \μ}{\σ})\)
+                \State\(\ε \sim U[a_{\t{cdf}}, b_{\t{cdf}}]\)\Comment{\(U[\·]\) gives a uniform sample.}
+                \State\(\xi \gets \Φ^{-1}(\ε)\)
+                \State\(x \gets \σ \· \xi + \μ\)
+                \State\(ll \gets -\log{(\σ)} - \÷{1}{2}(\xi^2 + \log{(2\π)}) - \log{(b_{\t{cdf}} - a_{\t{cdf}})}\)
+                \State\textbf{return} \(x,\ ll\)%
+            \EndProcedure%
+        \end{algorithmic}
+        \caption{Sampling from a truncated Gaussian with given variance \(\σ\) and mean \(\μ\) in the bound \([a,b]\).}%
+    \end{algorithm}
+
+    The cumulative distribution function of a normal distribution and its inverse are:
+    \begin{align}
+        \Φ(x) &= \÷{1}{2}\·(1 + \erf(\÷{x}{\sqrt{2}}))\\
+        \Φ^{-1}(x) &= {\t{erf}}^{-1}(\sqrt{2}\· ((2x)-1))
+    \end{align}
+    where \(\erf(\·)\) is the error function.
+
+    Notice that we separated out the source of stochasticity to the uniform distribution. Both the error function \(\erf(\·)\) and its inverse \(\erf^{-1}(\·)\) are implemented in the PyTorch framework making the automatic computation of the gradients possible.
+    \clearpage
+
+    \section{Cross-likelihood}
+    \begin{table}[!htb]
+        \footnotesize%
+        \input{graphics/musdb_noiseless/channels_hm}%
+        \caption{The mean average log-likelihood of all source channels under the each prior for the \texttt{musdb18} data.}
+    \end{table}
+
+    \foreach\noise in {0,01,027,077,129,359}{
+        \begin{table}[!htb]
+            \footnotesize%
+            \input{graphics/toy_noise_\noise/channels_hm}%
+            \caption{The mean average log-likelihood of all source channels under the each prior for the noise level \(0.\noise\).}
+        \end{table}
+    }
+
+    \clearpage
     \section{Noise-conditioning}
-    % \foreach\signal in {sin,square,saw,triangle}{
-    %     \begin{table}%
-    %         \input{figures/noised_noised/\signal}%
-    %         \caption{The numerical data as visualized~\ref{fig:noised_noised} for the source \texttt{\signal}.}%
-    %         \label{fig:noised_noised_data_\signal}
-    %     \end{table}
-    % }%
+    \foreach\signal in {sin,square,saw,triangle}{
+        \begin{table}[!htb]%
+            \footnotesize%
+            \input{graphics/noised_noised/\signal}%
+            \caption{The numerical data as visualized~\ref{fig:noised_noised} for the source \texttt{\signal}.}%
+            \label{fig:noised_noised_data_\signal}
+        \end{table}
+    }%
+
 \end{appendices}

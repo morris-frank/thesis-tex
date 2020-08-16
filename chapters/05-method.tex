@@ -3,7 +3,7 @@
 
 \newthought{In this chapter}, we introduce the theoretical idea of our probability modelling of musical source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
 
-We propose the graphical model as shown in \cref{fig:graphical_model_separation} as the generative story {\color{red} I like to call it true generative model, but not sure if this is more formal the generative story} of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
+We propose the graphical model as shown in \cref{fig:graphical_model_separation} as the true generative model of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
 
 \begin{marginfigure}[-15em]
     \input{figures/graphical_model_separation}%
@@ -11,16 +11,16 @@ We propose the graphical model as shown in \cref{fig:graphical_model_separation}
     \label{fig:graphical_model_separation}
 \end{marginfigure}
 
-Our stated task in \sref{ch:question} is to retreive the sources \(\{\s_1,\…,\s_N\}\) from a given mix \(\m\). Our model is trained without using sample tuples \[(\m, \{\s_1,\…,\s_N\}): f(\{\s_1,\…,\s_N\}) = \m\] which would show {\color{red} don't think 'show' is a good choice here} the relation between separate sources and mixes. The general idea is visualized in \cref{fig:method}.
+Our stated task in \sref{ch:question} is to retreive the sources \(\{\s_1,\…,\s_N\}\) from a given mix \(\m\). Our model is trained without using sample tuples \[(\m, \{\s_1,\…,\s_N\}): f(\{\s_1,\…,\s_N\}) = \m\] which would demonstrate the relation between separate sources and mixes. The general idea is visualized in \cref{fig:method}.
 
 \begin{figure}[t]
     \input{figures/method.tex}
-    \caption{The method visualized, {\color{orange}not finished yet}}%
+    \caption{Our approach visualized. From each data source, we build a prior distribution. From there we either train a respective set of posteriors that are informed by the signal mix and that we can sample a set of separation solutions. Or we use Langevin dynamics to sample from the posteriors directly. Either approach happens under the constraint that the samples can construct the mix.}%
     \label{fig:method}%
-    \setfloatalignment{b}%
+    % \setfloatalignment{b}%
 \end{figure}
 
-Looking back at {\color{red} I would delete 'looking back at} the graphical model in \cref{fig:graphical_model_separation}, it implies the following factorization:
+The graphical model in \cref{fig:graphical_model_separation} implies the following factorization:
 
 \begin{align}
     p(\m)
@@ -29,7 +29,7 @@ Looking back at {\color{red} I would delete 'looking back at} the graphical mode
     &= \∫^N p(\m | \s_1,\…,\s_N) \· p(\s_1) \cdots p(\s_N) \,d^N \s
 \end{align}
 
-While the conditional \(p(\m | \s_1,\…,\s_N)\) is not even probabilistic {\color{red} a delta peak is a distribution as well ;)}, as the mix is generated deterministically with the mean of the sources, the model posterior \(p(\s_1,\…,\s_N | \m)\) is intractable and precisely what we are interested in. Again we want to make it clear that this setup changes the typical optimization target, as seen in other source separation approaches. We factorize the distribution \(p(\m)\) of mixed songs, only then to extract the most likely \I{latent} components that generate this mix, the sources. Therefore we are explicitly modelling the generative process of the mixed songs, and only implicitly the separation task.
+While the conditional \(p(\m | \s_1,\…,\s_N)\) is only a Dirac delta distribution, as the mix is generated deterministically with the mean of the sources, the model posterior \(p(\s_1,\…,\s_N | \m)\) is intractable and precisely what we are interested in. Again we want to make it clear that this setup changes the typical optimization target, as seen in other source separation approaches. We factorize the distribution \(p(\m)\) of mixed songs, only then to extract the most likely \I{latent} components that generate this mix, the sources. Therefore we are explicitly modelling the generative process of the mixed songs, and only implicitly the separation task.
 
 Already with the graphical model we introduce a fairly big assumption, namely that we can model the source distributions independently from each other when modeling the joint:
 
@@ -43,35 +43,50 @@ The general process is as follows:
 
 First, because we assumed in our graphical model the latent sources to be independent, there exists a probability distribution \(p(\s_k)\) for each source \(k\). Thereout we need to choose a model which gives the parametrized approximated prior \(p_{\B{\θ}}(\s_k)\) with the parameters \(\B{\θ}\) which we optimize with the samples from \(\D_k\).
 
-Second, for each source, there exists a posterior given a mix \(p(\s_k | \m)\) from which we want to draw samples. Here two approaches are possible. {\color{red} I think it would be cool to highlight the following two approaches more. Something like there are two fundamental approaches. Maybe even have a subsection. The text is on point, I just think the layout could make it more obvious that these are two very different things.} Either we can propose an approximate posterior \(\aprxpost\), which is trained to minimize the divergence from the previously trained and fixed corresponding prior (VAE setting). Or, we can sample directly from the posterior using Stochastic Gradient Langevin Dynamics (SGLD)~\cite{wellingBayesian2011} without explicitly approximating the posterior distribution (sampling setting). Both optimization, either training or sampling, happen under the mixing constraint:
+Second, for each source, there exists a posterior given a mix \(p(\s_k | \m)\) from which we want to draw samples. Here two approaches are possible:
+
+\subsection{Drawing samples from the posterior}
+
+The two fundamental approaches to drawing samples from the posterior are to either model an approximate posterior distribution and draw samples from that or to sample from the posterior without ever modeling it.
+
+In the first case, we propose an approximate posterior \(\aprxpost\), which parameters are optimized to minimize the divergence from the previously trained and fixed corresponding prior. This is the setting similar to a VAE.\@After training the approximate posteriors, the prior distributions are not needed anymore. The inference of a separation is one forward pass through the encoder networks given a mix. From the resulting posterior we can sample separated sources.
+
+In the second case, we propose using Stochastic Gradient Langevin Dynamics (SGLD)~\cite{wellingBayesian2011} to sample from the posterior. Here we never explicitly approximate the posterior distribution but by iteratively optimizing the samples under the pre-trained priors we can sample from the true posterior. In this case, each separation requires a MCMC sampling pass using the prior models, which is parameterless.
+
+Both optimization, either training or sampling, happen under the mixing constraint:
 
 \begin{align}
-    \Σ_{k=1}^N \s_k = \m
+    \Σ_{k=1}^N a_k \· \s_k = \m
+    \label{eq:linear_mixing}
 \end{align}
 
-{\color{red} I am confused by this equation. If we assume linear mixing then there is still a constant mixing factor for each source missing here}
-
-When using the VAE setting we then can sample from each posterior to retrieve a set of (approximately) correct source tracks. In the case of using Langevin dynamics, the iterative sampling will directly give this set from the prior distributions.
-
-{\color{red} This is quite abrupt, maybe use a subsection header saying something like: Let's talk about what are the building blocks.}
+\subsection{Building blocks}
 Thinking in the common terms of the VAE we need to choose:
 
 \begin{enumerate}
     \item a parametrization \(p_{\B{\θ}}(\s_k)\) of the \I{prior} distribution
     \item a parametrized approximate posterior distribution \(\aprxpost\) with parameters \(\B{\η}\)
     \item a parametrized \I{encoder} which gives the parameters for the posterior distribution \(\texttt{Encoder}_{\B{\φ}}(\m) = \B{\η}\)
-    \item a \I{decoder} which returns the input \(\m\) from the latents \linebreak \({\texttt{Decoder}(\{\s_1,\…,\s_N\}) = \m}\)
+    \item a \I{decoder} which returns the input \(\m\) from the latents \linebreak \({\texttt{Decoder}_{\B{a}}(\{\s_1,\…,\s_N\}) = \B{a}^T \· \bM{\s_1,\…,\s_N}^T = \m}\)
 \end{enumerate}
 
-As stated before the decoder in our case is the mean function, thus not probabilistic and without parameters. It is certainly possible to parametrize the decoder with trainable parameters. This would imply though that the latent samples are not in the \I{direct form} of the source sounds but under an (unknown) transformation.
-{\color{red} as with equation 37 I think that the decoder should have N learnable parameters.}
+The modeling of the decoder is implied because of the linear mixing assumption in \cref{eq:linear_mixing}. The parameters of the decoder \(\B{a} = \bM{a_1,\…,a_N}\) are the \(N\) mixing coefficients.
 
-{\color{red} Furthermore I miss the final objective for the VAE-like approach. Especially the KL terms can be used to say: "look this is how the prior interacts with the encoder/approx posterior".}
+For the VAE-like approach, we have to construct the prior, approximate posterior and encoder, while for the sampling approach we only need to construct the prior models. Both methods happen under the mixing constraint.
+
+To see the relationship between the prior models and the posterior models, we can look at the divergence between the the approximate posterior and the prior model that we will be using to train the VAE model:
+
+\begin{equation}
+    \KL[\aprxpost\|p(\s_k)] = \E_\aprxpost \left[ \log \÷{p(\s_k)}{\aprxpost} \right]
+\end{equation}
+
+The posterior is trained to minimize the divergence from the prior but informed by mixes.
+
 
 \section{Modeling the priors}
-The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors, with flow models for which we gave an overview in \sref{subsec:flows}. The models estimate a densities over the separate data sources. For both the sampling-based approach and the variational approach we need these densities to give us likelihoods of samples in that source's distribution.
+The first step in the training procedure is the training of the independent source priors \(p(\s_k)\). We have to choose a model for estimating the density that results in smooth, tight densities but also is capable enough to capture the complex data space of audio data. We choose to estimate the priors, with flow models for which we gave an overview in \sref{subsec:flows}. The models estimate densities over the separate data sources. For both the sampling-based approach and the variational approach we need these densities to give us likelihoods of samples in that source's distribution.
 
-We propose to adapt the FloWaveNet~\cite{kimFloWaveNet2019} architecture, as introduced in \sref{subsec:flows}. In this architecure the data splitting for the coupling layers is done along the channel dimension. As we are using mono waveforms, the squeeze operation is necessary to increase the channel depth from the one input channel. The next section will introduce the architecture more throughfully.
+We propose to adapt the FloWaveNet~\cite{kimFloWaveNet2019} architecture, as introduced in \sref{subsec:flows}. In this architecture, the data splitting for the coupling layers is done along the channel dimension. As we are using mono waveforms, the squeeze operation is necessary to increase the channel depth from the one input channel. The next section will introduce the architecture more thoughtfully.
 
 We make it clear that the success of this method depends strongly on the expressiveness and smoothness of the learned prior models. In the case of learning the posterior, variational learning will fit the posterior distribution under the prior distribution. If the prior does not contain enough variation of the actual data distribution, the de-mixing model cannot fit a conditional posterior similar to the sample in the mixed song. In the case of the sampling approach, this constraint is even more stressed. The mixed is generated by iteratively sampling from the set of prior distributions, any possible source sample, therefore, has to be found on the manifold of the prior. If any of the priors does not capture the full variations of the data distributions, neither method will be able to extract the correct separated sources.
 
@@ -98,7 +113,7 @@ The flow network, at the highest level, consists of \(n_b\) context blocks, each
 
 The \I{even}/\I{odd} masking for the coupling layer is simply achieved by splitting the channel dimension into two equal parts. Flipping the masking exchanges the top half of channels with the bottom half. No channel transformation of the channels is learned as in Glow. Further observe that through the repeated squeeze operation the masking implicitly includes a checkerboard pattern on the temporal dimension, similar to the explicit pattern used in RealNVP\@.
 
-As explained in \cref{subsec:flows} {\color{red}reference is broken} the invertible flow \(f(\·)\) network directly maps the data space into a prior distribution \(p(\z)\). Through the invertibility we can directly optimize the log probability with the change of variable formula:
+As explained in \sref{subsec:flows} the invertible flow \(f(\·)\) network directly maps the data space into a prior distribution \(p(\z)\). Through the invertibility we can directly optimize the log probability with the change of variable formula:
 
 \begin{equation}
     \log p(\x) = \log p(f(\x)) + \log\det\left(\pf{f(\x)}{\x}\right)%
@@ -254,7 +269,7 @@ As both the prior \(p(\s_k)\) and the approximate posterior \(\aprxpost\) are pa
 \subsection{Choosing a posterior}
 With the optimization regime set up, we have to choose a fitting posterior distribution and the deep neural network which computes its parameters from data. In many typical VAE settings, the prior density is a fixed probability distribution, typically a multivariate normal distribution and accordingly the approximate posterior also is set to be a normal distribution. As our prior is a greatly complex distribution estimated by the flow, we are not incentivized by this to choose the posterior accordingly. Nevertheless
 
-In the case of the \B{real musical data} we can not  construct any informed posterior distribution, as the signals do not follow any constrained prior form. For the lack of an informed decision and the computational ease of the reparametrization trick, we resort to a Gaussian posterior. More specifically we propose employing a \B{truncated normal distribution}. The latent sound values are restricted to \([-1,1]\) and a with a truncated Gaussian we can restrict the support to this interval. The reparametrization trick is still applicable, for a concrete description of the sampling refer to \sref{Appendix rsample} {\color{red}reference is broken}. The normal distribution is parametrized by mean and variance \(\B{\η} = \{\σ, \μ\}\).
+In the case of the \B{real musical data} we can not  construct any informed posterior distribution, as the signals do not follow any constrained prior form. For the lack of an informed decision and the computational ease of the reparametrization trick, we resort to a Gaussian posterior. More specifically we propose employing a \B{truncated normal distribution}. The latent sound values are restricted to \([-1,1]\) and a with a truncated Gaussian we can restrict the support to this interval. The reparametrization trick is still applicable, for a concrete description of the sampling refer to \sref{sec:appendix_truncated_gaussian}. The normal distribution is parametrized by mean and variance \(\B{\η} = \{\σ, \μ\}\).
 
 \subsection{Choosing an Encoder}
 The inference model \(\texttt{Encoder}_{\B{\φ}}(\m)\) infers the parameters for the chosen posterior distribution from data. The model takes the time-domain signals as an input, therefore we use the architectural design choices as with the prior networks and employ a non-causal WaveNet architecture. As laid out before this model is fully convolutional, not autoregressive, as the prediction of the parameters is a one-to-one mapping, where each time-point is mapped to a set of parameters. As it is practice we use the same network head for both parameters and append after the last skip-connection output of the WaveNet two convolutional layers with the final one mapping to the two separate parameters. The WaveNet used here is fairly similar to the modules used in the prior flows. They employ the gated convolution and have fixed kernel sizes of 3.
