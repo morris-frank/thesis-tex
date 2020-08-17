@@ -242,15 +242,12 @@ def plot_magphase():
 
 def main():
     cprint("Will process all data figures:", Fore.CYAN)
-    noise_levels = ["01", "027", "077", "129", "359"]
-
-    plot_training_curves("toy_noise_conditioned.csv", TOY_SIGNALS, [-3, -5.7], 15, shapes=noise_levels, xlim=[0, 60_000])
-    exit()
 
     musdb_prior = npzload("musdb/Aug10-")
     plot_cross_likelihood(musdb_prior["channels"], "musdb_noiseless/", MUSDB_SIGNALS)
 
     toy_prior_data = {"0.0": npzload("toy/Jul31-1847")}
+    noise_levels = ["01", "027", "077", "129", "359"]
     for level in noise_levels:
         toy_prior_data[f"0.{level}"] = npzload(f"toy/Aug07-1757*{level}")
     toy_prior_data = pd.DataFrame(toy_prior_data).T.sort_index()
@@ -262,6 +259,7 @@ def main():
         plot_cross_likelihood(_data.channels, name, TOY_SIGNALS)
 
     plot_noised_noised(toy_prior_data)
+    plot_training_curves("toy_noise_conditioned.csv", TOY_SIGNALS, [-3, -5.7], 15, shapes=noise_levels, xlim=[0, 60_000])
     plot_training_curves("musdb_noiseless.csv", MUSDB_SIGNALS, [-2, -8], 15)
     plot_training_curves("toy_noise_0.csv", TOY_SIGNALS, [-1, -5.5], 10)
     plot_const(toy_prior_data)

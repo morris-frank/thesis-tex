@@ -1,7 +1,6 @@
 \chapter{Method}%
-\label{ch:method}
-
-\newthought{In this chapter}, we introduce the theoretical idea of our probability modelling of musical source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
+\label{ch:method}%
+In this chapter, we introduce the theoretical idea of our probability modelling of musical source separation. First, we explicitly state our chosen model of the problem, next derive a suitable optimization objective from it and then explain how we can optimize towards that.
 
 We propose the graphical model as shown in \cref{fig:graphical_model_separation} as the true generative model of music tracks being generated from separate source tracks. For each source, a sample is taken from the latent source distribution. The observed mix is generated deterministically from the full set of sources. Without loss of generality, we fix this function to be the mean.
 

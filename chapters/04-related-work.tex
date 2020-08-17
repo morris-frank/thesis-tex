@@ -1,7 +1,6 @@
 \chapter{Related work}%
-\label{ch:related_work}
-
-\newthought{In this chapter}, we give an overview of recent approaches to sound source separation which are related to our approach either in the chosen model choices or implicit ideas. We will introduce source separation models based on deep models in time and frequency domain. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work. Many practical approaches to musical source separation work with handcrafted features and algorithms informed by musicological and perceptional research. To the opposite most of the methods presented here assume very little about the behaviour of the sound sources, enabling an end-to-end learning from ground data.
+\label{ch:related_work}%
+In this chapter, we give an overview of recent approaches to sound source separation which are related to our approach either in the chosen model choices or implicit ideas. We will introduce source separation models based on deep models in time and frequency domain. As the body of research into this task, especially in practical application, is vast and diverse, this overview can only be a small insight into tangentially related and recent research work. Many practical approaches to musical source separation work with handcrafted features and algorithms informed by musicological and perceptional research. To the opposite most of the methods presented here assume very little about the behaviour of the sound sources, enabling an end-to-end learning from ground data.
 
 \section{Source separation}
 All here presented model maximize \(p(\s|\m)\) for one source (e.g.\ extracting only the singing voice out of a mix) or \(p(\s_1,\…,\s_N|\m)\) for multiple sources. Note that in the second case the conditional likelihood is not factorized,  a shared model for all sources.

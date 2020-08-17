@@ -1,6 +1,6 @@
 \chapter{Experiments}%
-\label{ch:experiments}
-\marginnote{All code can be found under: \url{github.com/morris-frank/unnamed-source-separation/} (MIT)}
+\label{ch:experiments}%
+\marginnote{All code can be found under: \url{github.com/morris-frank/unnamed-source-separation/} (MIT)}%
 As we have laid out in the previous chapter our method mainly depends on the quality of the learned source priors. Remember we learn the source priors independently for each source channel. In the VAE-style approach, we learn the posterior for each search with the KL-divergence from the respective prior. In the sampling approach, we optimize the separation solutions under the source priors. Therefore we need the prior models to fulfill some qualities. First, the learned distributions have to generalize, as in both approaches the separation predictions have to be findable in the prior distributions. Second, the priors have to be smooth, so that the priors are capable of assigning lower to higher likelihood to samples that are more true to in-distributions samples. And third, the prior models have to be discriminative. They are trained only on samples of their respective class, but in the separation process, they have to able to discriminate the other signals in the mix from their in-distribution.
 
 \section{Datasets}
@@ -90,7 +90,7 @@ In the full model, each prior is used to extract its source channel separately. 
 \begin{figure}
     \centering
     \input{figures/cross_likelihood}%
-    \caption{The log-likelihood of each source under each prior for both sets of priors. Notice how for the ToyData we get the diagonal that we are expecting while for the real music the likelihood for every field is high and in the same range. The \I{other} prior assigns the highest likelihoods.}%
+    \caption{The log-likelihood of each source under each prior for both sets of priors. Notice how for the ToyData we get the diagonal that we are expecting while for the real music the likelihood for every field is high and in the same range. The \I{other} prior assigns the highest likelihoods. For the numerical data see~\cref{tab:cross_likelihood_musdb,tab:cross_likelihood_toy_0}.}%
     \label{fig:noiseless_channels}%
 \end{figure}
 
@@ -120,7 +120,7 @@ Conditioning the prior distributions on noised samples is supposed to reduce loc
     \centering
     \input{figures/noised_noised}%
     \caption[][\baselineskip]{
-        The log likelihood of the test data set with different levels of noise \(\N(0, \σ)\) for the prior models fine-tuned on pertubated data with increasing levels of Gaussian noise. For the numerical data see~\cref{fig:noised_noised_data_sin,fig:noised_noised_data_square,fig:noised_noised_data_saw,fig:noised_noised_data_triangle}.
+        The log likelihood of the test data set with different levels of noise \(\N(0, \σ)\) for the prior models fine-tuned on pertubated data with increasing levels of Gaussian noise. For the numerical data see~\cref{tab:noised_noised_data_sin,tab:noised_noised_data_square,tab:noised_noised_data_saw,tab:noised_noised_data_triangle}.
     }%
     \label{fig:noised_noised}%
 \end{figure*}
@@ -133,7 +133,7 @@ We show this failing more pronounced in \cref{fig:noised_channels}. Here we plot
     \centering
     \input{figures/noised_channels}%
     \caption[][\baselineskip]{
-        The cross-likelihood of the toy source channels under each prior model after conditioning the distribution on different levels of noise.
+        The cross-likelihood of the toy source channels under each prior model after conditioning the distribution on different levels of noise. For the numerical data see~\cref{tab:cross_likelihood_toy_01,tab:cross_likelihood_toy_027,tab:cross_likelihood_toy_077,tab:cross_likelihood_toy_129,tab:cross_likelihood_toy_359}.
     }%
     \label{fig:noised_channels}%
 \end{figure*}
@@ -143,7 +143,7 @@ With the noiseless model \cref{fig:noised_channels} (a) the distribution is disc
 \section{Random and constant inputs}
 \begin{table}
     \input{graphics/toy_const}%
-    \caption{The mean log likelihood of a full receptive field of contant inputs \(\{0,1\}\) for the noise-less and the widest noise-conditioned model.}%
+    \caption{The mean log-likelihood of a full receptive field of constant inputs \(\{0,1\}\) for the noise-less and the widest noise-conditioned model.}%
     \label{tab:toy_const}%
 \end{table}\vspace{\baselineskip}
 
@@ -161,4 +161,4 @@ On the other hand purely random inputs should be unlikely and decreasing so with
 We read these results to support the previous interpretation that even a small amount of noise fine-tuning can have severe effects on the estimated density. The noiseless model has sharp likelihood peaks around true data, in which even small amounts of noised data are highly unlikely. The noise-conditioning of the flow models flattens these peaks in so far that noise and out-of-distribution samples become highly likely, even at small amounts of added noise.
 
 \section{Langevin sampling}
-We tried source separation using the Toy dataset with random mixes and the trained flow priors. As already anticipated with the previous experiments, this is not successful. The noiseless model does not exhibit a smooth manifold which even with the noised gradients of SGLD is optimizable. The noised priors on the other hand, lost all the discriminative power and therefore it is not possible to modulate the out-of-distribution mix into a true signal by taking (noisy) steps on the prior.
+We tried source separation using the Toy dataset with random mixes and the trained flow priors. As already anticipated with the previous experiments, this is not successful. The noiseless model does not exhibit a smooth manifold which even with the noised gradients of SGLD is optimizable. The noised priors, on the other hand, lost all the discriminative power and therefore it is not possible to modulate the out-of-distribution mix into a true signal by taking (noisy) steps on the prior.

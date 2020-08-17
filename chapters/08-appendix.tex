@@ -2,7 +2,7 @@
     \section{Reparametrization of a truncated Gaussian}%
     \label{sec:appendix_truncated_gaussian}
 
-    We propose to model the approximate posterior distribution with a truncated Gaussian. To optimize the parameters of the encoder we need to take gradient of the samples with respect to the parameters of the distribution \(\η = \{\μ, \σ\}\). For the normal distribution this can be cheaply done with the reparametrization trick. We do the same for the truncated distribution.
+    We propose to model the approximate posterior distribution with a truncated Gaussian. To optimize the parameters of the encoder we need to take the gradient of the samples with respect to the parameters of the distribution \(\η = \{\μ, \σ\}\). For the normal distribution, this can be cheaply done with the reparametrization trick. We do the same for the truncated distribution.
 
     We can take samples from the normal distribution \(\N(\μ,\σ)\) truncated to the bounds \([a,b]\) with a inverse transform sampler~\cite{murphyMachine2012}. We give an algorithm to take a sample from the truncated distribution and return its log-likelihood:
 
@@ -35,7 +35,8 @@
     \begin{table}[!htb]
         \footnotesize%
         \input{graphics/musdb_noiseless/channels_hm}%
-        \caption{The mean average log-likelihood of all source channels under the each prior for the \texttt{musdb18} data.}
+        \caption{The mean average log-likelihood of all source channels under the each prior for the \texttt{musdb18} data.}%
+        \label{tab:cross_likelihood_musdb}
     \end{table}
 
     \foreach\noise in {0,01,027,077,129,359}{
@@ -43,6 +44,7 @@
             \footnotesize%
             \input{graphics/toy_noise_\noise/channels_hm}%
             \caption{The mean average log-likelihood of all source channels under the each prior for the noise level \(0.\noise\).}
+            \label{tab:cross_likelihood_toy_\noise}
         \end{table}
     }
 
@@ -52,8 +54,8 @@
         \begin{table}[!htb]%
             \footnotesize%
             \input{graphics/noised_noised/\signal}%
-            \caption{The numerical data as visualized~\ref{fig:noised_noised} for the source \texttt{\signal}.}%
-            \label{fig:noised_noised_data_\signal}
+            \caption{The mean average log-likelihood of the test set with added noise for the \texttt{\signal} model for each noise-conditioned density.}%
+            \label{tab:noised_noised_data_\signal}
         \end{table}
     }%
 
