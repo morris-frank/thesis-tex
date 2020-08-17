@@ -1,6 +1,6 @@
 \chapter{Experiments}%
 \label{ch:experiments}%
-\marginnote{All code can be found under: \url{github.com/morris-frank/unnamed-source-separation/} (MIT)}%
+\marginnote{All code can be found under: \url{github.com/morris-frank/unsupervised-source-separation/} (MIT)}%
 As we have laid out in the previous chapter our method mainly depends on the quality of the learned source priors. Remember we learn the source priors independently for each source channel. In the VAE-style approach, we learn the posterior for each search with the KL-divergence from the respective prior. In the sampling approach, we optimize the separation solutions under the source priors. Therefore we need the prior models to fulfill some qualities. First, the learned distributions have to generalize, as in both approaches the separation predictions have to be findable in the prior distributions. Second, the priors have to be smooth, so that the priors are capable of assigning lower to higher likelihood to samples that are more true to in-distributions samples. And third, the prior models have to be discriminative. They are trained only on samples of their respective class, but in the separation process, they have to able to discriminate the other signals in the mix from their in-distribution.
 
 \section{Datasets}
