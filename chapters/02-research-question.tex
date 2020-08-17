@@ -1,19 +1,16 @@
 \chapter{Research Question}%
-\label{ch:question}
+\label{ch:question}%
 
-Source separation is the task of finding a set of latent sources \(\s = {[\s_1,\…\s_k,\…,\s_N]}^T \∈ \ℝ^{N\× T}\) to an observed mix of those sources \(\m\∈\ℝ^{1\× T}\). It exists an implied but unknown mixing function \(\m = f(\s)\). The task is to find an approximate inverse model \(g(\·)\) which retrieves \(\s\):
-
+Source separation is the task of finding the set of source signals \(\s = {[\s_1,\…\s_k,\…,\s_N]}^T \∈ \ℝ^{N\× T}\) to an observed mix of those sources \(\m\∈\ℝ^{1\× T}\). The mix is generated from the source signals with a mixing function \(\m = f(\s)\). The task is to find an inverse model \(g(\·)\) which retrieves \(\s\):
 \begin{align}
     \m = f(\s)\\
     g(\m) \approxeq \s
 \end{align}
 
-In the case of musical source separation, the sources are different instruments~\footnote{Think of the classes being \{\I{guitar},\I{piano},\I{voice},\…\}} or their separate voices. The mix is mixed and mastered mono or stereo recording of the musical piece {\color{red} something is missing here}. The reversal of this operation is strongly unidentifiable. As instruments can make similar sounds extracting the instruments' voices is not always decidable {\color{red} not very clear}. Therefore any approach to this problem is approximate in expectation.
+In the case of musical source separation, the sources are different instruments~\footnote{Think of the sources being \{\I{guitar},\I{piano},\I{voice},\…\}}. The mix signal is the combined recording of the instruments. Differnt instruments can make similar sounds, making the reversal of the mixing operation strongly unidentifiable and generally impossible.\medskip
 
-Learning this operator \(g(\·)\) can be a relieved {\color{red} don't know what can be a relieved means} with three sources of supervision: First, by supplying the number of sources \(N\) in a given mix. Second, by supplying the distinct source classes for each contained source. And lastly, by actually providing tuples \((\m, \s)\) of associated mixes and sources. {\color{red} examples like in footnote 1 for all three would be good. Maybe you start with an example and then explain the three options.}  The most costly supervision is the last one, as there exists no large source of such data. Therefore when we refer to our method as unsupervised we refer to the relaxation from this source of supervision. {\color{red}This sentence is unnecessary complex}
+Imagine a set of songs played by the three instruments guitar, piano and drums. To make the approximation of the inverse model easier multiple sources of supervision can be supplied: First, by supplying the number of sources \(N\) in the mix. In the example that would be knowing that each song contains three instruments. Second, by supplying the source classes for each contained source. In the example we would supply the three classes guitar, piano and drums. These two labels are not the same, as in the first case a subset of the sources could be played by the same instrument. Lastly we can supervise the modeling, by actually providing tuples \((\m, \s)\) of associated mixes and sources. In the example case this means, having the single recordings each of the three instruments and the mixed recording of the song. This supervision is the most costly one, as there exists no large and public source of such data and source signals cannot be retrieved through manual labeling.
 
-Therefore our research question summarizes to:
+When we refer to our approach as unsupervised we mean this costly form of supervision. We want to learn the source separation without using tuples of the form \((\m, \s)\) during training.\medskip
 
-\begin{tcolorbox}
-    Can we learn a musical source separation model \(g(\·)\) without relying on examples of the mixing process but only using samples of unrelated sources \(\{\s_k\}\) and mixes \(\m\). {\color{red} I find that hard to understand. Can you not just say that you don't need tuples of all signals and the mix?}
-\end{tcolorbox}
+More precisely our research question is, whether we can train such a separation model by training separate generative models for each source instrument. We want to use these prior models to extract the signals from the mix that are close to the distributions of the prior models. We investigate whether it is possible to train such a prior model from data of one source~\footnote{e.g.\ only guitar sounds} and be able use this model find guitar sounds in mixed songs.
