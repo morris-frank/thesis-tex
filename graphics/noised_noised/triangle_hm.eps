@@ -2,9 +2,9 @@
 %%BoundingBox: 0 0 144 166
 %%HiResBoundingBox: 0.000000 0.000000 144.000000 165.600000
 %%Invocation: gs -dBATCH -dNOPAUSE -r6000 -sDEVICE=ps2write -dEPSCrop -sOutputFile=? ?
-%%Creator: GPL Ghostscript 952 (ps2write)
+%%Creator: GPL Ghostscript 9533 (ps2write)
 %%LanguageLevel: 2
-%%CreationDate: D:20200816193244+02'00'
+%%CreationDate: D:20201008173403+02'00'
 %%EndComments
 %%BeginProlog
 save
@@ -16,16 +16,28 @@ newpath
 %%EndProlog
 %%Page 1 1
 %%BeginProlog
+10 dict dup begin
 /DSC_OPDFREAD true def
 /SetPageSize true def
 /EPS2Write false def
-currentdict/DSC_OPDFREAD known{
-currentdict/DSC_OPDFREAD get
-}{
-false
+end
+count 0 ne{
+dup type/dicttype eq{
+dup/EPS2Write known{
+dup/EPS2Write get not
+}
+{
+true
+}ifelse
+}
+{
+true
+}ifelse
+}
+{
+true
 }ifelse
 10 dict begin
-/DSC_OPDFREAD exch def
 /this currentdict def
 /y 720 def
 /ebuf 200 string def
@@ -37,6 +49,7 @@ false
 36//this/y get moveto
 //this/y 2 copy get 12 sub put
 }bind def
+{
 errordict/handleerror
 {systemdict begin
 $error begin
@@ -88,8 +101,24 @@ quit
 end
 end
 }bind readonly put
+}if
 end
 50 dict begin
+count 0 ne{
+dup type/dicttype eq{
+{def}forall
+false
+}
+{
+true
+}ifelse
+}
+{
+true
+}ifelse
+{
+(   *** Warning: global definitions dictionary not found, file may be corrupted.\n)print flush
+}if
 /DefaultSwitch
 {
 dup where{
@@ -3513,7 +3542,10 @@ grestore
 //GraphicState/FontMatrixNonHV currentfont/FontMatrix get 1 get 0 ne put
 }bind def
 /ShowText
-{//GraphicState/TextRenderingMode get 0 eq{
+{
+//GraphicState/TextRenderingMode get dup 0 eq
+exch 3 eq not currentfont/FontType get 3 eq and or
+{
 //GraphicState/WordSpacing get 0
 32
 //GraphicState/CharacterSpacing get 0
@@ -3568,12 +3600,26 @@ exch cshow
 }ifelse
 }bind def
 /ShowTextBeg
-{//GraphicState/TextRenderingMode get 0 ne{
+{
+//GraphicState/TextRenderingMode get dup 0 ne
+{
+3 ne
+currentfont/FontType get 3 eq not and{
 currentpoint newpath moveto
 }if
+}
+{
+pop
+}ifelse
 }bind def
 /ShowTextEnd
-{//GraphicState/TextRenderingMode get
+{
+//GraphicState/TextRenderingMode get
+currentfont/FontType get 3 eq{
+dup 3 ne{
+pop 0
+}if
+}if
 {dup 1 eq{
 stroke exit
 }if
@@ -8707,7 +8753,7 @@ endobj
 endobj
 %%EndPageSetup
 6 0 obj
-<</Length 25087>>stream
+<</Length 25084>>stream
 q 0.012 0 0 0.012 0 0 cm
 q
 2400 3270.83 9000 7500 re W n
@@ -9400,37 +9446,37 @@ q
 18 TL
 T*[(0)-1.87492(.)9.09992(3)-1.87468]TJ
 /R9 6.22864 Tf
-1 0 0 1 33.976 2.52802 Tm
+1 0 0 1 33.976 3.12398 Tm
 [<00>6.36582]TJ
 /R7 5.97758 Tf
-1 0 0 1 38.896 2.52802 Tm
+1 0 0 1 38.896 3.12398 Tm
 [(1)-1.87517(0)-1.87517]TJ
 /R7 4.98132 Tf
 6 2.16 Td
 [(1)-5.89017(2)-5.88958]TJ
 /R9 6.22864 Tf
-1 0 0 1 57.94 2.52802 Tm
+1 0 0 1 57.94 3.12398 Tm
 [<00>6.36582]TJ
 /R7 5.97758 Tf
-1 0 0 1 62.86 2.52802 Tm
+1 0 0 1 62.86 3.12398 Tm
 [(1)-1.87517(0)-1.87517]TJ
 /R7 4.98132 Tf
 6 2.16 Td
 [(7)-5.88958]TJ
 /R9 6.22864 Tf
-1 0 0 1 80.659 2.52802 Tm
+1 0 0 1 80.659 3.12398 Tm
 [<00>6.36582]TJ
 /R7 5.97758 Tf
-1 0 0 1 85.579 2.52802 Tm
+1 0 0 1 85.579 3.12398 Tm
 [(1)-1.87517(0)-1.87517]TJ
 /R7 4.98132 Tf
 6 2.16 Td
 [(2)-5.88958]TJ
 /R9 6.22864 Tf
-1 0 0 1 101.298 2.52802 Tm
+1 0 0 1 101.298 3.12398 Tm
 [<00>6.36488]TJ
 /R7 5.97758 Tf
-1 0 0 1 106.218 2.52802 Tm
+1 0 0 1 106.218 3.12398 Tm
 [(1)-1.87419(0)-1.87419]TJ
 /R9 5.19053 Tf
 6.12 2.28 Td
@@ -9439,7 +9485,7 @@ T*[(0)-1.87492(.)9.09992(3)-1.87468]TJ
 4.2 0 Td
 [(3)-5.89076]TJ
 /R7 5.97758 Tf
--3.033 -2.04403 Td
+-3.033 -2.64 Td
 [(0)461.694(1)-1.87419(0)-1.87419]TJ
 /R9 5.19053 Tf
 6.34898 2.16 Td

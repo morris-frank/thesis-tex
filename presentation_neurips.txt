@@ -1,0 +1,13 @@
+In this work we are providing evidence for difficulties in using common deep generative models of sound signals as prior distributions in a Bayesian inference setting.
+
+We investigate two recent generative model architectures for audio data, the WaveNet and the FloWaveNet. The WaveNet is an autoregressive model and the FloWaveNet is an exact likelihood model, incorporating the WaveNet into the coupling transformations of a normalizing flow.
+
+We evaluate the models on two datasets, one artificial toy set of simple oscillators and musdb a common dataset of real musical data used for evaluating audio source separation systems. Each dataset contains four distinct sources. The deep generative priors are trained independently for each source in each dataset. Trained only on samples of one source we evaluate the likelihood of noisy samples and samples from the other three classes.
+
+The flow model can discriminate between in and out-of distribution samples for the simple toy-dataset while the wavenet can only slightly so. Both models are not too peaked around true samples to be used as prior distributions. We find the likelihood of in-class samples quickly reduces with added even the smallest amount of noise.
+
+Recent work has suggested that the peakedness of the learned distribution can be allivated by training the network with noised input samples thereby approximating the corresponding smoothed out distribution. Our results show though that while fine-tuning with noisy samples does make close-to in-class samples likely it does so by strongly removing the discriminative power of the network. We see that with even low input noise levels the network starts confusing in- and out-of-distribution data.
+
+Successfully trained generative models could be used as priors for approaching tasks like audio source separation in a Bayesian manner. Our results indicate though that the learned prior distributions are either discriminative and extremely peaked or smooth and non-discriminative therefore either way making them ineffective as priors.
+
+Thank you for listening

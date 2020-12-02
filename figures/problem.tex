@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+    \node[draw] (mix) {Mix\quad\includegraphics[width=30pt]{wave/mix.pdf}};
+    \draw[arrows=-{Triangle[open, angle=60:3mm]}] ([xshift=-17pt]mix.west) -- (mix.west);
+    \draw (mix.east) -- ([xshift=17pt]mix.east);
+
+    \foreach \source/\offset in {other/0,drums/1,vocals/2,bass/3}{%
+        \node[above left=-2.2+\offset and 25pt of mix.west] (wave_\source) {\includegraphics[width=30pt]{wave/\source.pdf}};
+        \node[left=0 of wave_\source] (img_\source) {\includegraphics[width=30pt]{../data/images/\source.png}};
+        \draw (wave_\source) -| ([xshift=-17pt]mix.west);
+        \node[above right=-1.6+\offset and 30pt of mix.east] (output_\source) {};
+        \draw[arrows=-{Triangle[open, angle=30:2mm]}] ([xshift=17pt]mix.east) |- (output_\source.west);
+    }%
+
+    \node[right=50pt of mix.east] (he) {\Large Undo?};
+\end{tikzpicture}

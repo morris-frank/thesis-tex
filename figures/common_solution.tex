@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \node[draw] (mix) {Mix\quad\includegraphics[width=30pt]{wave/mix.pdf}};
+
+    \node[fill=primary, right=30pt of mix.east, inner sep=5pt, text width=70pt] (ann) {{\color{white}some neural network}};
+    \draw (ann.east) -- ([xshift=17pt]ann.east);
+    \draw (mix.east) -- (ann.west);
+
+    \node[right=50pt of ann.east, align=left] (regr) {regress \\ latent sources};
+
+    \foreach \source/\offset in {other/0,drums/1,vocals/2,bass/3}{%
+        \node[above right=-1.6+\offset and 30pt of ann.east] (output_\source) {};
+        \draw[arrows=-{Triangle[open, angle=30:2mm]}] ([xshift=17pt]ann.east) |- (output_\source.west);
+    }%
+\end{tikzpicture}

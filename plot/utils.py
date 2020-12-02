@@ -8,7 +8,6 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-import wandb
 from colorama import Fore
 from scipy.signal import square, sawtooth
 import os
@@ -123,6 +122,7 @@ def squeeze(x):
 
 
 def get_wandb(run_id):
+    import wandb
     api = wandb.Api()
     run = api.run(f"/morris-frank/thesis/runs/{run_id}")
     df = run.history()
