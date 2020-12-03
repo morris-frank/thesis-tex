@@ -104,10 +104,12 @@
         \parbox{\linewidth}{\tiny ~~\\}
         \parbox{\linewidth}{\centering \color{primary} \Large
             \begin{tikzpicture}[scale=1, every node/.style={scale=0.9}]
-                \node[circle,draw,inner sep=1.5cm,fill overzoom image=frank] (frank) {};
+                \node[circle,draw,inner sep=1.5cm,fill overzoom image=data/images/frank] (frank) {};
                 \node[right=0.7cm of frank,align=left] (franktext) {Maurice Frank\\maurice.frank@posteo.de};
-                \node[right=20cm of frank,circle,draw,inner sep=1.5cm,fill overzoom image=ilse] (ilse) {};
+                \node[left=10cm of franktext] (uva) {\includegraphics[width=15cm]{../data/images/uva_logo}};
+                \node[right=20cm of frank,circle,draw,inner sep=1.5cm,fill overzoom image=data/images/ilse] (ilse) {};
                 \node[right=0.7cm of ilse,align=left] (ilsetext) {Maximilian Ilse\\m.ilse@uva.nl};
+                \node[right=9cm of ilsetext] (amlab) {\includegraphics[width=7cm]{../data/images/amlab}};
                 \node [anchor=west,fill=primary,text width=14cm,text=white,scale=0.6,rotate=-15] (note) at (11,2.2) {Searching for PhD in these topics!};
                 \draw [arrow, primary] (note.west) to[out=-15, in=50] (frank.north east);
             \end{tikzpicture}
