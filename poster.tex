@@ -175,14 +175,17 @@
     }
 
     \block{}{
+        \vspace{-1em}
         \centering
-        \begin{minipage}{.5\textwidth}
+        \begin{minipage}{.6\textwidth}
+            We plot the mean average log-likelihood of samples of the different sources under each independently trained prior model.\\
+
             The flow model can discriminate between in and out-of distribution samples for the simple toy-dataset while the wavenet can only slightly so.
             
             Both confuse the out-of-distribution samples if trained on real world
             musical sounds.
 
-            Even more problematic models are too peaked around true samples to be used as prior distributions. We find the likelihood of in-class samples quickly reduces with added even the smallest amount of noise.\\
+            Even more problematic: models are too peaked around true samples to be used as prior distributions. We find the likelihood of in-class samples quickly reduces with added even with small amount of noise.\\
             
             Recent work has suggested that the peakedness of the learned distribution can be allivated by training the network with noised input samples thereby approximating the corresponding smoothed out distribution.
         \end{minipage}\\
